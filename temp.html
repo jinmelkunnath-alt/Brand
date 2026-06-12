@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
@@ -1359,6 +1360,71 @@ body.mobile-optimized .svc p,
 body.mobile-optimized .t blockquote,
 body.mobile-optimized #contact .lead{line-height:1.58}
 
+
+
+/* =========================================================
+   FINAL MOBILE LENGTH REDUCTION + NEAR-INSTANT THEME SWITCH
+   ========================================================= */
+/* Hide non-essential mobile-only visual volume while preserving sections and primary info */
+body.mobile-optimized .featured-visual,
+body.mobile-optimized .why-visual,
+body.mobile-optimized .work-visual,
+body.mobile-optimized .client-proof-grid,
+body.mobile-optimized .svc-proof,
+body.mobile-optimized .svc ul,
+body.mobile-optimized .case-meta-card,
+body.mobile-optimized .outcome-list,
+body.mobile-optimized .tech-grid .tech:nth-child(n+7),
+body.mobile-optimized .work-proof,
+body.mobile-optimized .t-proof{
+  display:none !important;
+}
+body.mobile-optimized #featured .section-head{margin-bottom:24px}
+body.mobile-optimized .featured-grid{display:block}
+body.mobile-optimized .featured-copy h3{font-size:22px;line-height:1.18;margin-bottom:8px}
+body.mobile-optimized .featured-copy p{font-size:14.2px;line-height:1.55;margin-bottom:12px}
+body.mobile-optimized .case-result-strip{grid-template-columns:repeat(3,1fr);gap:8px;margin:14px 0}
+body.mobile-optimized .case-result{padding:10px 8px;border-radius:12px;text-align:center}
+body.mobile-optimized .case-result strong{font-size:17px}.case-result span{line-height:1.25}
+body.mobile-optimized .tech-chips{gap:6px;margin-bottom:14px}.mobile-optimized .chip{font-size:11px;padding:5px 8px}
+body.mobile-optimized .svc{padding:18px 16px}
+body.mobile-optimized .svc .svc-outcome{margin-bottom:6px;font-size:12.8px}
+body.mobile-optimized .svc p{margin-bottom:0}
+body.mobile-optimized .works-viewport{border-radius:18px}
+body.mobile-optimized .work{min-height:0}
+body.mobile-optimized .work-body{padding:18px;display:block}
+body.mobile-optimized .work-meta{font-size:10.8px;margin-bottom:6px}
+body.mobile-optimized .work h3{font-size:19px;margin-bottom:6px}
+body.mobile-optimized .work p{font-size:13.4px;line-height:1.48;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+body.mobile-optimized .work-tags{margin-top:10px;gap:6px}.mobile-optimized .work-tags .tag:nth-child(n+4){display:none}.mobile-optimized .tag{font-size:10.6px;padding:5px 8px}
+body.mobile-optimized .work-cta{margin-top:12px;width:100%;justify-content:center;padding:10px 12px;font-size:13px}
+body.mobile-optimized .t{flex-basis:82%;min-height:0}
+body.mobile-optimized .t blockquote{font-size:14px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+body.mobile-optimized .t.is-expanded blockquote{-webkit-line-clamp:unset;display:block}
+body.mobile-optimized .testimonial-expand{margin-top:12px;border:1px solid var(--line-soft);background:var(--surface-2);color:var(--t2);font:700 12px var(--f);border-radius:999px;padding:7px 10px}
+body.mobile-optimized .why-list{gap:16px}.mobile-optimized .why-item{gap:10px}.mobile-optimized .why-item h4{font-size:16px}.mobile-optimized .why-item p{font-size:13.4px;line-height:1.48}
+body.mobile-optimized .process-grid{grid-template-columns:1fr}.mobile-optimized .step p{font-size:13.3px;line-height:1.48}.mobile-optimized .step h4{font-size:16px}
+body.mobile-optimized .tech-grid{grid-template-columns:repeat(3,1fr)}
+body.mobile-optimized .contact-grid .c-list{gap:10px;margin-top:16px}.mobile-optimized .c-item span{font-size:12.8px;line-height:1.4}.mobile-optimized .trust-chips{margin-top:14px}.mobile-optimized .direct-contact{font-size:12.8px;line-height:1.45}
+
+/* Theme switch: no broad transitions; use a compositor-only mask. */
+html.theme-morph *,
+html.theme-morph *::before,
+html.theme-morph *::after{
+  transition:none !important;
+}
+html.theme-morph body::before,
+html.theme-morph body::after,
+html.theme-morph .editor-aura,
+html.theme-morph .engineering-editor::after,
+html.theme-morph .loader-atmosphere{
+  animation-play-state:paused !important;
+}
+.theme-sweep{display:block !important;contain:strict;will-change:opacity;opacity:.58;animation:themeSweep .42s var(--ease-out) forwards !important}
+body.mobile-optimized .theme-sweep{display:block !important;opacity:.42;background:radial-gradient(circle at var(--x, 50%) var(--y, 50%), color-mix(in srgb, var(--brand) 8%, transparent), transparent 46%)}
+body.mobile-optimized.theme-changing::before,
+body.mobile-optimized.theme-changing::after{animation-play-state:paused !important}
+
 </style>
 </head>
 <body class="is-loading">
@@ -1435,6 +1501,7 @@ body.mobile-optimized #contact .lead{line-height:1.58}
         </h1>
         <p class="hero-desc">
           From customer-facing experiences to mission-critical platforms, we create software that powers growth, efficiency, and innovation.
+        </p>
         <div class="hero-actions">
           <a href="#contact" class="btn btn-primary btn-lg">
             Start a Project
@@ -2104,7 +2171,7 @@ body.mobile-optimized #contact .lead{line-height:1.58}
         </div>
 
         <div class="direct-contact">
-          Prefer email? <a href="/cdn-cgi/l/email-protection#38505d5454577856574e59165c5d4e"><span class="__cf_email__" data-cfemail="bfd7dad3d3d0ffd1d0c9de91dbdac9">[email&#160;protected]</span></a> · <a href="#">WhatsApp</a> · <a href="#">Schedule a call</a>
+          Prefer email? <a href="/cdn-cgi/l/email-protection#5038353c3c3f103e3f26317e343526"><span class="__cf_email__" data-cfemail="fd9598919192bd93928b9cd399988b">[email&#160;protected]</span></a> · <a href="#">WhatsApp</a> · <a href="#">Schedule a call</a>
         </div>
       </div>
 
@@ -2202,6 +2269,8 @@ const mobileCopyRules = [
   ['.process-grid .step:nth-child(3) p', 'TypeScript engineering, staging, tests, and weekly slices.'],
   ['.process-grid .step:nth-child(4) p', 'Production hardening, training, documentation, and support.'],
   ['#technologies .lead', 'Reliable tools for fast, maintainable, handoff-ready products.'],
+  ['.featured-copy p', 'A secure multi-clinic operating system replacing paper registers and disconnected tools.'],
+  ['#technologies .section-head .lead', 'Reliable tools for maintainable, handoff-ready products.'],
   ['.work[data-project="medora"] p', 'A multi-clinic platform for appointments, EMR, billing, pharmacy, website, dashboard, and check-in.'],
   ['.work[data-project="edusync"] p', 'School ERP for admissions, fees, attendance, transport, parent communication, and reporting.'],
   ['.work[data-project="hireflow"] p', 'Recruitment OS for pipelines, interviews, offers, client visibility, and reporting automation.'],
@@ -2219,6 +2288,29 @@ const mobileContent = {
         el.textContent = isMobile ? mobileText : el.dataset.desktopText;
         el.classList.toggle('mobile-shortened', isMobile);
       });
+    });
+    document.querySelectorAll('.t-grid .t').forEach(card=>{
+      let btn = card.querySelector('.testimonial-expand');
+      if(isMobile){
+        if(!btn){
+          btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'testimonial-expand';
+          btn.textContent = 'Read full quote';
+          btn.addEventListener('click', ()=>{
+            const quote = card.querySelector('blockquote');
+            if(!quote) return;
+            if(!quote.dataset.mobileText) quote.dataset.mobileText = quote.textContent.trim();
+            const expanded = card.classList.toggle('is-expanded');
+            quote.textContent = expanded ? (quote.dataset.desktopText || quote.textContent) : quote.dataset.mobileText;
+            btn.textContent = expanded ? 'Show less' : 'Read full quote';
+          });
+          card.appendChild(btn);
+        }
+      }else{
+        card.classList.remove('is-expanded');
+        btn?.remove();
+      }
     });
   }
 };
@@ -2476,16 +2568,15 @@ function playThemeSweep(x, y){
   sweep.addEventListener('animationend', ()=>sweep.remove(), {once:true});
 }
 function applyTheme(t, origin){
+  if(origin){ playThemeSweep(origin.x, origin.y); }
   root.classList.add('theme-morph');
-  requestAnimationFrame(()=>{
-    root.setAttribute('data-theme', t);
-    syncThemeMeta(t);
-    setTimeout(()=>localStorage.setItem('nova-theme', t), 0);
-  });
-  if(origin && !document.body.classList.contains('mobile-optimized')){ playThemeSweep(origin.x, origin.y); }
+  document.body.classList.add('theme-changing');
+  root.setAttribute('data-theme', t);
+  syncThemeMeta(t);
+  setTimeout(()=>localStorage.setItem('nova-theme', t), 0);
   themeBtn?.classList.add('switching');
   clearTimeout(applyTheme._tm);
-  applyTheme._tm = setTimeout(()=>{ root.classList.remove('theme-morph'); themeBtn?.classList.remove('switching'); }, 640);
+  applyTheme._tm = setTimeout(()=>{ root.classList.remove('theme-morph'); themeBtn?.classList.remove('switching'); document.body.classList.remove('theme-changing'); }, 460);
 }
 (function initTheme(){
   const s = localStorage.getItem('nova-theme');
@@ -2626,5 +2717,5 @@ cForm?.addEventListener('submit', (e)=>{
 /* ---------- Year ---------- */
 document.getElementById('yr').textContent = new Date().getFullYear();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0a8c374b9cb7887',t:'MTc4MTI2NjM0Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0a8e7739b525fb9',t:'MTc4MTI2NzgxNw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
