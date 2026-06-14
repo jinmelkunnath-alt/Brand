@@ -1,0 +1,3777 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Pixie Chat — Pixel Code Media</title>
+  <style>
+    :root {
+      --bg-start: #fff7fb;
+      --bg-mid: #f4edff;
+      --bg-end: #eefcff;
+      --text: #30283d;
+      --muted: #7d728c;
+      --primary: #8b5cf6;
+      --primary-2: #ec4899;
+      --accent: #fbbf24;
+      --surface: rgba(255, 255, 255, 0.72);
+      --surface-strong: rgba(255, 255, 255, 0.92);
+      --border: rgba(139, 92, 246, 0.14);
+      --shadow: 0 22px 70px rgba(91, 33, 182, 0.15);
+      --bubble-shadow: 0 14px 34px rgba(91, 33, 182, 0.11);
+      --header-height: 72px;
+      --composer-height: 88px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body,
+    .app,
+    .chat-header,
+    .composer-shell,
+    .composer,
+    .bubble,
+    .contact-card {
+      transition: background 180ms ease, color 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at 8% 4%, rgba(251, 191, 36, 0.28), transparent 30%),
+        radial-gradient(circle at 92% 0%, rgba(236, 72, 153, 0.22), transparent 28%),
+        radial-gradient(circle at 78% 86%, rgba(34, 211, 238, 0.17), transparent 34%),
+        linear-gradient(135deg, var(--bg-start), var(--bg-mid) 52%, var(--bg-end));
+      overflow: hidden;
+    }
+
+    button,
+    textarea {
+      font: inherit;
+    }
+
+    .app {
+      width: 100%;
+      height: 100dvh;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .chat-header {
+      height: calc(var(--header-height) + env(safe-area-inset-top));
+      padding: env(safe-area-inset-top) 18px 0;
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(139, 92, 246, 0.12);
+      background: linear-gradient(180deg, rgba(255,255,255,0.82), rgba(255,255,255,0.56));
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 8px 34px rgba(91, 33, 182, 0.08);
+      z-index: 3;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+
+    .title {
+      font-weight: 850;
+      font-size: 18px;
+      letter-spacing: -0.035em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 11px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.68);
+      border: 1px solid rgba(139, 92, 246, 0.12);
+      color: #5f5370;
+      font-size: 13px;
+      font-weight: 750;
+      box-shadow: 0 10px 25px rgba(91, 33, 182, 0.08);
+      flex: 0 0 auto;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #34d399;
+      box-shadow: 0 0 0 4px rgba(52, 211, 153, 0.16);
+    }
+
+    .messages {
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      scroll-behavior: smooth;
+      padding: 22px max(16px, calc((100vw - 900px) / 2)) 128px;
+    }
+
+    .messages::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    .messages::-webkit-scrollbar-thumb {
+      border: 3px solid transparent;
+      border-radius: 999px;
+      background: rgba(139, 92, 246, 0.2);
+      background-clip: content-box;
+    }
+
+    .message-row {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      margin: 0 0 15px;
+      animation: messageIn 230ms ease-out both;
+    }
+
+    .message-row.user {
+      justify-content: flex-end;
+    }
+
+    .bubble {
+      max-width: min(72%, 680px);
+      padding: 14px 16px;
+      border-radius: 24px;
+      font-size: 15px;
+      line-height: 1.56;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      box-shadow: var(--bubble-shadow);
+    }
+
+    .pixie .bubble {
+      border-bottom-left-radius: 10px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(139, 92, 246, 0.12);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+
+    .user .bubble {
+      border-bottom-right-radius: 10px;
+      color: white;
+      background: linear-gradient(135deg, #8b5cf6, #ec4899);
+      box-shadow: 0 18px 38px rgba(139, 92, 246, 0.23);
+    }
+
+    .typing .bubble {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      min-width: 78px;
+      min-height: 46px;
+    }
+
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #a78bfa;
+      animation: bounce 1s infinite ease-in-out;
+    }
+
+    .dot:nth-child(2) {
+      animation-delay: 0.14s;
+    }
+
+    .dot:nth-child(3) {
+      animation-delay: 0.28s;
+    }
+
+    .thinking-bubble {
+      min-width: 116px;
+    }
+
+    .simple-thinking {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: #6d45d7;
+      font-size: 14px;
+      font-weight: 850;
+      letter-spacing: -0.01em;
+    }
+
+    .thinking-dots {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .thinking-dots i {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #a78bfa;
+      animation: bounce 1s infinite ease-in-out;
+    }
+
+    .thinking-dots i:nth-child(2) {
+      animation-delay: 0.14s;
+    }
+
+    .thinking-dots i:nth-child(3) {
+      animation-delay: 0.28s;
+    }
+
+    .answer-bubble {
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .live-cursor {
+      display: inline-block;
+      width: 0.55em;
+      margin-left: 2px;
+      color: var(--primary);
+      font-weight: 900;
+      animation: blink 0.85s steps(2, start) infinite;
+    }
+
+    .live-cursor.done {
+      opacity: 0;
+      animation: none;
+      transition: opacity 160ms ease;
+    }
+
+    .pixie .bubble a {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      margin: 4px 5px 4px 0;
+      padding: 8px 11px;
+      border-radius: 999px;
+      color: #7046d4;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 850;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.11), rgba(236, 72, 153, 0.10));
+      border: 1px solid rgba(139, 92, 246, 0.16);
+      box-shadow: 0 8px 22px rgba(91, 33, 182, 0.08);
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+
+    .pixie .bubble a:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(91, 33, 182, 0.13);
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.16), rgba(236, 72, 153, 0.14));
+    }
+
+    .contact-card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .contact-card {
+      position: relative;
+      overflow: hidden;
+      padding: 12px;
+      border-radius: 18px;
+      border: 1px solid rgba(139, 92, 246, 0.16);
+      background: linear-gradient(145deg, rgba(255,255,255,0.92), rgba(255,255,255,0.72));
+      box-shadow: 0 14px 30px rgba(91, 33, 182, 0.10);
+    }
+
+    .contact-name {
+      color: var(--text);
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+    }
+
+    .contact-role {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 750;
+      line-height: 1.35;
+    }
+
+    .contact-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 11px;
+    }
+
+    .pixie .bubble .contact-actions a.contact-action {
+      min-height: 40px;
+      margin: 0;
+      padding: 10px 12px;
+      border-radius: 14px;
+      font-size: 13px;
+      color: #fff;
+      border: 0;
+      box-shadow: 0 10px 22px rgba(139, 92, 246, 0.16);
+    }
+
+    .pixie .bubble .contact-actions a.call {
+      background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    }
+
+    .pixie .bubble .contact-actions a.whatsapp {
+      background: linear-gradient(135deg, #10b981, #22c55e);
+    }
+
+
+    /* Pixie living avatar system */
+    .pixie-avatar-stage {
+      position: absolute;
+      left: max(12px, calc((100vw - 900px) / 2 + 14px));
+      bottom: calc(100% - 18px);
+      width: 166px;
+      height: 172px;
+      z-index: 12;
+      pointer-events: none;
+      --bot-shell: #fffdfb;
+      --bot-shell-2: #f4f0ed;
+      --bot-shell-3: #e6e0dc;
+      --bot-panel: #fff7f9;
+      --bot-panel-2: #ffe8ee;
+      --bot-silver: #d8dce2;
+      --bot-silver-2: #eef1f4;
+      --bot-accent: #f06f93;
+      --bot-accent-soft: #ffc2d1;
+      --bot-coral: #f48676;
+      --bot-blue: #9fd7ff;
+      --bot-blue-soft: #d9f0ff;
+      --bot-eye-dark: #1d1b22;
+      --bot-eye-mid: #504556;
+      --bot-eye-rose: #e9799b;
+      --bot-eye-light: #ffe0ea;
+      --bot-eye-shine: #ffffff;
+      --bot-line: rgba(45, 38, 48, 0.20);
+      --bot-cheek: #ff9bb4;
+      --bot-seat: rgba(255, 255, 255, 0.74);
+      --bot-seat-line: rgba(240, 111, 147, 0.22);
+      --bot-ui-panel: rgba(255, 255, 255, 0.90);
+      --bot-ui-line: rgba(240, 111, 147, 0.40);
+      --bot-shadow: rgba(105, 76, 89, 0.24);
+      --bot-ground-shadow: rgba(64, 45, 56, 0.16);
+    }
+
+    .pixie-avatar-stage::after {
+      content: '';
+      position: absolute;
+      left: 44px;
+      bottom: 5px;
+      width: 72px;
+      height: 14px;
+      border-radius: 999px;
+      background: radial-gradient(ellipse at center, var(--bot-ground-shadow) 0%, rgba(64, 45, 56, 0.08) 42%, transparent 72%);
+      filter: blur(2px);
+      opacity: 0.72;
+      transform: translateY(1px);
+      z-index: 0;
+    }
+
+    .pixie-avatar {
+      position: absolute;
+      left: -8px;
+      bottom: 0;
+      width: 166px;
+      height: 170px;
+      transform-origin: 50% 92%;
+      filter: drop-shadow(0 20px 28px var(--bot-shadow));
+      pointer-events: none;
+      z-index: 1;
+      will-change: transform;
+      animation: avatarBreathe 3.45s ease-in-out infinite, avatarSway 6.6s ease-in-out infinite;
+    }
+
+    .pixie-avatar svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    .pixie-root,
+    .pixie-body,
+    .pixie-head,
+    .pixie-face,
+    .pixie-pupils,
+    .pixie-eye-open,
+    .pixie-brows,
+    .pixie-status-light,
+    .pixie-status-ring,
+    .pixie-side-pod-left,
+    .pixie-side-pod-right,
+    .pixie-arm-left,
+    .pixie-arm-right,
+    .pixie-hand-right,
+    .pixie-tablet,
+    .pixie-tablet-lines,
+    .pixie-mouth-idle,
+    .pixie-foot-left,
+    .pixie-foot-right,
+    .pixie-processor,
+    .pixie-zzz {
+      transform-box: fill-box;
+      transform-origin: center;
+      will-change: transform, opacity;
+    }
+
+    .pixie-root {
+      animation: avatarTinyFloat 4.9s ease-in-out infinite;
+    }
+
+    .pixie-body {
+      animation: avatarBodySettle 4.7s ease-in-out infinite;
+    }
+
+    .pixie-head {
+      transform-origin: 50% 84%;
+      animation: avatarHeadIdle 5.7s cubic-bezier(.45, 0, .25, 1) infinite;
+    }
+
+    .pixie-face {
+      animation: avatarLookAround 7.1s cubic-bezier(.45, 0, .25, 1) infinite;
+    }
+
+    .pixie-pupils {
+      animation: avatarPupilLife 6.5s cubic-bezier(.45, 0, .25, 1) infinite;
+    }
+
+    .pixie-eye-open {
+      animation: avatarBlink 3.05s infinite;
+    }
+
+    .pixie-status-light {
+      animation: avatarStatusPulse 3.8s ease-in-out infinite;
+    }
+
+    .pixie-status-ring {
+      animation: avatarStatusRing 3.8s ease-in-out infinite;
+    }
+
+    .pixie-side-pod-left {
+      transform-origin: 78% 50%;
+      animation: avatarPodLeft 6.4s ease-in-out infinite;
+    }
+
+    .pixie-side-pod-right {
+      transform-origin: 22% 50%;
+      animation: avatarPodRight 6.1s ease-in-out infinite;
+    }
+
+    .pixie-mouth-idle {
+      animation: avatarSoftSmile 5.8s ease-in-out infinite;
+    }
+
+    .pixie-eye-smile,
+    .pixie-eye-think,
+    .pixie-brows-happy,
+    .pixie-brows-think,
+    .pixie-brows-focused,
+    .pixie-mouth-happy,
+    .pixie-mouth-big,
+    .pixie-mouth-open,
+    .pixie-mouth-think,
+    .pixie-mouth-focused,
+    .pixie-tablet-lines,
+    .pixie-processor,
+    .pixie-zzz {
+      opacity: 0;
+    }
+
+    .pixie-arm-left {
+      transform-origin: 86% 28%;
+    }
+
+    .pixie-arm-right {
+      transform-origin: 14% 28%;
+    }
+
+    .pixie-foot-left,
+    .pixie-foot-right {
+      animation: avatarFootDangle 6.2s ease-in-out infinite;
+    }
+
+    .pixie-foot-right {
+      animation-delay: 1.35s;
+    }
+
+    .pixie-tablet {
+      opacity: 0.14;
+      transform: translateY(4px) scale(0.96);
+      transition: opacity 220ms ease, transform 220ms ease;
+    }
+
+    .pixie-avatar[data-state="typing"] {
+      transform: translateY(-1px) rotate(-0.3deg) scale(1.01);
+    }
+
+    .pixie-avatar[data-state="typing"] .pixie-head {
+      transform: rotate(2.8deg) translateY(1px);
+      animation: none;
+    }
+
+    .pixie-avatar[data-state="typing"] .pixie-face {
+      transform: translate(2px, 1px);
+      animation: none;
+    }
+
+    .pixie-avatar[data-state="typing"] .pixie-pupils {
+      transform: translate(2.2px, 1.2px);
+      animation: none;
+    }
+
+    .pixie-avatar[data-state="typing"] .pixie-side-pod-left {
+      transform: rotate(-5deg) translateY(-1px);
+      animation: none;
+    }
+
+    .pixie-avatar[data-state="typing"] .pixie-side-pod-right {
+      transform: rotate(5deg) translateY(-1px);
+      animation: none;
+    }
+
+    .pixie-avatar[data-state="typing"] .pixie-mouth-idle,
+    .pixie-avatar[data-state="typing"] .pixie-brows-idle {
+      opacity: 0;
+    }
+
+    .pixie-avatar[data-state="typing"] .pixie-mouth-open,
+    .pixie-avatar[data-state="typing"] .pixie-brows-focused {
+      opacity: 1;
+    }
+
+    .pixie-avatar[data-state="typing"] .pixie-status-light {
+      animation: avatarStatusTyping 900ms ease-in-out infinite;
+    }
+
+    .pixie-avatar[data-state="typing"] .pixie-tablet,
+    .pixie-avatar[data-state="answering"] .pixie-tablet {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .pixie-avatar[data-state="sent"],
+    .pixie-avatar.avatar-bounce {
+      animation: avatarSentJump 520ms cubic-bezier(.2, .9, .25, 1.18), avatarBreathe 3.45s ease-in-out infinite 520ms;
+    }
+
+    .pixie-avatar[data-state="sent"] .pixie-side-pod-left,
+    .pixie-avatar[data-state="success"] .pixie-side-pod-left,
+    .pixie-avatar.avatar-celebrate .pixie-side-pod-left {
+      transform: rotate(-8deg) translateY(-2px);
+      animation: none;
+    }
+
+    .pixie-avatar[data-state="sent"] .pixie-side-pod-right,
+    .pixie-avatar[data-state="success"] .pixie-side-pod-right,
+    .pixie-avatar.avatar-celebrate .pixie-side-pod-right {
+      transform: rotate(8deg) translateY(-2px);
+      animation: none;
+    }
+
+    .pixie-avatar[data-state="sent"] .pixie-eye-smile,
+    .pixie-avatar.avatar-celebrate .pixie-eye-smile,
+    .pixie-avatar[data-state="success"] .pixie-eye-smile,
+    .pixie-avatar[data-state="sent"] .pixie-brows-happy,
+    .pixie-avatar.avatar-celebrate .pixie-brows-happy,
+    .pixie-avatar[data-state="success"] .pixie-brows-happy {
+      opacity: 1;
+    }
+
+    .pixie-avatar[data-state="sent"] .pixie-eye-open,
+    .pixie-avatar.avatar-celebrate .pixie-eye-open,
+    .pixie-avatar[data-state="success"] .pixie-eye-open,
+    .pixie-avatar[data-state="sent"] .pixie-brows-idle,
+    .pixie-avatar.avatar-celebrate .pixie-brows-idle,
+    .pixie-avatar[data-state="success"] .pixie-brows-idle {
+      opacity: 0;
+    }
+
+    .pixie-avatar[data-state="sent"] .pixie-mouth-happy,
+    .pixie-avatar.avatar-celebrate .pixie-mouth-big,
+    .pixie-avatar[data-state="success"] .pixie-mouth-big {
+      opacity: 1;
+    }
+
+    .pixie-avatar[data-state="sent"] .pixie-mouth-idle,
+    .pixie-avatar.avatar-celebrate .pixie-mouth-idle,
+    .pixie-avatar[data-state="success"] .pixie-mouth-idle {
+      opacity: 0;
+    }
+
+    .pixie-avatar[data-state="sent"] .pixie-status-light,
+    .pixie-avatar[data-state="success"] .pixie-status-light,
+    .pixie-avatar.avatar-celebrate .pixie-status-light {
+      animation: avatarStatusCelebrate 520ms ease-in-out infinite;
+    }
+
+    .pixie-avatar[data-state="thinking"] .pixie-head {
+      transform: rotate(-4deg) translateY(-1px);
+      animation: avatarThinkNod 2.3s ease-in-out infinite;
+    }
+
+    .pixie-avatar[data-state="thinking"] .pixie-face {
+      transform: translate(-1px, -2px);
+      animation: none;
+    }
+
+    .pixie-avatar[data-state="thinking"] .pixie-pupils {
+      transform: translate(0, -3px);
+      animation: none;
+    }
+
+    .pixie-avatar[data-state="thinking"] .pixie-side-pod-left {
+      transform: rotate(4deg) translateY(1px);
+      animation: none;
+    }
+
+    .pixie-avatar[data-state="thinking"] .pixie-side-pod-right {
+      transform: rotate(-4deg) translateY(-1px);
+      animation: none;
+    }
+
+    .pixie-avatar[data-state="thinking"] .pixie-eye-open,
+    .pixie-avatar[data-state="thinking"] .pixie-brows-idle,
+    .pixie-avatar[data-state="thinking"] .pixie-mouth-idle {
+      opacity: 0;
+    }
+
+    .pixie-avatar[data-state="thinking"] .pixie-eye-think,
+    .pixie-avatar[data-state="thinking"] .pixie-brows-think,
+    .pixie-avatar[data-state="thinking"] .pixie-mouth-think,
+    .pixie-avatar[data-state="thinking"] .pixie-processor {
+      opacity: 1;
+    }
+
+    .pixie-avatar[data-state="thinking"] .pixie-processor {
+      animation: avatarProcessor 1.6s ease-in-out infinite;
+    }
+
+    .pixie-avatar[data-state="answering"] .pixie-head {
+      transform: rotate(1.4deg);
+      animation: avatarFocusedNod 2.1s ease-in-out infinite;
+    }
+
+    .pixie-avatar[data-state="answering"] .pixie-face {
+      transform: translate(1px, .8px);
+      animation: none;
+    }
+
+    .pixie-avatar[data-state="answering"] .pixie-pupils {
+      transform: translate(1.1px, .8px);
+      animation: none;
+    }
+
+    .pixie-avatar[data-state="answering"] .pixie-brows-idle,
+    .pixie-avatar[data-state="answering"] .pixie-mouth-idle {
+      opacity: 0;
+    }
+
+    .pixie-avatar[data-state="answering"] .pixie-brows-focused,
+    .pixie-avatar[data-state="answering"] .pixie-mouth-focused {
+      opacity: 1;
+    }
+
+    .pixie-avatar[data-state="answering"] .pixie-tablet-lines {
+      opacity: 1;
+      animation: avatarTabletLines 980ms ease-in-out infinite;
+    }
+
+    .pixie-avatar[data-state="answering"] .pixie-arm-left {
+      animation: avatarTinyTypeLeft 520ms ease-in-out infinite;
+    }
+
+    .pixie-avatar[data-state="answering"] .pixie-arm-right {
+      animation: avatarTinyTypeRight 560ms ease-in-out infinite;
+    }
+
+    .pixie-avatar[data-state="success"] {
+      animation: avatarSuccessBounce 780ms ease-out both, avatarBreathe 3.45s ease-in-out infinite 780ms;
+    }
+
+    .pixie-avatar.avatar-wave .pixie-arm-right {
+      animation: avatarWave 1.15s ease-in-out both;
+    }
+
+    .pixie-avatar.avatar-stretch .pixie-root {
+      animation: avatarStretch 1.05s ease-in-out both;
+    }
+
+    .pixie-avatar.avatar-sleepy .pixie-root {
+      animation: avatarSleepCurl 1.2s ease-in-out both;
+    }
+
+    .pixie-avatar.avatar-sleepy .pixie-eye-open,
+    .pixie-avatar.avatar-sleepy .pixie-brows-idle,
+    .pixie-avatar.avatar-sleepy .pixie-mouth-idle {
+      opacity: 0;
+    }
+
+    .pixie-avatar.avatar-sleepy .pixie-eye-smile,
+    .pixie-avatar.avatar-sleepy .pixie-mouth-focused,
+    .pixie-avatar.avatar-sleepy .pixie-zzz {
+      opacity: 1;
+    }
+
+    .pixie-avatar.avatar-look-left .pixie-face {
+      animation: none;
+      transform: translateX(-2.5px);
+    }
+
+    .pixie-avatar.avatar-look-right .pixie-face {
+      animation: none;
+      transform: translateX(2.5px);
+    }
+
+    @keyframes avatarBreathe {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-1.5px) scale(1.007); }
+    }
+
+    @keyframes avatarSway {
+      0%, 100% { rotate: -0.28deg; }
+      50% { rotate: 0.38deg; }
+    }
+
+    @keyframes avatarTinyFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-0.8px); }
+    }
+
+    @keyframes avatarBodySettle {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(.6px); }
+    }
+
+    @keyframes avatarHeadIdle {
+      0%, 100% { transform: rotate(0deg) translateY(0); }
+      24% { transform: rotate(-1.25deg) translateY(-0.4px); }
+      52% { transform: rotate(0.95deg) translateY(0.3px); }
+      78% { transform: rotate(-0.5deg) translateY(0); }
+    }
+
+    @keyframes avatarLookAround {
+      0%, 18%, 100% { transform: translate(0, 0); }
+      28%, 40% { transform: translate(-1.3px, .25px); }
+      56%, 68% { transform: translate(1.3px, -.2px); }
+      82%, 90% { transform: translate(.25px, .75px); }
+    }
+
+    @keyframes avatarPupilLife {
+      0%, 18%, 100% { transform: translate(0, 0); }
+      28%, 40% { transform: translate(-1.1px, 0.2px); }
+      56%, 68% { transform: translate(1.2px, -0.2px); }
+      82%, 90% { transform: translate(0.2px, 0.8px); }
+    }
+
+    @keyframes avatarBlink {
+      0%, 70%, 74%, 82%, 86%, 100% { transform: scaleY(1); }
+      72%, 84% { transform: scaleY(0.08); }
+    }
+
+    @keyframes avatarStatusPulse {
+      0%, 100% { transform: scale(1); opacity: .88; }
+      50% { transform: scale(1.07); opacity: 1; }
+    }
+
+    @keyframes avatarStatusRing {
+      0%, 100% { transform: scale(1); opacity: .32; }
+      50% { transform: scale(1.12); opacity: .58; }
+    }
+
+    @keyframes avatarStatusTyping {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.14); }
+    }
+
+    @keyframes avatarStatusCelebrate {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.18); }
+    }
+
+    @keyframes avatarPodLeft {
+      0%, 72%, 100% { transform: rotate(0deg); }
+      76% { transform: rotate(-4deg) translateY(-1px); }
+      80% { transform: rotate(1deg); }
+    }
+
+    @keyframes avatarPodRight {
+      0%, 64%, 100% { transform: rotate(0deg); }
+      68% { transform: rotate(4deg) translateY(-1px); }
+      72% { transform: rotate(-1deg); }
+    }
+
+    @keyframes avatarSoftSmile {
+      0%, 100% { transform: scaleX(1) translateY(0); }
+      50% { transform: scaleX(1.06) translateY(-0.22px); }
+    }
+
+    @keyframes avatarFootDangle {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(2.8deg) translateY(.7px); }
+    }
+
+    @keyframes avatarSentJump {
+      0% { transform: translateY(0) scale(1); }
+      40% { transform: translateY(-6px) scale(1.026); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    @keyframes avatarThinkNod {
+      0%, 100% { transform: rotate(-4deg) translateY(-1px); }
+      50% { transform: rotate(-1.4deg) translateY(-2px); }
+    }
+
+    @keyframes avatarFocusedNod {
+      0%, 100% { transform: rotate(1deg) translateY(0); }
+      50% { transform: rotate(2.1deg) translateY(-0.75px); }
+    }
+
+    @keyframes avatarProcessor {
+      0%, 100% { transform: translateY(0); opacity: .42; }
+      50% { transform: translateY(-1px); opacity: 1; }
+    }
+
+    @keyframes avatarTabletLines {
+      0%, 100% { opacity: 0.38; transform: translateX(-1px); }
+      50% { opacity: 1; transform: translateX(1.8px); }
+    }
+
+    @keyframes avatarTinyTypeLeft {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(4.4deg) translateY(.7px); }
+    }
+
+    @keyframes avatarTinyTypeRight {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(-5deg) translateY(.7px); }
+    }
+
+    @keyframes avatarSuccessBounce {
+      0% { transform: translateY(0) scale(1); }
+      30% { transform: translateY(-6px) scale(1.036); }
+      58% { transform: translateY(0) scale(0.995); }
+      78% { transform: translateY(-2px) scale(1.014); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    @keyframes avatarWave {
+      0%, 100% { transform: rotate(0deg); }
+      22% { transform: rotate(-16deg); }
+      46% { transform: rotate(11deg); }
+      68% { transform: rotate(-12deg); }
+      86% { transform: rotate(6deg); }
+    }
+
+    @keyframes avatarStretch {
+      0%, 100% { transform: scaleY(1) translateY(0); }
+      38% { transform: scaleY(1.03) translateY(-2px); }
+      72% { transform: scaleY(0.987) translateY(.8px); }
+    }
+
+    @keyframes avatarSleepCurl {
+      0% { transform: rotate(0deg) scale(1); }
+      100% { transform: rotate(-3deg) translateY(3px) scale(0.96); }
+    }
+
+    @keyframes avatarSleepyBlink {
+      0%, 100% { transform: scaleY(1); }
+      20%, 72% { transform: scaleY(0.05); }
+    }
+
+    .composer-shell {
+      position: relative;
+      flex: 0 0 auto;
+      padding: 12px max(14px, calc((100vw - 900px) / 2)) calc(12px + env(safe-area-inset-bottom));
+      border-top: 1px solid rgba(139, 92, 246, 0.11);
+      background: linear-gradient(180deg, rgba(255,255,255,0.46), rgba(255,255,255,0.84));
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      box-shadow: 0 -10px 36px rgba(91, 33, 182, 0.08);
+      z-index: 3;
+    }
+
+    .composer {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 27px;
+      border: 1px solid rgba(139, 92, 246, 0.15);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.85), 0 18px 44px rgba(91, 33, 182, 0.1);
+    }
+
+    #messageInput {
+      width: 100%;
+      max-height: 160px;
+      min-height: 46px;
+      resize: none;
+      border: 0;
+      outline: 0;
+      padding: 12px 8px 10px 12px;
+      color: var(--text);
+      background: transparent;
+      font-size: 16px;
+      line-height: 1.4;
+    }
+
+    #messageInput::placeholder {
+      color: #9b90a9;
+      opacity: 1;
+    }
+
+    .send-button {
+      width: 46px;
+      height: 46px;
+      border: 0;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: linear-gradient(135deg, #8b5cf6, #ec4899);
+      box-shadow: 0 14px 28px rgba(139, 92, 246, 0.28);
+      cursor: pointer;
+      transition: transform 160ms ease, opacity 160ms ease, filter 160ms ease;
+      flex: 0 0 auto;
+    }
+
+    .send-button:hover {
+      transform: translateY(-1px);
+      filter: saturate(1.06);
+    }
+
+    .send-button:active {
+      transform: translateY(0) scale(0.97);
+    }
+
+    .send-button:disabled {
+      cursor: default;
+      opacity: 0.48;
+      transform: none;
+      filter: grayscale(0.1);
+    }
+
+    .send-icon {
+      width: 19px;
+      height: 19px;
+      fill: currentColor;
+      transform: translateX(1px);
+    }
+
+    @keyframes messageIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px) scale(0.99);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes softPulse {
+      0%, 100% {
+        transform: translateY(0);
+        opacity: 0.86;
+      }
+      50% {
+        transform: translateY(-1px);
+        opacity: 1;
+      }
+    }
+
+    @keyframes bounce {
+      0%, 80%, 100% {
+        transform: translateY(0);
+        opacity: 0.45;
+      }
+      40% {
+        transform: translateY(-4px);
+        opacity: 1;
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-start: #111827;
+        --bg-mid: #1e1b2f;
+        --bg-end: #101827;
+        --text: #f5f3ff;
+        --muted: #b8b1c9;
+        --surface: rgba(24, 31, 48, 0.72);
+        --surface-strong: rgba(31, 38, 58, 0.92);
+        --border: rgba(167, 139, 250, 0.22);
+        --shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
+        --bubble-shadow: 0 18px 42px rgba(0, 0, 0, 0.26);
+      }
+
+      .pixie-avatar-stage {
+        --bot-shell: #272a31;
+        --bot-shell-2: #343943;
+        --bot-shell-3: #535b66;
+        --bot-panel: #1f222a;
+        --bot-panel-2: #34303a;
+        --bot-silver: #cfd5dc;
+        --bot-silver-2: #3d4651;
+        --bot-accent: #ff7da3;
+        --bot-accent-soft: #ffc3d3;
+        --bot-coral: #ff9283;
+        --bot-blue: #9bd8ff;
+        --bot-blue-soft: #d6f0ff;
+        --bot-eye-dark: #fff9fc;
+        --bot-eye-mid: #ff9dbc;
+        --bot-eye-rose: #ffc6d8;
+        --bot-eye-light: #ffffff;
+        --bot-eye-shine: #ffffff;
+        --bot-line: rgba(255, 255, 255, 0.16);
+        --bot-cheek: #fb7185;
+        --bot-seat: rgba(26, 24, 36, 0.80);
+        --bot-seat-line: rgba(255, 125, 163, 0.28);
+        --bot-ui-panel: rgba(36, 31, 47, 0.80);
+        --bot-ui-line: rgba(155, 216, 255, 0.54);
+        --bot-shadow: rgba(0, 0, 0, 0.44);
+        --bot-ground-shadow: rgba(0, 0, 0, 0.36);
+      }
+
+      body {
+        background:
+          radial-gradient(circle at 12% 4%, rgba(139, 92, 246, 0.22), transparent 30%),
+          radial-gradient(circle at 92% 8%, rgba(236, 72, 153, 0.13), transparent 28%),
+          radial-gradient(circle at 78% 88%, rgba(14, 165, 233, 0.12), transparent 36%),
+          linear-gradient(135deg, var(--bg-start), var(--bg-mid) 52%, var(--bg-end));
+      }
+
+      .app {
+        background: rgba(10, 16, 28, 0.28);
+      }
+
+      .chat-header,
+      .composer-shell {
+        background: linear-gradient(180deg, rgba(24, 31, 48, 0.86), rgba(24, 31, 48, 0.58));
+        border-color: rgba(167, 139, 250, 0.16);
+        box-shadow: 0 10px 36px rgba(0, 0, 0, 0.26);
+      }
+
+      .status,
+      .composer,
+      .pixie .bubble {
+        background: rgba(31, 38, 58, 0.82);
+        border-color: rgba(167, 139, 250, 0.18);
+      }
+
+      .status,
+      .brand,
+      #messageInput,
+      .pixie .bubble,
+      .placeholder {
+        color: var(--text);
+      }
+
+      #messageInput::placeholder {
+        color: rgba(216, 209, 231, 0.62);
+      }
+
+      .simple-thinking,
+      .pixie .bubble a {
+        color: #ddd6fe;
+      }
+
+      .contact-card {
+        background:
+          radial-gradient(circle at 8% 0%, rgba(251, 191, 36, 0.10), transparent 34%),
+          linear-gradient(145deg, rgba(31, 38, 58, 0.92), rgba(22, 28, 43, 0.82));
+        border-color: rgba(167, 139, 250, 0.20);
+        box-shadow: 0 20px 44px rgba(0, 0, 0, 0.26);
+      }
+
+      .contact-name {
+        color: #f5f3ff;
+      }
+
+      .contact-role,
+      .brand-subtitle {
+        color: #b8b1c9;
+      }
+
+      .composer {
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 18px 44px rgba(0, 0, 0, 0.22);
+      }
+    }
+
+    @media (max-width: 640px) {
+      :root {
+        --header-height: 64px;
+      }
+
+      body {
+        background:
+          radial-gradient(circle at 12% 0%, rgba(251, 191, 36, 0.2), transparent 32%),
+          radial-gradient(circle at 100% 0%, rgba(236, 72, 153, 0.18), transparent 30%),
+          linear-gradient(145deg, #fff8fc, #f6efff 52%, #f0fcff);
+      }
+
+      .chat-header {
+        padding-left: 14px;
+        padding-right: 14px;
+      }
+
+
+      .title {
+        font-size: 17px;
+      }
+
+      .status {
+        padding: 7px 10px;
+        font-size: 12px;
+      }
+
+      .messages {
+        padding: 16px 12px 98px;
+      }
+
+      .message-row {
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+
+      .bubble {
+        max-width: 84%;
+        padding: 13px 14px;
+        border-radius: 22px;
+        font-size: 15px;
+      }
+
+
+      .contact-card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .contact-card {
+        padding: 12px;
+        border-radius: 18px;
+      }
+
+      .composer-shell {
+        padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
+      }
+
+      .composer {
+        border-radius: 24px;
+        padding: 8px;
+      }
+
+      .pixie-avatar-stage {
+        left: 6px;
+        bottom: calc(100% - 12px);
+        width: 118px;
+        height: 128px;
+      }
+
+      .pixie-avatar-stage::after {
+        left: 31px;
+        bottom: 3px;
+        width: 52px;
+        height: 10px;
+        filter: blur(1.6px);
+      }
+
+      .pixie-avatar {
+        width: 118px;
+        height: 122px;
+      }
+
+      #messageInput {
+        min-height: 44px;
+        max-height: 120px;
+        padding: 11px 6px 9px 10px;
+        font-size: 16px;
+      }
+
+      .send-button {
+        width: 44px;
+        height: 44px;
+        border-radius: 16px;
+      }
+    }
+
+    @media (prefers-color-scheme: dark) and (max-width: 640px) {
+      body {
+        background:
+          radial-gradient(circle at 12% 0%, rgba(139, 92, 246, 0.20), transparent 32%),
+          radial-gradient(circle at 100% 0%, rgba(236, 72, 153, 0.12), transparent 30%),
+          linear-gradient(145deg, #111827, #1e1b2f 52%, #101827);
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <main class="app" aria-label="Pixie chatbot">
+    <header class="chat-header">
+      <div class="brand" aria-label="Pixie">
+        <div class="title">Pixie ✨</div>
+      </div>
+      <div class="status" aria-label="Pixie is online">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span>Online</span>
+      </div>
+    </header>
+
+    <section id="messages" class="messages" aria-live="polite" aria-label="Chat history"></section>
+
+    <footer class="composer-shell">
+      <div class="pixie-avatar-stage" id="pixieAvatarStage">
+        <div id="pixieAvatar" class="pixie-avatar" data-state="idle" role="img" aria-label="Pixie, a friendly digital business consultant companion">
+          <svg viewBox="0 0 160 168" aria-hidden="true" focusable="false">
+            <defs>
+              <linearGradient id="botShellGrad" x1="38" y1="24" x2="121" y2="142" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="var(--bot-shell)" />
+                <stop offset="0.55" stop-color="var(--bot-shell-2)" />
+                <stop offset="1" stop-color="var(--bot-shell-3)" />
+              </linearGradient>
+              <linearGradient id="botFaceGrad" x1="43" y1="36" x2="118" y2="99" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="var(--bot-panel)" />
+                <stop offset="1" stop-color="var(--bot-panel-2)" />
+              </linearGradient>
+              <linearGradient id="botSilverGrad" x1="50" y1="82" x2="108" y2="148" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="var(--bot-silver-2)" />
+                <stop offset="1" stop-color="var(--bot-silver)" />
+              </linearGradient>
+              <linearGradient id="botAccentGrad" x1="59" y1="95" x2="101" y2="142" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="var(--bot-accent-soft)" />
+                <stop offset="1" stop-color="var(--bot-accent)" />
+              </linearGradient>
+              <linearGradient id="botPanelGrad" x1="53" y1="113" x2="107" y2="143" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="var(--bot-ui-panel)" />
+                <stop offset="1" stop-color="rgba(217,240,255,.50)" />
+              </linearGradient>
+              <radialGradient id="botEyeGrad" cx="43%" cy="28%" r="76%">
+                <stop offset="0" stop-color="var(--bot-eye-light)" />
+                <stop offset="0.24" stop-color="var(--bot-eye-rose)" />
+                <stop offset="0.55" stop-color="var(--bot-eye-mid)" />
+                <stop offset="1" stop-color="var(--bot-eye-dark)" />
+              </radialGradient>
+            </defs>
+
+            <ellipse cx="80" cy="154" rx="45" ry="7" fill="var(--bot-shadow)" opacity="0.30" />
+            <path class="pixie-chat-ledge" d="M29 138c10-8 92-8 102 0 6 5 2 13-8 15H37c-10-2-14-10-8-15Z" fill="var(--bot-seat)" stroke="var(--bot-seat-line)" />
+            <path d="M40 139h80" stroke="rgba(255,255,255,.70)" stroke-width="2.2" stroke-linecap="round" />
+
+            <g class="pixie-root">
+              <g class="pixie-legs">
+                <path d="M66 135c-5 5-8 11-8 18 7 2 15-2 18-10" fill="url(#botSilverGrad)" stroke="var(--bot-line)" />
+                <path d="M94 135c5 5 8 11 8 18-7 2-15-2-18-10" fill="url(#botSilverGrad)" stroke="var(--bot-line)" />
+                <path class="pixie-foot-left" d="M58 153c5 2 12 0 16-4" stroke="var(--bot-accent)" stroke-width="3" stroke-linecap="round" />
+                <path class="pixie-foot-right" d="M86 149c4 4 11 6 16 4" stroke="var(--bot-accent)" stroke-width="3" stroke-linecap="round" />
+              </g>
+
+              <g class="pixie-body">
+                <path d="M56 91c7-11 41-11 48 0 8 13 12 30 9 41-3 11-15 15-33 15s-30-4-33-15c-3-11 1-28 9-41Z" fill="url(#botShellGrad)" stroke="var(--bot-line)" />
+                <path d="M64 101c5-10 27-10 32 0 5 9 5 24 0 32-4 6-28 6-32 0-5-8-5-23 0-32Z" fill="url(#botSilverGrad)" opacity="0.96" />
+                <circle cx="80" cy="119" r="10" fill="var(--bot-panel)" stroke="var(--bot-line)" />
+                <circle cx="80" cy="119" r="6" fill="var(--bot-accent-soft)" />
+              </g>
+
+              <g class="pixie-tablet">
+                <rect x="54" y="115" width="52" height="28" rx="10" fill="url(#botPanelGrad)" stroke="var(--bot-ui-line)" />
+                <circle cx="65" cy="125" r="2.2" fill="var(--bot-blue)" opacity=".76" />
+                <g class="pixie-tablet-lines" stroke="var(--bot-ui-line)" stroke-width="2" stroke-linecap="round">
+                  <path d="M73 124h19" />
+                  <path d="M64 132h30" />
+                  <path d="M64 138h17" />
+                </g>
+              </g>
+
+              <g class="pixie-arm-left">
+                <path d="M61 103c-10 7-14 17-10 22 3 5 13 1 18-10" fill="none" stroke="var(--bot-silver)" stroke-width="8" stroke-linecap="round" />
+                <circle cx="61" cy="103" r="6" fill="var(--bot-accent-soft)" stroke="var(--bot-line)" />
+                <path d="M48 126c4 4 10 4 14 0" fill="none" stroke="var(--bot-shell-3)" stroke-width="4" stroke-linecap="round" />
+              </g>
+              <g class="pixie-arm-right">
+                <path d="M99 103c10 7 14 17 10 22-3 5-13 1-18-10" fill="none" stroke="var(--bot-silver)" stroke-width="8" stroke-linecap="round" />
+                <circle cx="99" cy="103" r="6" fill="var(--bot-accent-soft)" stroke="var(--bot-line)" />
+                <path class="pixie-hand-right" d="M112 126c-4 4-10 4-14 0" fill="none" stroke="var(--bot-shell-3)" stroke-width="4" stroke-linecap="round" />
+              </g>
+
+              <g class="pixie-head">
+                <path d="M71 30v-9" stroke="var(--bot-line)" stroke-width="4" stroke-linecap="round" />
+                <circle class="pixie-status-ring" cx="71" cy="17" r="10" fill="var(--bot-accent-soft)" opacity=".36" />
+                <circle class="pixie-status-light" cx="71" cy="17" r="6.3" fill="var(--bot-accent)" />
+
+                <g class="pixie-side-pod-left">
+                  <path d="M45 58c-12 4-20 14-20 27s8 23 20 27Z" fill="url(#botSilverGrad)" stroke="var(--bot-line)" />
+                  <path d="M35 66c-5 5-7 12-7 19s2 14 7 19" fill="none" stroke="var(--bot-accent)" stroke-width="4" stroke-linecap="round" />
+                </g>
+                <g class="pixie-side-pod-right">
+                  <path d="M115 58c12 4 20 14 20 27s-8 23-20 27Z" fill="url(#botSilverGrad)" stroke="var(--bot-line)" />
+                  <path d="M125 66c5 5 7 12 7 19s-2 14-7 19" fill="none" stroke="var(--bot-accent)" stroke-width="4" stroke-linecap="round" />
+                </g>
+
+                <rect x="38" y="31" width="84" height="76" rx="28" fill="url(#botShellGrad)" stroke="var(--bot-line)" />
+                <rect x="47" y="43" width="66" height="53" rx="21" fill="url(#botFaceGrad)" opacity="0.96" />
+                <path d="M51 45c9-7 48-7 58 0" fill="none" stroke="rgba(255,255,255,.72)" stroke-width="3" stroke-linecap="round" />
+                <path d="M48 48c-6 14-6 31 0 45" fill="none" stroke="rgba(255,255,255,.42)" stroke-width="2.5" stroke-linecap="round" />
+
+                <g class="pixie-processor" fill="none" stroke="var(--bot-blue)" stroke-width="2" stroke-linecap="round">
+                  <path d="M69 38h22" />
+                  <path d="M74 34h12" opacity=".7" />
+                </g>
+
+                <g class="pixie-face">
+                  <g class="pixie-brows" stroke="var(--bot-eye-dark)" stroke-width="2.2" stroke-linecap="round" fill="none" opacity=".72">
+                    <g class="pixie-brows-idle">
+                      <path d="M61 56c4-2 8-2 12 0" />
+                      <path d="M87 56c4-2 8-2 12 0" />
+                    </g>
+                    <g class="pixie-brows-happy">
+                      <path d="M60 57c4-3 9-3 13 0" />
+                      <path d="M87 57c4-3 9-3 13 0" />
+                    </g>
+                    <g class="pixie-brows-think">
+                      <path d="M60 55c4-3 9-2 13 1" />
+                      <path d="M88 57c4-3 9-4 13-2" />
+                    </g>
+                    <g class="pixie-brows-focused">
+                      <path d="M60 57c4-1 9-1 13 1" />
+                      <path d="M87 58c4-2 9-2 13-1" />
+                    </g>
+                  </g>
+
+                  <g class="pixie-eyes">
+                    <g class="pixie-eye-open">
+                      <ellipse cx="67" cy="67" rx="10.5" ry="12" fill="rgba(255,255,255,.94)" />
+                      <ellipse cx="93" cy="67" rx="10.5" ry="12" fill="rgba(255,255,255,.94)" />
+                      <ellipse cx="67" cy="68" rx="7.8" ry="9.3" fill="url(#botEyeGrad)" />
+                      <ellipse cx="93" cy="68" rx="7.8" ry="9.3" fill="url(#botEyeGrad)" />
+                      <g class="pixie-pupils">
+                        <ellipse cx="67" cy="70" rx="3.6" ry="4.8" fill="var(--bot-eye-dark)" opacity=".66" />
+                        <ellipse cx="93" cy="70" rx="3.6" ry="4.8" fill="var(--bot-eye-dark)" opacity=".66" />
+                        <circle cx="70" cy="62" r="2.6" fill="var(--bot-eye-shine)" />
+                        <circle cx="96" cy="62" r="2.6" fill="var(--bot-eye-shine)" />
+                        <circle cx="64" cy="73" r="1.45" fill="rgba(255,255,255,.56)" />
+                        <circle cx="90" cy="73" r="1.45" fill="rgba(255,255,255,.56)" />
+                        <circle cx="72" cy="68" r="1" fill="rgba(255,255,255,.42)" />
+                        <circle cx="98" cy="68" r="1" fill="rgba(255,255,255,.42)" />
+                      </g>
+                    </g>
+                    <g class="pixie-eye-smile" stroke="var(--bot-eye-dark)" stroke-width="3" stroke-linecap="round" fill="none">
+                      <path d="M59 68c5 6 12 6 17 0" />
+                      <path d="M85 68c5 6 12 6 17 0" />
+                    </g>
+                    <g class="pixie-eye-think">
+                      <ellipse cx="67" cy="66" rx="8.6" ry="6.8" fill="rgba(255,255,255,.92)" />
+                      <ellipse cx="93" cy="64" rx="8.6" ry="6.8" fill="rgba(255,255,255,.92)" />
+                      <ellipse cx="67" cy="65" rx="5.2" ry="4.6" fill="var(--bot-eye-dark)" />
+                      <ellipse cx="93" cy="63" rx="5.2" ry="4.6" fill="var(--bot-eye-dark)" />
+                      <circle cx="69" cy="63" r="1.8" fill="var(--bot-eye-shine)" />
+                      <circle cx="95" cy="61" r="1.8" fill="var(--bot-eye-shine)" />
+                    </g>
+                  </g>
+
+                  <circle cx="57" cy="82" r="3.7" fill="var(--bot-cheek)" opacity="0.25" />
+                  <circle cx="103" cy="82" r="3.7" fill="var(--bot-cheek)" opacity="0.25" />
+                  <path class="pixie-mouth-idle" d="M74 87c3.8 3.5 8.2 3.5 12 0" fill="none" stroke="var(--bot-eye-dark)" stroke-width="2.45" stroke-linecap="round" />
+                  <path class="pixie-mouth-happy" d="M72 84c5.2 7.5 11.8 7.5 17 0" fill="none" stroke="var(--bot-eye-dark)" stroke-width="2.6" stroke-linecap="round" />
+                  <path class="pixie-mouth-big" d="M70 83c6.5 10 13.5 10 20 0" fill="none" stroke="var(--bot-eye-dark)" stroke-width="2.75" stroke-linecap="round" />
+                  <ellipse class="pixie-mouth-open" cx="80" cy="88" rx="3.7" ry="4.8" fill="var(--bot-eye-dark)" />
+                  <path class="pixie-mouth-think" d="M76 88h8" fill="none" stroke="var(--bot-eye-dark)" stroke-width="2.35" stroke-linecap="round" />
+                  <path class="pixie-mouth-focused" d="M75 88c3 1.4 7 1.4 10 0" fill="none" stroke="var(--bot-eye-dark)" stroke-width="2.15" stroke-linecap="round" />
+                </g>
+              </g>
+
+              <g class="pixie-zzz" fill="var(--bot-eye-mid)" opacity="0">
+                <text x="111" y="55" font-size="9" font-weight="800">Z</text>
+                <text x="121" y="46" font-size="7" font-weight="800" opacity=".75">Z</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+      <form id="chatForm" class="composer" autocomplete="off">
+        <textarea
+          id="messageInput"
+          name="message"
+          rows="1"
+          placeholder="Tell Pixie what you want to build..."
+          aria-label="Message Pixie"
+          autofocus
+        ></textarea>
+        <button id="sendButton" class="send-button" type="submit" aria-label="Send message" disabled>
+          <svg class="send-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M3.7 20.1 21 12 3.7 3.9a1.05 1.05 0 0 0-1.43 1.25l1.6 5.64c.13.44.52.75.98.78l8.05.43-8.05.43c-.46.03-.85.34-.98.78l-1.6 5.64A1.05 1.05 0 0 0 3.7 20.1Z" />
+          </svg>
+        </button>
+      </form>
+    </footer>
+  </main>
+
+  <script>
+    const TRACE_PREFIX = '[CHAT]';
+    const TRACE_COUNTS = Object.create(null);
+    const TRACE_LIMITS = {
+      normalize: 12,
+      matches: 18,
+      cleanSentence: 12,
+      random: 12,
+      getLiveTypingDelay: 8,
+      scrollToBottom: 20,
+      wait: 8,
+      escapeHtml: 12,
+      unique: 12
+    };
+    const NOOP_MEDIA_QUERY = {
+      matches: false,
+      addEventListener() {},
+      removeEventListener() {},
+      addListener() {},
+      removeListener() {}
+    };
+
+    const messagesEl = getElementByIdSafe('messages');
+    const form = getElementByIdSafe('chatForm');
+    const input = getElementByIdSafe('messageInput');
+    const sendButton = getElementByIdSafe('sendButton');
+    const pixieAvatar = getElementByIdSafe('pixieAvatar');
+    const pixieAvatarStage = getElementByIdSafe('pixieAvatarStage');
+    const themeMedia = safeMatchMedia('(prefers-color-scheme: dark)');
+    let avatarLifeEnabled = true;
+    let avatarStateTimer = null;
+    let avatarIdleTimer = null;
+
+    const STORAGE_KEY = 'pixie-final-consultant-chat-history-v6';
+    const STATE_KEY = 'pixie-final-consultant-state-v6';
+
+    const starterMessages = [
+      {
+        role: 'pixie',
+        text: "Hey there ✨\n\nI'm Pixie — your friendly digital business consultant inside this portfolio.\n\nI can help with websites, apps, software, automation, AI solutions, lead generation, and business growth ideas.\n\nTell me what you're planning and we’ll figure out the smartest next step together 🚀"
+      }
+    ];
+
+    const defaultDiscovery = {
+      projectType: null,
+      industry: null,
+      industryDetail: null,
+      goal: null,
+      audience: null,
+      features: [],
+      timeline: null,
+      budget: null,
+      stage: 'project_type',
+      notes: [],
+      resultGenerated: false,
+      askedLeadCapture: false,
+      leadStage: null,
+      leadName: null,
+      leadPhone: null,
+      leadEmail: null,
+      businessName: null,
+      contactOfferCount: 0,
+      lastContactOfferTurn: -99
+    };
+
+    const KNOWLEDGE_BASE = {
+      pixie: {
+        name: 'Pixie',
+        role: 'Digital Solutions Consultant',
+        description: "I'm Pixie ✨ I'm the digital consultant inside this portfolio. I help visitors understand business needs, explore digital solutions, get practical recommendations, and connect with the team behind Pixel Code Media."
+      },
+      company: {
+        name: 'Pixel Code Media',
+        description: 'Pixel Code Media helps businesses establish a digital presence, generate more leads, automate operations, build software, improve customer experience, and scale efficiently.',
+        websiteDescription: 'This is the Pixel Code Media portfolio — a place to explore the team, services, and start a project conversation with Pixie.',
+        services: [
+          'Business Websites',
+          'Premium Websites',
+          'E-commerce Websites',
+          'Mobile Applications',
+          'Custom Software',
+          'ERP Systems',
+          'CRM Systems',
+          'School Management Systems',
+          'Tuition Centre Systems',
+          'Recruitment Platforms',
+          'Healthcare Platforms',
+          'AI Solutions',
+          'Automation Systems',
+          'UI/UX Design'
+        ]
+      },
+      team: [
+        {
+          name: '[Team Member 1]',
+          label: 'Frontend Systems Architect',
+          phone: '8594009501',
+          callLink: 'tel:8594009501',
+          whatsappLink: 'https://wa.me/918594009501',
+          responsibilities: [
+            'UI/UX Engineering',
+            'Frontend Development',
+            'Design Systems',
+            'User Experience',
+            'Visual Architecture'
+          ]
+        },
+        {
+          name: '[Team Member 2]',
+          label: 'Backend Systems Architect',
+          phone: '9074257076',
+          callLink: 'tel:9074257076',
+          whatsappLink: 'https://wa.me/919074257076',
+          responsibilities: [
+            'Backend Development',
+            'APIs',
+            'Databases',
+            'Infrastructure',
+            'System Architecture'
+          ]
+        }
+      ],
+      teamPrinciple: 'Both team members have equal priority, equal authority, and equal importance — they simply focus on different specializations.',
+      costGuides: {
+        website: 'A business website may start around ₹15,000 depending on requirements. More polished websites with stronger UI, content, forms, SEO basics, and integrations can range from ₹50,000 to ₹2 Lakh+.',
+        app: 'A mobile app may start around ₹1.5 Lakh–₹4 Lakh for a lean first version. More complete apps with admin panels, payments, notifications, and complex workflows can go ₹4 Lakh–₹12 Lakh+.',
+        software: 'Custom software may start around ₹2 Lakh–₹6 Lakh for a focused MVP. Larger platforms with roles, dashboards, APIs, databases, and reports can go ₹6 Lakh–₹20 Lakh+.',
+        ai: 'AI solutions may start around ₹1.5 Lakh–₹5 Lakh for a focused assistant, automation, or recommendation flow. More advanced AI systems depend on data, integrations, accuracy needs, and scale.',
+        automation: 'Business automation can start around ₹50,000–₹2 Lakh for focused workflows, and increase when multiple tools, approvals, notifications, and dashboards are involved.'
+      }
+    };
+
+    const INDUSTRY_PLAYBOOK = {
+      'tuition centres': {
+        problems: ['seasonal admissions', 'manual follow-ups', 'batch scheduling', 'fee tracking', 'parent communication'],
+        website: ['course pages', 'results/testimonials', 'admission enquiry forms', 'WhatsApp/call actions', 'local SEO'],
+        software: ['student records', 'batch management', 'attendance', 'fees', 'parent updates', 'reports'],
+        leads: ['Google search pages for each course/location', 'landing pages for admissions', 'WhatsApp follow-up flow'],
+        automation: ['enquiry reminders', 'missed follow-ups', 'fee reminders', 'class notifications']
+      },
+      'schools': {
+        problems: ['admission enquiries', 'parent communication', 'fees', 'attendance', 'notices/homework'],
+        website: ['admission pages', 'facilities', 'gallery', 'achievements', 'enquiry forms'],
+        software: ['student information system', 'attendance', 'fees', 'notices', 'parent portal'],
+        leads: ['admission landing pages', 'local SEO', 'trust-building content'],
+        automation: ['fee reminders', 'notice alerts', 'admission follow-up']
+      },
+      'kindergartens': {
+        problems: ['parent trust', 'admission enquiries', 'activity updates', 'fee reminders'],
+        website: ['warm visual website', 'program pages', 'gallery', 'parent testimonials', 'admission enquiry'],
+        software: ['child profiles', 'attendance', 'activity updates', 'fees', 'parent communication'],
+        leads: ['near-me SEO', 'admission campaigns', 'WhatsApp enquiry flow'],
+        automation: ['parent reminders', 'admission follow-up', 'fee alerts']
+      },
+      'coaching institutes': {
+        problems: ['course enquiries', 'demo class follow-up', 'batch capacity', 'student progress'],
+        website: ['course landing pages', 'faculty/results', 'demo booking', 'lead capture'],
+        software: ['batches', 'attendance', 'fees', 'test scores', 'student reports'],
+        leads: ['exam/course SEO pages', 'demo class funnels', 'WhatsApp nurture'],
+        automation: ['demo reminders', 'lead follow-up', 'fee reminders']
+      },
+      'recruitment': {
+        problems: ['candidate tracking', 'client requirements', 'resume filtering', 'interview follow-up'],
+        website: ['job listings', 'employer enquiry', 'candidate registration', 'sector pages'],
+        software: ['ATS pipeline', 'candidate database', 'resume upload', 'client dashboard', 'interview tracking'],
+        leads: ['employer landing pages', 'job SEO', 'LinkedIn/campaign landing pages'],
+        automation: ['candidate screening', 'status updates', 'interview reminders']
+      },
+      'overseas recruitment': {
+        problems: ['document collection', 'candidate trust', 'job updates', 'application tracking'],
+        website: ['country/job pages', 'license/trust sections', 'candidate registration', 'document checklist'],
+        software: ['candidate pipeline', 'document management', 'status tracking', 'agent/client dashboard'],
+        leads: ['country-specific landing pages', 'WhatsApp enquiry flow', 'job alert campaigns'],
+        automation: ['document reminders', 'application status updates', 'interview/travel alerts']
+      },
+      'healthcare': {
+        problems: ['appointment handling', 'patient trust', 'staff scheduling', 'follow-up reminders'],
+        website: ['doctor/service pages', 'appointment booking', 'location/insurance info', 'reviews'],
+        software: ['appointments', 'patient records', 'staff schedules', 'billing', 'reminders'],
+        leads: ['speciality pages', 'local SEO', 'condition/service landing pages'],
+        automation: ['appointment reminders', 'follow-up messages', 'missed appointment recovery']
+      },
+      'dental clinics': {
+        problems: ['high-value treatment enquiries', 'appointment gaps', 'patient follow-up'],
+        website: ['treatment pages', 'before/after gallery', 'appointment booking', 'reviews'],
+        software: ['appointments', 'treatment plans', 'patient history', 'reminders', 'billing'],
+        leads: ['implant/braces/root canal landing pages', 'local SEO', 'WhatsApp consult flow'],
+        automation: ['recall reminders', 'treatment follow-up', 'review requests']
+      },
+      'eye hospitals': {
+        problems: ['OP appointments', 'surgery enquiries', 'patient education', 'follow-ups'],
+        website: ['doctor/speciality pages', 'appointment booking', 'surgery info', 'patient guidance'],
+        software: ['appointments', 'patient records', 'surgery pipeline', 'reports', 'billing'],
+        leads: ['cataract/Lasik pages', 'local SEO', 'screening camp enquiries'],
+        automation: ['appointment reminders', 'post-surgery follow-ups', 'camp lead nurturing']
+      },
+      'home nursing': {
+        problems: ['care request handling', 'caregiver assignment', 'scheduling', 'trust and safety'],
+        website: ['service pages', 'care request form', 'trust sections', 'WhatsApp/call actions'],
+        software: ['care requests', 'nurse/caregiver matching', 'visit schedules', 'patient notes', 'billing'],
+        leads: ['condition/service pages', 'local SEO', 'urgent care request flow'],
+        automation: ['visit reminders', 'caregiver assignment alerts', 'follow-up updates']
+      },
+      'travel': {
+        problems: ['package enquiries', 'itinerary management', 'follow-up delays', 'payment coordination'],
+        website: ['tour packages', 'itinerary enquiry', 'gallery', 'booking/payment enquiry'],
+        software: ['package management', 'lead CRM', 'itinerary builder', 'booking tracking'],
+        leads: ['destination landing pages', 'seasonal campaigns', 'WhatsApp itinerary flow'],
+        automation: ['quote follow-ups', 'payment reminders', 'travel document reminders']
+      },
+      'construction': {
+        problems: ['trust building', 'project enquiries', 'site updates', 'vendor/task coordination'],
+        website: ['portfolio', 'project pages', 'quote request', 'certifications/testimonials'],
+        software: ['project milestones', 'client updates', 'documents', 'tasks', 'vendor tracking'],
+        leads: ['service/location pages', 'portfolio-driven enquiries', 'quote funnels'],
+        automation: ['client update reminders', 'task alerts', 'document collection']
+      },
+      'interior design': {
+        problems: ['portfolio presentation', 'lead qualification', 'client approvals', 'timeline tracking'],
+        website: ['portfolio gallery', 'packages', 'style pages', 'consultation booking'],
+        software: ['moodboards', 'client approvals', 'project timelines', 'material tracking'],
+        leads: ['room/style landing pages', 'Instagram-to-website enquiry flow', 'consultation funnels'],
+        automation: ['proposal follow-ups', 'approval reminders', 'project update alerts']
+      },
+      'real estate': {
+        problems: ['property discovery', 'lead follow-up', 'agent coordination', 'trust'],
+        website: ['property listings', 'filters', 'location pages', 'enquiry forms'],
+        software: ['property CRM', 'agent dashboard', 'lead tracking', 'site visit scheduling'],
+        leads: ['location/property landing pages', 'WhatsApp enquiry routing', 'lead scoring'],
+        automation: ['site visit reminders', 'lead follow-ups', 'new property alerts']
+      },
+      'retail': {
+        problems: ['online sales', 'inventory visibility', 'repeat customers', 'offers'],
+        website: ['catalog/e-commerce', 'offers', 'store info', 'WhatsApp ordering'],
+        software: ['inventory', 'orders', 'customer accounts', 'reports', 'loyalty'],
+        leads: ['local SEO', 'offer campaigns', 'WhatsApp catalog flow'],
+        automation: ['order updates', 'stock alerts', 'repeat purchase reminders']
+      },
+      'gyms': {
+        problems: ['membership enquiries', 'renewals', 'trainer schedules', 'class bookings'],
+        website: ['plans', 'trainer profiles', 'transformation gallery', 'trial booking'],
+        software: ['memberships', 'attendance', 'trainer schedules', 'payments', 'renewal tracking'],
+        leads: ['trial pass landing pages', 'near-me SEO', 'WhatsApp follow-up'],
+        automation: ['renewal reminders', 'trial follow-up', 'class reminders']
+      },
+      'local businesses': {
+        problems: ['visibility', 'missed enquiries', 'manual follow-ups', 'customer trust'],
+        website: ['Google-friendly service pages', 'reviews', 'WhatsApp/call actions', 'enquiry form'],
+        software: ['simple CRM', 'booking/order tracking', 'customer database', 'reports'],
+        leads: ['local SEO', 'Google Business Profile support', 'offer landing pages'],
+        automation: ['missed enquiry follow-up', 'review requests', 'reminders']
+      }
+    };
+
+    let history = loadHistory();
+    let discovery = loadDiscovery();
+    let pixieIsTyping = false;
+    let chatInitialized = false;
+    let activePixieReplyId = 0;
+
+    initializeApp();
+
+    function initializeApp() {
+      traceFunction('initializeApp');
+      try {
+        logChat('initializeApp started');
+        if (!validateCriticalDom()) {
+          logChatError('initializeApp aborted: critical DOM missing');
+          return;
+        }
+
+        renderHistory();
+        avatarInitialize();
+        bindEventListeners();
+        autoResizeInput();
+        updateSendButtonState();
+        safeRequestAnimationFrame(() => safeFocusElement(input));
+        chatInitialized = true;
+
+        window.__PixieChatQA = {
+          sendMessage,
+          createPixieReply,
+          getHistory: () => history.slice(),
+          getDiscovery: () => ({ ...discovery, features: [...discovery.features], notes: [...discovery.notes] }),
+          clearState: () => {
+            history = cloneStarterMessages();
+            discovery = sanitizeDiscovery();
+            saveHistory();
+            saveDiscovery();
+            renderHistory();
+            updateSendButtonState();
+          }
+        };
+        logChat('initializeApp finished');
+      } catch (error) {
+        logChatError('initializeApp failed', error);
+        pixieIsTyping = false;
+        updateSendButtonState();
+      }
+    }
+
+    function bindEventListeners() {
+      traceFunction('bindEventListeners');
+      if (!form || !input || !sendButton) return;
+      if (form.dataset.pixieBound === 'true') return;
+      form.dataset.pixieBound = 'true';
+
+      form.addEventListener('submit', (event) => {
+        try {
+          logChat('submit event fired');
+          event.preventDefault();
+          sendMessage();
+        } catch (error) {
+          logChatError('submit handler failed', error);
+          pixieIsTyping = false;
+          updateSendButtonState();
+        }
+      });
+
+      input.addEventListener('input', () => {
+        try {
+          logChat('textarea input updated');
+          autoResizeInput();
+          updateSendButtonState();
+          avatarReactTyping();
+        } catch (error) {
+          logChatError('input handler failed', error);
+        }
+      });
+
+      input.addEventListener('keydown', (event) => {
+        try {
+          if (event.key === 'Enter' && !event.shiftKey) {
+            logChat('enter key submit requested');
+            event.preventDefault();
+            sendMessage();
+          }
+        } catch (error) {
+          logChatError('keydown handler failed', error);
+        }
+      });
+    }
+
+    function validateCriticalDom() {
+      traceFunction('validateCriticalDom');
+      const required = { messagesEl, form, input, sendButton };
+      const missing = Object.entries(required).filter(([, element]) => !element).map(([name]) => name);
+      if (missing.length) {
+        logChatError(`Missing required DOM references: ${missing.join(', ')}`);
+        return false;
+      }
+      return true;
+    }
+
+    function getElementByIdSafe(id) {
+      traceFunction('getElementByIdSafe');
+      try {
+        const element = document.getElementById(id);
+        if (!element) logChatError(`DOM element not found: #${id}`);
+        return element;
+      } catch (error) {
+        logChatError(`DOM lookup failed for #${id}`, error);
+        return null;
+      }
+    }
+
+    function safeMatchMedia(query) {
+      traceFunction('safeMatchMedia');
+      try {
+        if (window && typeof window.matchMedia === 'function') return window.matchMedia(query);
+      } catch (error) {
+        logChatError(`matchMedia failed for ${query}`, error);
+      }
+      return NOOP_MEDIA_QUERY;
+    }
+
+    function safeRequestAnimationFrame(callback) {
+      traceFunction('safeRequestAnimationFrame');
+      try {
+        if (typeof window.requestAnimationFrame === 'function') return window.requestAnimationFrame(callback);
+        if (typeof requestAnimationFrame === 'function') return requestAnimationFrame(callback);
+      } catch (error) {
+        logChatError('requestAnimationFrame failed', error);
+      }
+      return window.setTimeout(callback, 0);
+    }
+
+    function safeFocusElement(element) {
+      traceFunction('safeFocusElement');
+      try {
+        if (element && typeof element.focus === 'function') element.focus();
+      } catch (error) {
+        logChatError('focus failed', error);
+      }
+    }
+
+    function updateSendButtonState() {
+      traceFunction('updateSendButtonState');
+      if (!sendButton || !input) return;
+      try {
+        sendButton.disabled = input.value.trim().length === 0 || pixieIsTyping;
+        logChat(`send button ${sendButton.disabled ? 'disabled' : 'enabled'}`);
+      } catch (error) {
+        logChatError('send button state update failed', error);
+      }
+    }
+
+    function safeStorageGet(key) {
+      traceFunction('safeStorageGet');
+      try {
+        if (!window.localStorage) return null;
+        return window.localStorage.getItem(key);
+      } catch (error) {
+        logChatError(`localStorage get failed for ${key}`, error);
+        return null;
+      }
+    }
+
+    function safeStorageSet(key, value) {
+      traceFunction('safeStorageSet');
+      try {
+        if (!window.localStorage) return false;
+        window.localStorage.setItem(key, value);
+        return true;
+      } catch (error) {
+        logChatError(`localStorage set failed for ${key}`, error);
+        return false;
+      }
+    }
+
+    function cloneStarterMessages() {
+      traceFunction('cloneStarterMessages');
+      return starterMessages.map((message) => ({ role: message.role, text: message.text }));
+    }
+
+    function sanitizeHistory(value) {
+      traceFunction('sanitizeHistory');
+      if (!Array.isArray(value)) return [];
+      return value
+        .filter((message) => message && (message.role === 'user' || message.role === 'pixie'))
+        .map((message) => ({ role: message.role, text: String(message.text || '') }))
+        .filter((message) => message.text.length > 0)
+        .slice(-160);
+    }
+
+    function sanitizeDiscovery(value) {
+      traceFunction('sanitizeDiscovery');
+      const saved = value && typeof value === 'object' && !Array.isArray(value) ? value : {};
+      const next = { ...defaultDiscovery, ...saved };
+      const nullableStrings = ['projectType', 'industry', 'industryDetail', 'goal', 'audience', 'timeline', 'budget', 'leadStage', 'leadName', 'leadPhone', 'leadEmail', 'businessName'];
+      nullableStrings.forEach((key) => {
+        next[key] = next[key] == null ? null : String(next[key]);
+      });
+      next.features = Array.isArray(next.features) ? next.features.map(cleanSentence).filter(Boolean).slice(0, 12) : [];
+      next.notes = Array.isArray(next.notes) ? next.notes.map(cleanSentence).filter(Boolean).slice(-8) : [];
+      next.resultGenerated = Boolean(next.resultGenerated);
+      next.askedLeadCapture = Boolean(next.askedLeadCapture);
+      next.contactOfferCount = Number.isFinite(Number(next.contactOfferCount)) ? Math.max(0, Number(next.contactOfferCount)) : 0;
+      next.lastContactOfferTurn = Number.isFinite(Number(next.lastContactOfferTurn)) ? Number(next.lastContactOfferTurn) : -99;
+      const validStages = ['project_type', 'industry', 'goal', 'audience', 'features', 'timeline', 'budget', 'complete'];
+      if (!validStages.includes(next.stage)) next.stage = defaultDiscovery.stage;
+      const validLeadStages = ['lead_name', 'lead_phone', 'lead_email', 'business_name', null];
+      if (!validLeadStages.includes(next.leadStage)) next.leadStage = null;
+      return next;
+    }
+
+    function logChat(message, details) {
+      try {
+        if (details !== undefined) console.log(`${TRACE_PREFIX} ${message}`, details);
+        else console.log(`${TRACE_PREFIX} ${message}`);
+      } catch (error) {
+        // Logging must never break chat.
+      }
+    }
+
+    function logChatError(message, error) {
+      try {
+        if (error !== undefined) console.error(`${TRACE_PREFIX} ${message}`, error);
+        else console.error(`${TRACE_PREFIX} ${message}`);
+      } catch (loggingError) {
+        // Logging must never break chat.
+      }
+    }
+
+    function traceFunction(name, details) {
+      try {
+        TRACE_COUNTS[name] = (TRACE_COUNTS[name] || 0) + 1;
+        const limit = Object.prototype.hasOwnProperty.call(TRACE_LIMITS, name) ? TRACE_LIMITS[name] : 80;
+        if (TRACE_COUNTS[name] <= limit) {
+          if (details !== undefined) console.log(`[TRACE] ${name} started`, details);
+          else console.log(`[TRACE] ${name} started`);
+        } else if (TRACE_COUNTS[name] === limit + 1) {
+          console.log(`[TRACE] ${name} further logs suppressed`);
+        }
+      } catch (error) {
+        // Tracing must never break chat.
+      }
+    }
+
+    function loadHistory() {
+      traceFunction('loadHistory');
+      try {
+        const raw = safeStorageGet(STORAGE_KEY);
+        const saved = raw ? JSON.parse(raw) : null;
+        const cleaned = sanitizeHistory(saved);
+        if (cleaned.length) {
+          logChat('history loaded', { count: cleaned.length });
+          return cleaned;
+        }
+      } catch (error) {
+        logChatError('history load failed; starting with starter message', error);
+      }
+      return cloneStarterMessages();
+    }
+
+    function loadDiscovery() {
+      traceFunction('loadDiscovery');
+      try {
+        const raw = safeStorageGet(STATE_KEY);
+        const saved = raw ? JSON.parse(raw) : null;
+        const cleaned = sanitizeDiscovery(saved);
+        logChat('discovery loaded', { stage: cleaned.stage });
+        return cleaned;
+      } catch (error) {
+        logChatError('discovery load failed; starting fresh', error);
+      }
+      return sanitizeDiscovery();
+    }
+
+    function saveHistory() {
+      traceFunction('saveHistory');
+      try {
+        history = sanitizeHistory(history);
+        const saved = safeStorageSet(STORAGE_KEY, JSON.stringify(history));
+        logChat(saved ? 'history save complete' : 'history save skipped', { count: history.length });
+      } catch (error) {
+        logChatError('history save failed; continuing without persistence', error);
+      }
+    }
+
+    function saveDiscovery() {
+      traceFunction('saveDiscovery');
+      try {
+        discovery = sanitizeDiscovery(discovery);
+        const saved = safeStorageSet(STATE_KEY, JSON.stringify(discovery));
+        logChat(saved ? 'discovery save complete' : 'discovery save skipped', { stage: discovery.stage });
+      } catch (error) {
+        logChatError('discovery save failed; continuing without persistence', error);
+      }
+    }
+
+    function renderHistory() {
+      traceFunction('renderHistory');
+      try {
+        if (!messagesEl) return;
+        history = sanitizeHistory(history);
+        if (!history.length) history = cloneStarterMessages();
+        messagesEl.innerHTML = '';
+        history.forEach((message) => appendMessage(message.role, message.text, false));
+        scrollToBottom(false);
+        logChat('history rendered', { count: history.length });
+      } catch (error) {
+        logChatError('history render failed', error);
+      }
+    }
+
+    function sendMessage() {
+      traceFunction('sendMessage');
+      logChat('sendMessage started');
+      if (!input || !sendButton || !messagesEl) {
+        logChatError('sendMessage aborted: required DOM unavailable');
+        return;
+      }
+
+      const text = input.value.trim();
+      if (!text) {
+        logChat('sendMessage ignored: empty message');
+        updateSendButtonState();
+        return;
+      }
+      if (pixieIsTyping) {
+        logChat('sendMessage ignored: Pixie is already responding');
+        updateSendButtonState();
+        return;
+      }
+
+      pixieIsTyping = true;
+      updateSendButtonState();
+
+      try {
+        addToHistory('user', text);
+        logChat('user message added');
+        avatarReactSent(text);
+        input.value = '';
+        autoResizeInput();
+        updateSendButtonState();
+
+        const replyFactory = () => safeCreatePixieReply(text);
+        logChat('response generation queued');
+        animatePixieAnswer(replyFactory).catch((error) => {
+          handlePixieAnswerFailure(getFallbackReply(), error);
+        });
+      } catch (error) {
+        logChatError('sendMessage failed', error);
+        handlePixieAnswerFailure(getFallbackReply(), error);
+      }
+    }
+
+    function addToHistory(role, text) {
+      traceFunction('addToHistory');
+      try {
+        const safeRole = role === 'user' ? 'user' : 'pixie';
+        const safeText = String(text || '').trim();
+        if (!safeText) return;
+        history.push({ role: safeRole, text: safeText });
+        history = sanitizeHistory(history);
+        saveHistory();
+        appendMessage(safeRole, safeText, true);
+        scrollToBottom();
+        logChat('history updated', { role: safeRole, count: history.length });
+      } catch (error) {
+        logChatError('addToHistory failed', error);
+      }
+    }
+
+    function appendMessage(role, text, animate = true) {
+      traceFunction('appendMessage');
+      try {
+        if (!messagesEl) return null;
+        const row = document.createElement('div');
+        row.className = `message-row ${role === 'user' ? 'user' : 'pixie'}`;
+        if (!animate) row.style.animation = 'none';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        if (role === 'user') {
+          bubble.textContent = String(text || '');
+        } else {
+          renderFormattedText(bubble, text);
+        }
+        row.appendChild(bubble);
+        messagesEl.appendChild(row);
+        logChat('message rendered', { role });
+        return row;
+      } catch (error) {
+        logChatError('appendMessage failed', error);
+        return null;
+      }
+    }
+
+    function showTyping() {
+      traceFunction('showTyping');
+      try {
+        if (!messagesEl) return null;
+        pixieIsTyping = true;
+        updateSendButtonState();
+
+        hideTyping();
+        const row = document.createElement('div');
+        row.className = 'message-row pixie typing';
+        row.id = 'typingIndicator';
+
+        const bubble = document.createElement('div');
+        bubble.className = 'bubble';
+        bubble.setAttribute('aria-label', 'Pixie is thinking');
+        bubble.innerHTML = '<span class="dot"></span><span class="dot"></span><span class="dot"></span>';
+
+        row.appendChild(bubble);
+        messagesEl.appendChild(row);
+        scrollToBottom();
+        logChat('typing indicator appears');
+        return row;
+      } catch (error) {
+        logChatError('showTyping failed', error);
+        return null;
+      }
+    }
+
+    function hideTyping() {
+      traceFunction('hideTyping');
+      try {
+        const typing = document.getElementById('typingIndicator');
+        if (typing) {
+          typing.remove();
+          logChat('typing indicator removed');
+        }
+      } catch (error) {
+        logChatError('hideTyping failed', error);
+      }
+    }
+
+    function scrollToBottom(smooth = true) {
+      traceFunction('scrollToBottom');
+      try {
+        if (!messagesEl) return;
+        const top = messagesEl.scrollHeight || 0;
+        if (typeof messagesEl.scrollTo === 'function') {
+          messagesEl.scrollTo({
+            top,
+            behavior: smooth ? 'smooth' : 'auto'
+          });
+        } else {
+          messagesEl.scrollTop = top;
+        }
+      } catch (error) {
+        logChatError('scrollToBottom failed', error);
+      }
+    }
+
+    function autoResizeInput() {
+      traceFunction('autoResizeInput');
+      try {
+        if (!input || !input.style) return;
+        input.style.height = 'auto';
+        const maxHeight = window.innerWidth <= 640 ? 120 : 160;
+        input.style.height = `${Math.min(input.scrollHeight || 0, maxHeight)}px`;
+      } catch (error) {
+        logChatError('autoResizeInput failed', error);
+      }
+    }
+
+    function avatarInitialize() {
+      traceFunction('avatarInitialize');
+      try {
+        if (!pixieAvatar) return;
+        avatarLifeEnabled = true;
+        avatarSetState('idle');
+        avatarMicro('avatar-wave', 1300);
+        scheduleAvatarIdleTrick();
+
+        if (themeMedia && typeof themeMedia.addEventListener === 'function') {
+          themeMedia.addEventListener('change', () => {
+            try {
+              avatarSetState('thinking');
+              avatarMicro('avatar-wave', 900);
+              window.setTimeout(() => avatarSetState('idle'), 850);
+            } catch (error) {
+              logChatError('theme media listener failed', error);
+            }
+          });
+        }
+      } catch (error) {
+        logChatError('avatarInitialize failed', error);
+      }
+    }
+
+    function avatarSetState(state) {
+      traceFunction('avatarSetState');
+      if (!pixieAvatar) return;
+      pixieAvatar.dataset.state = state;
+    }
+
+    function avatarReturnIdle(delay = 900) {
+      traceFunction('avatarReturnIdle');
+      window.clearTimeout(avatarStateTimer);
+      avatarStateTimer = window.setTimeout(() => {
+        if (!pixieIsTyping && !(input.value.trim() && pixieAvatar?.dataset.state === 'typing')) avatarSetState('idle');
+      }, delay);
+    }
+
+    function avatarReactTyping() {
+      traceFunction('avatarReactTyping');
+      if (!avatarLifeEnabled || !pixieAvatar || pixieIsTyping) return;
+      avatarSetState(input.value.trim() ? 'typing' : 'idle');
+      avatarReturnIdle(1400);
+    }
+
+    function avatarReactSent(text) {
+      traceFunction('avatarReactSent');
+      if (!avatarLifeEnabled || !pixieAvatar) return;
+      const lower = normalize(text);
+      const positive = isHighIntent(lower) || isDiscoveryRequest(lower) || detectProjectType(lower) || detectIndustry(lower);
+      avatarSetState(positive ? 'sent' : 'thinking');
+      if (positive) avatarMicro('avatar-bounce', 650);
+    }
+
+    function avatarReactThinking() {
+      traceFunction('avatarReactThinking');
+      if (!avatarLifeEnabled || !pixieAvatar) return;
+      avatarSetState('thinking');
+    }
+
+    function avatarReactAnswering() {
+      traceFunction('avatarReactAnswering');
+      if (!avatarLifeEnabled || !pixieAvatar) return;
+      avatarSetState('answering');
+    }
+
+    function avatarReactSuccess() {
+      traceFunction('avatarReactSuccess');
+      if (!avatarLifeEnabled || !pixieAvatar) return;
+      avatarSetState('success');
+      avatarMicro('avatar-celebrate', 1100);
+      avatarReturnIdle(1800);
+    }
+
+    function avatarReactReplyComplete(reply) {
+      traceFunction('avatarReactReplyComplete');
+      if (!avatarLifeEnabled || !pixieAvatar) return;
+      if (isSuccessReply(reply)) {
+        avatarReactSuccess();
+      } else {
+        avatarReturnIdle(450);
+      }
+    }
+
+    function isSuccessReply(reply) {
+      traceFunction('isSuccessReply');
+      return /I’ve got what I need|I've got what I need|Prepared for|project snapshot|solid plan/i.test(reply || '');
+    }
+
+    function avatarMicro(className, duration = 1000) {
+      traceFunction('avatarMicro');
+      if (!avatarLifeEnabled || !pixieAvatar) return;
+      pixieAvatar.classList.remove(className);
+      void pixieAvatar.offsetWidth;
+      pixieAvatar.classList.add(className);
+      window.setTimeout(() => pixieAvatar && pixieAvatar.classList.remove(className), duration);
+    }
+
+    function scheduleAvatarIdleTrick() {
+      traceFunction('scheduleAvatarIdleTrick');
+      window.clearTimeout(avatarIdleTimer);
+      const delay = 9000 + Math.random() * 11000;
+      avatarIdleTimer = window.setTimeout(() => {
+        if (avatarLifeEnabled && !pixieIsTyping && pixieAvatar?.dataset.state === 'idle') {
+          avatarMicro(random(['avatar-wave', 'avatar-stretch', 'avatar-sleepy', 'avatar-look-left', 'avatar-look-right']), 1500);
+        }
+        scheduleAvatarIdleTrick();
+      }, delay);
+    }
+
+    async function animatePixieAnswer(replySource) {
+      traceFunction('animatePixieAnswer');
+      const answerId = ++activePixieReplyId;
+      let safeReply = '';
+      let row = null;
+      let bubble = null;
+      let savedToHistory = false;
+
+      try {
+        logChat('animatePixieAnswer started', { answerId });
+        pixieIsTyping = true;
+        updateSendButtonState();
+        avatarReactThinking();
+
+        const shell = createPixieShell();
+        row = shell.row;
+        bubble = shell.bubble;
+        if (!row || !bubble || !messagesEl) throw new Error('Pixie reply shell could not be created');
+
+        bubble.classList.add('thinking-bubble');
+        bubble.innerHTML = `
+        <div class="simple-thinking" aria-label="Pixie is thinking">
+          <span>${random(['✨ Thinking...', '💡 Let me think...', '🚀 Working on that...', 'Typing...'])}</span>
+          <span class="thinking-dots"><i></i><i></i><i></i></span>
+        </div>
+      `;
+        messagesEl.appendChild(row);
+        logChat('typing indicator appears');
+        scrollToBottom();
+
+        safeReply = typeof replySource === 'function' ? String(replySource() || getFallbackReply()) : String(replySource || getFallbackReply());
+        logChat('response generated');
+
+        await wait(Math.min(1100, Math.max(520, stripInteractiveTokens(safeReply).length * 1.2)));
+
+        avatarReactAnswering();
+        bubble.className = 'bubble answer-bubble';
+        bubble.innerHTML = '<span class="live-answer"></span><span class="live-cursor">▌</span>';
+        const answerEl = bubble.querySelector('.live-answer');
+        const cursor = bubble.querySelector('.live-cursor');
+        const typedReply = stripInteractiveTokens(safeReply);
+
+        if (answerEl) {
+          await typeLiveText(answerEl, typedReply);
+        } else {
+          logChatError('live answer element missing; rendering response without typing animation');
+        }
+        if (cursor) cursor.classList.add('done');
+
+        renderFormattedText(bubble, safeReply);
+        logChat('response rendered');
+
+        history.push({ role: 'pixie', text: safeReply });
+        savedToHistory = true;
+        saveHistory();
+        logChat('response saved');
+      } catch (error) {
+        logChatError('animatePixieAnswer failed; falling back to direct render', error);
+        safeReply = safeReply || getFallbackReply();
+        if (bubble) {
+          renderFormattedText(bubble, safeReply);
+          logChat('response rendered by fallback');
+        } else {
+          appendMessage('pixie', safeReply, true);
+        }
+        if (!savedToHistory) {
+          history.push({ role: 'pixie', text: safeReply });
+          saveHistory();
+          logChat('fallback response saved');
+        }
+      } finally {
+        if (answerId === activePixieReplyId) {
+          pixieIsTyping = false;
+          avatarReactReplyComplete(safeReply || getFallbackReply());
+          updateSendButtonState();
+          safeFocusElement(input);
+          scrollToBottom();
+          logChat('typing indicator removed');
+          logChat('sendMessage finished');
+        }
+      }
+    }
+
+    async function typeLiveText(element, text) {
+      traceFunction('typeLiveText');
+      if (!element) return;
+      try {
+        element.textContent = '';
+        const characters = Array.from(text || '');
+
+        for (let i = 0; i < characters.length; i += 1) {
+          const char = characters[i];
+          element.textContent += char;
+          if (i % 2 === 0) scrollToBottom();
+          await wait(getLiveTypingDelay(char, i, characters));
+        }
+        scrollToBottom();
+      } catch (error) {
+        logChatError('typeLiveText failed', error);
+        element.textContent = String(text || '');
+      }
+    }
+
+    function getLiveTypingDelay(char, index, characters) {
+      traceFunction('getLiveTypingDelay');
+      let delay = 29 + Math.random() * 21;
+      if (char === ',' || char === ';' || char === ':') delay += 100 + Math.random() * 65;
+      if (char === '.' || char === '?' || char === '!') delay += 185 + Math.random() * 115;
+      if (char === '\n') delay += 215 + Math.random() * 150;
+      if (char === '✨' || char === '🚀' || char === '😊' || char === '💡') delay += 130;
+
+      const next = characters[index + 1] || '';
+      if (char === '\n' && next === '\n') delay += 150;
+      return delay;
+    }
+
+    function createPixieShell() {
+      traceFunction('createPixieShell');
+      const row = document.createElement('div');
+      row.className = 'message-row pixie';
+
+      const bubble = document.createElement('div');
+      bubble.className = 'bubble';
+
+      row.appendChild(bubble);
+      return { row, bubble };
+    }
+
+    function wait(ms) {
+      traceFunction('wait');
+      return new Promise((resolve) => window.setTimeout(resolve, ms));
+    }
+
+    function renderFormattedText(element, text) {
+      traceFunction('renderFormattedText');
+      try {
+        if (!element) return;
+        const escaped = escapeHtml(text);
+        const withLinks = escaped.replace(/\[([^\]]+)\]\((tel:[^)]+|https?:\/\/[^)]+)\)/g, (match, label, href) => {
+          const safeHref = sanitizeHref(href.replace(/&amp;/g, '&'));
+          if (!safeHref) return label;
+          const target = safeHref.startsWith('http') ? ' target="_blank" rel="noopener noreferrer"' : '';
+          return `<a href="${safeHref}"${target}>${label}</a>`;
+        });
+        element.innerHTML = withLinks
+          .replace(/\n/g, '<br>')
+          .replace(/\[\[CONTACT_CARDS\]\]/g, getContactCardsHtml());
+      } catch (error) {
+        logChatError('renderFormattedText failed', error);
+        if (element) element.textContent = String(text || '');
+      }
+    }
+
+    function escapeHtml(value) {
+      traceFunction('escapeHtml');
+      return String(value || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function stripInteractiveTokens(text) {
+      traceFunction('stripInteractiveTokens');
+      return String(text || '').replace(/\n?\[\[CONTACT_CARDS\]\]/g, '').trimEnd();
+    }
+
+    function getContactCardsHtml() {
+      traceFunction('getContactCardsHtml');
+      try {
+        const team = Array.isArray(KNOWLEDGE_BASE.team) ? KNOWLEDGE_BASE.team : [];
+        return `<div class="contact-card-grid">${team.map((member) => `
+        <article class="contact-card">
+          <div class="contact-name">${escapeHtml(member.name)}</div>
+          <div class="contact-role">${escapeHtml(member.label)}</div>
+          <div class="contact-actions">
+            <a class="contact-action call" href="${sanitizeHref(member.callLink)}">Call</a>
+            <a class="contact-action whatsapp" href="${sanitizeHref(member.whatsappLink)}" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          </div>
+        </article>
+      `).join('')}</div>`;
+      } catch (error) {
+        logChatError('contact card generation failed', error);
+        return '';
+      }
+    }
+
+    function sanitizeHref(value) {
+      traceFunction('sanitizeHref');
+      const href = String(value || '').trim();
+      if (/^(tel:|https?:\/\/)/i.test(href)) return href.replace(/"/g, '&quot;');
+      return '';
+    }
+
+    function safeCreatePixieReply(rawMessage) {
+      traceFunction('safeCreatePixieReply');
+      try {
+        discovery = sanitizeDiscovery(discovery);
+        const reply = createPixieReply(String(rawMessage || ''));
+        return String(reply || getFallbackReply());
+      } catch (error) {
+        logChatError('response generation failed', error);
+        return getFallbackReply();
+      }
+    }
+
+    function handlePixieAnswerFailure(reply, error) {
+      traceFunction('handlePixieAnswerFailure');
+      logChatError('Pixie answer promise rejected', error);
+      try {
+        const safeReply = String(reply || getFallbackReply());
+        appendMessage('pixie', safeReply, true);
+        history.push({ role: 'pixie', text: safeReply });
+        saveHistory();
+        logChat('response rendered after promise rejection');
+      } catch (fallbackError) {
+        logChatError('promise rejection fallback failed', fallbackError);
+      } finally {
+        pixieIsTyping = false;
+        avatarReturnIdle(300);
+        updateSendButtonState();
+        safeFocusElement(input);
+        scrollToBottom();
+        logChat('sendMessage finished');
+      }
+    }
+
+    function getFallbackReply() {
+      traceFunction('getFallbackReply');
+      return "I’m still here ✨\n\nSomething went wrong while preparing that answer, but the chat is okay. Please send that message again or tell me what you want to build — website, app, software, automation, or AI solution.";
+    }
+
+    function createPixieReply(rawMessage) {
+      traceFunction('createPixieReply');
+      const text = rawMessage.trim();
+      const message = normalize(text);
+      const previousStage = discovery.stage;
+
+      if (isReset(message)) {
+        discovery = { ...defaultDiscovery };
+        saveDiscovery();
+        return "Fresh start ✨\n\nWhat are you trying to build — a website, mobile app, software platform, automation, AI solution, or are you not sure yet?";
+      }
+
+      if (isLeadCaptureActive()) {
+        return handleLeadCapture(text);
+      }
+
+      if (isGreeting(message) && message.length <= 12 && history.filter((item) => item.role === 'user').length <= 1) {
+        return "Hey 👋\n\nI’m Pixie — the digital consultant inside this Pixel Code Media portfolio.\n\nYou can ask me about the team, services, pricing, or tell me what you want to build.";
+      }
+
+      const knowledgeReply = getKnowledgeReply(message);
+      if (knowledgeReply) return withLeadConversion(message, knowledgeReply, {
+        reason: getLeadConversionReason(message),
+        explicit: isContactIntent(message)
+      });
+
+      if (isClearlyUnrelated(message) || !isBusinessRelevant(message)) {
+        return getBusinessOnlyRedirect();
+      }
+
+      const wantsResult = matches(message, ['generate', 'summary', 'proposal', 'estimate', 'quote', 'result', 'recommendation', 'recommend']) ||
+        (matches(message, ['cost', 'budget', 'timeline', 'price', 'how long']) && hasEnoughForSnapshot());
+
+      const insight = analyzeMessage(text, previousStage);
+      updateDiscovery(text, insight, previousStage);
+
+      if (wantsResult && hasMinimumForSnapshot()) {
+        if (!hasLeadDetails()) return askForLeadDetails();
+        discovery.resultGenerated = true;
+        discovery.stage = 'complete';
+        saveDiscovery();
+        return generateProjectSnapshot();
+      }
+
+      const nextStage = getNextStage();
+      discovery.stage = nextStage;
+      saveDiscovery();
+
+      if (nextStage === 'complete') {
+        if (!hasLeadDetails()) return askForLeadDetails();
+        discovery.resultGenerated = true;
+        saveDiscovery();
+        return generateProjectSnapshot();
+      }
+
+      return withLeadConversion(message, buildDiscoveryReply(insight, previousStage, nextStage), {
+        reason: isDiscoveryRequest(message) ? 'project' : getLeadConversionReason(message),
+        force: isDiscoveryRequest(message)
+      });
+    }
+
+    function withLeadConversion(message, reply, options = {}) {
+      traceFunction('withLeadConversion');
+      const reason = options.reason || getLeadConversionReason(message);
+      const explicit = Boolean(options.explicit);
+      const force = Boolean(options.force);
+
+      if (!shouldOfferContact(message, { reason, explicit, force })) return reply;
+
+      if (!explicit) {
+        discovery.contactOfferCount = (discovery.contactOfferCount || 0) + 1;
+        discovery.lastContactOfferTurn = getUserTurnCount();
+        saveDiscovery();
+      }
+
+      return `${reply}\n\n${getSoftContactCTA(reason)}\n\n[[CONTACT_CARDS]]`;
+    }
+
+    function shouldOfferContact(message, options = {}) {
+      traceFunction('shouldOfferContact');
+      if (options.explicit) return true;
+      const reason = options.reason || getLeadConversionReason(message);
+      if (!reason && !options.force) return false;
+
+      const count = discovery.contactOfferCount || 0;
+      const lastTurn = typeof discovery.lastContactOfferTurn === 'number' ? discovery.lastContactOfferTurn : -99;
+      const turn = getUserTurnCount();
+
+      if (count >= 2) return false;
+      if (!options.force && turn - lastTurn < 3) return false;
+      if (options.force && count > 0 && turn - lastTurn < 2) return false;
+
+      return true;
+    }
+
+    function getLeadConversionReason(message) {
+      traceFunction('getLeadConversionReason');
+      if (isContactIntent(message)) return 'contact';
+      if (isCostIntent(message)) return 'pricing';
+      if (isHireOrQuoteIntent(message)) return 'quote';
+      if (matches(message, ['timeline', 'how long', 'deadline', 'delivery time'])) return 'timeline';
+      if (isDiscoveryRequest(message)) return 'project';
+      if (isCapabilityIntent(message)) return 'capability';
+      if (isHighIntent(message)) return 'general';
+      return null;
+    }
+
+    function isHighIntent(message) {
+      traceFunction('isHighIntent');
+      return matches(message, [
+        'website', 'web development', 'mobile app', 'application', 'software', 'system', 'erp', 'crm',
+        'ai', 'automation', 'platform', 'pricing', 'cost', 'budget', 'quote', 'project', 'hire',
+        'developer', 'development', 'consultation', 'build', 'startup', 'business', 'company', 'team'
+      ]);
+    }
+
+    function getSoftContactCTA(reason) {
+      traceFunction('getSoftContactCTA');
+      if (reason === 'pricing') {
+        return "If you'd like a more accurate estimate, you can speak directly with the team.";
+      }
+      if (reason === 'project') {
+        return "Would you like to discuss this directly with the team? 🚀";
+      }
+      if (reason === 'quote') {
+        return "If you'd like a proper estimate, you can chat with the team directly.";
+      }
+      if (reason === 'timeline') {
+        return "Want a quick opinion from the team on timeline and feasibility? ✨";
+      }
+      if (reason === 'capability') {
+        return "This sounds like something our team would enjoy working on 🚀";
+      }
+      if (reason === 'contact') {
+        return "Here are the direct contact options:";
+      }
+      return random([
+        "Want a quick opinion from the team? ✨",
+        "I can also connect you directly with our developers.",
+        "If you'd like a proper estimate, you can chat with the team directly."
+      ]);
+    }
+
+    function getUserTurnCount() {
+      traceFunction('getUserTurnCount');
+      return history.filter((item) => item.role === 'user').length;
+    }
+
+    function isBusinessRelevant(message) {
+      traceFunction('isBusinessRelevant');
+      if (hasActiveBusinessContext()) return true;
+      if (isHighIntent(message) || isDiscoveryRequest(message) || isCostIntent(message) || isTimelineIntent(message)) return true;
+      if (detectProjectType(message) || detectIndustry(message) || detectGoal(message, discovery.stage)) return true;
+      if (matches(message, ['lead generation', 'grow online', 'online growth', 'digital marketing', 'digitize', 'digital transformation', 'operations', 'workflow'])) return true;
+      return false;
+    }
+
+    function isClearlyUnrelated(message) {
+      traceFunction('isClearlyUnrelated');
+      return matches(message, [
+        'tell me a joke', 'joke', 'weather', 'song', 'movie', 'recipe', 'homework', 'dating',
+        'relationship', 'love advice', 'medical advice', 'legal advice', 'astrology', 'horoscope',
+        'sports score', 'news today', 'personal question'
+      ]);
+    }
+
+    function hasActiveBusinessContext() {
+      traceFunction('hasActiveBusinessContext');
+      return Boolean(
+        discovery.projectType ||
+        discovery.industry ||
+        discovery.goal ||
+        discovery.audience ||
+        discovery.features.length ||
+        discovery.timeline ||
+        discovery.budget ||
+        discovery.stage !== 'project_type'
+      );
+    }
+
+    function getBusinessOnlyRedirect() {
+      traceFunction('getBusinessOnlyRedirect');
+      return "I’m mainly here to help with digital solutions, websites, apps, software, automation, AI solutions, and business growth 😊\n\nIf you’re planning something for your business, tell me a little about it and I’ll help you figure out the best direction.";
+    }
+
+    function getKnowledgeReply(message) {
+      traceFunction('getKnowledgeReply');
+      if (isDiscoveryRequest(message)) return null;
+
+      if (isContactIntent(message)) return getContactReply();
+      if (isTeamIntent(message)) return getTeamReply();
+      if (isWebsiteOwnerIntent(message)) return getWebsiteOwnerReply();
+      if (isIdentityIntent(message)) return getIdentityReply();
+      if (isServicesIntent(message)) return getServicesReply();
+      if (isCapabilityIntent(message)) return getCapabilityReply(message);
+      if (isCostIntent(message)) return getCostReply(message);
+      if (isTimelineIntent(message)) return getTimelineReply(message);
+      if (isHireOrQuoteIntent(message)) return getHireQuoteReply();
+
+      return null;
+    }
+
+    function isDiscoveryRequest(message) {
+      traceFunction('isDiscoveryRequest');
+      return matches(message, [
+        'i need', 'i want', 'we need', 'we want', 'looking for', 'planning to build', 'want to build',
+        'need a website', 'need website', 'need an app', 'need app', 'build me', 'create a', 'make a',
+        'website for', 'app for', 'software for', 'platform for', 'automation for', 'ai solution for'
+      ]);
+    }
+
+    function isIdentityIntent(message) {
+      traceFunction('isIdentityIntent');
+      return matches(message, [
+        'what is your name', 'your name', 'who are you', 'what are you', 'what is pixie',
+        'what do you do', 'why are you here', 'who is pixie', 'pixie'
+      ]) && !isContactIntent(message) && !isTeamIntent(message);
+    }
+
+    function isWebsiteOwnerIntent(message) {
+      traceFunction('isWebsiteOwnerIntent');
+      return matches(message, [
+        'what is this website', 'whose website', 'who owns this website', 'who built this website',
+        'who made this website', 'who created this website', 'portfolio', 'pixel code media'
+      ]) && !isTeamIntent(message) && !isContactIntent(message) && !isServicesIntent(message);
+    }
+
+    function isTeamIntent(message) {
+      traceFunction('isTeamIntent');
+      return matches(message, [
+        'who created you', 'who made you', 'who built you', 'who is behind', 'behind pixel code media',
+        'who are the developers', 'developers', 'developer', 'team', 'who is the team', 'team members'
+      ]) && !isContactIntent(message);
+    }
+
+    function isContactIntent(message) {
+      traceFunction('isContactIntent');
+      return matches(message, [
+        'contact', 'call', 'phone', 'whatsapp', 'talk to someone', 'talk to a developer',
+        'speak to someone', 'speak to a developer', 'connect with team', 'message the team', 'reach the team'
+      ]);
+    }
+
+    function isServicesIntent(message) {
+      traceFunction('isServicesIntent');
+      return matches(message, [
+        'services', 'what services', 'service do you provide', 'what do you provide',
+        'offerings', 'what can you build', 'what can pixel code media do'
+      ]);
+    }
+
+    function isCapabilityIntent(message) {
+      traceFunction('isCapabilityIntent');
+      return matches(message, [
+        'do you build websites', 'build websites', 'do you build apps', 'build apps',
+        'do you build software', 'build software', 'do you provide ai', 'ai solutions',
+        'business automation', 'ui ux', 'ui/ux', 'design websites', 'mobile apps'
+      ]) && !isDiscoveryRequest(message);
+    }
+
+    function isCostIntent(message) {
+      traceFunction('isCostIntent');
+      return matches(message, [
+        'how much', 'cost', 'price', 'pricing', 'website cost', 'app cost', 'software cost',
+        'ai cost', 'automation cost', 'budget'
+      ]) && !isDiscoveryRequest(message);
+    }
+
+    function isTimelineIntent(message) {
+      traceFunction('isTimelineIntent');
+      return matches(message, ['how long', 'timeline', 'time take', 'delivery time', 'deadline', 'project timeline']) && !isDiscoveryRequest(message);
+    }
+
+    function isHireOrQuoteIntent(message) {
+      traceFunction('isHireOrQuoteIntent');
+      return matches(message, ['hire you', 'can i hire', 'get a quote', 'quote', 'quotation', 'proposal']) && !isDiscoveryRequest(message);
+    }
+
+    function getIdentityReply() {
+      traceFunction('getIdentityReply');
+      return `${KNOWLEDGE_BASE.pixie.description}\n\nMy role is ${KNOWLEDGE_BASE.pixie.role}.\n\nI can answer questions about Pixel Code Media, explain the services, connect you with the team, or help discover the right solution for your project ✨`;
+    }
+
+    function getWebsiteOwnerReply() {
+      traceFunction('getWebsiteOwnerReply');
+      return `This website belongs to Pixel Code Media ✨\n\n${KNOWLEDGE_BASE.company.description}\n\nPixie lives here to help visitors understand the company, explore services, and turn rough project ideas into a clear direction.\n\nThe portfolio represents the Pixel Code Media team — with frontend and backend specialists working with equal importance.`;
+    }
+
+    function getTeamReply() {
+      traceFunction('getTeamReply');
+      const frontend = KNOWLEDGE_BASE.team[0];
+      const backend = KNOWLEDGE_BASE.team[1];
+      return `Pixel Code Media is backed by two equally important technical specialists ✨\n\n${KNOWLEDGE_BASE.teamPrinciple}\n\n${frontend.label}\nFocus: ${frontend.responsibilities.join(', ')}\n\n${backend.label}\nFocus: ${backend.responsibilities.join(', ')}\n\nDifferent specialties. Equal authority. Same priority.`;
+    }
+
+    function getContactReply() {
+      traceFunction('getContactReply');
+      return `Absolutely ✨\n\nYou can connect directly with the Pixel Code Media team. Both contacts are equally important — they just handle different specializations.`;
+    }
+
+    function getServicesReply() {
+      traceFunction('getServicesReply');
+      return `Pixel Code Media provides digital solutions across:\n\n${KNOWLEDGE_BASE.company.services.map((service) => `• ${service}`).join('\n')}\n\nThe goal is to build solutions that feel premium and professional, while staying practical and accessible for growing Indian businesses.\n\nIf you tell me what you’re trying to build, I can help figure out which solution fits best 😊`;
+    }
+
+    function getCapabilityReply(message) {
+      traceFunction('getCapabilityReply');
+      if (matches(message, ['websites', 'website', 'web development'])) {
+        return `Yes — Pixel Code Media builds websites ✨\n\nThat can include business websites, portfolio sites, landing pages, enquiry-focused websites, dashboards, and custom web experiences.\n\nA couple quick questions: is the website mainly for getting enquiries, showing services, selling products, or managing something behind the scenes?`;
+      }
+      if (matches(message, ['apps', 'mobile app', 'mobile apps', 'android', 'ios'])) {
+        return `Yes — Pixel Code Media builds mobile apps 🚀\n\nApps can be planned for customers, staff, admins, bookings, operations, ecommerce, or custom business workflows.\n\nTwo useful questions: who will use the app most, and what should they be able to do in the first minute?`;
+      }
+      if (matches(message, ['software', 'platform', 'crm', 'erp', 'dashboard'])) {
+        return `Yes — custom software is one of the core services.\n\nPixel Code Media can build platforms, dashboards, CRMs, admin panels, APIs, databases, and workflow systems.\n\nTiny consultant thought: software works best when we start with one clear workflow and grow from there 💡\n\nWhat should the system manage first — customers, staff, bookings, inventory, payments, reports, or something else?`;
+      }
+      if (matches(message, ['ai', 'ai solutions', 'chatbot', 'automation'])) {
+        return `Yes — Pixel Code Media provides AI solutions and business automation ✨\n\nThat can include AI assistants, smart workflows, recommendation flows, automated follow-ups, integrations, and internal productivity tools.\n\nThe smartest first step is choosing one useful AI/automation moment instead of trying to automate everything at once. What task should it save time on first?`;
+      }
+      return getServicesReply();
+    }
+
+    function getTimelineReply(message) {
+      traceFunction('getTimelineReply');
+      if (matches(message, ['website', 'web development'])) {
+        return `A focused business website can often be completed in 2–5 weeks. A more polished website with custom UI, animations, content, forms, and integrations may take 4–8 weeks.
+
+The real timeline depends on pages, content readiness, design depth, and whether any backend or automation is needed ✨`;
+      }
+      if (matches(message, ['app', 'mobile app', 'application'])) {
+        return `A lean mobile app usually takes around 8–14 weeks when it includes design, development, backend, testing, and deployment.
+
+If the app has payments, notifications, roles, or complex workflows, it may need more time.`;
+      }
+      if (matches(message, ['software', 'platform', 'crm', 'erp', 'system'])) {
+        return `A focused software MVP usually takes around 8–16 weeks. Larger systems with roles, dashboards, APIs, reports, and integrations can take longer.
+
+The smartest path is usually to launch the core workflow first, then expand.`;
+      }
+      return `Timeline depends on the solution type and feature depth.
+
+As a rough guide:
+• Website: 2–8 weeks
+• Mobile app: 8–14+ weeks
+• Software platform: 8–16+ weeks
+• Automation: 2–6 weeks
+• AI solution: 6–12+ weeks
+
+If you share the project type, I can help narrow it down.`;
+    }
+
+    function getContextualCostReply(message) {
+      traceFunction('getContextualCostReply');
+      const hasExplicitType = matches(message, ['website', 'web development', 'app', 'mobile app', 'software', 'platform', 'crm', 'erp', 'dashboard', 'ai', 'chatbot', 'automation']);
+      if (hasExplicitType) return null;
+      if (!hasActiveBusinessContext()) return null;
+
+      const industry = discovery.industry;
+      const projectType = discovery.projectType;
+      const goal = discovery.goal || 'the main business goal';
+
+      if (industry === 'tuition centres') {
+        if (!projectType && !discovery.goal) {
+          return `For a tuition centre, cost depends on whether you mainly want admissions growth or management software.\n\nA practical admissions website may start around ₹15,000–₹50,000. With course pages, enquiry forms, WhatsApp/call actions, SEO basics, testimonials, and lead follow-up, it can move toward ₹50,000–₹1.5 Lakh+.\n\nIf you need student management, batches, fees, attendance, parent communication, and reports, that becomes tuition centre software and may start around ₹1.5 Lakh–₹4 Lakh+.\n\nThe smart move is to start with the part that creates value fastest, then scale.`;
+        }
+        if (projectType === 'Website' || normalize(goal).includes('admission') || normalize(goal).includes('lead')) {
+          return `For a tuition centre focused on admissions, a practical website usually starts around ₹15,000–₹50,000.\n\nIf you want course pages, enquiry forms, WhatsApp/call actions, SEO basics, testimonials, and lead follow-up, it can move toward ₹50,000–₹1.5 Lakh+.\n\nIf you also need student management, batches, fees, attendance, or reports, that becomes more like tuition centre software and may start around ₹1.5 Lakh–₹4 Lakh+.\n\nThe smart approach is to start with the part that creates value fastest — usually admissions first, then management.`;
+        }
+        return `For tuition centre software, pricing depends on whether you need students, batches, attendance, fees, staff roles, parent communication, reports, and admin dashboards.\n\nA focused first version may start around ₹1.5 Lakh–₹4 Lakh, while a more complete platform can go higher depending on features.\n\nYou can also start smaller and scale module by module.`;
+      }
+
+      if (industry === 'retail' || industry === 'local businesses') {
+        return `For ${displayIndustry(industry)}, cost depends on whether you need a simple website, ecommerce, inventory, offers, WhatsApp enquiries, or customer follow-up.\n\nA basic online presence may start around ₹15,000–₹50,000. Ecommerce or operational software can move from ₹75,000 to ₹3 Lakh+ depending on features.\n\nStarting lean and scaling after real customer usage is usually the safest path.`;
+      }
+
+      const playbook = getPlaybook(industry);
+      if (playbook) {
+        return `For ${withArticle(displayIndustry(industry))}, pricing depends on whether you need a website for growth, software for operations, or both.\n\nA practical website/landing page may start around ₹15,000–₹50,000. If it includes stronger design, enquiry flows, WhatsApp actions, SEO basics, and trust-building sections, it can move toward ₹50,000–₹1.5 Lakh+.\n\nIf you need software features like ${listFew(playbook.software, 3)}, the project can start around ₹1.5 Lakh–₹5 Lakh+ depending on user roles, integrations, and scale.\n\nThe best estimate comes after understanding your exact needs, and the work can be phased so you start small and scale later.`;
+      }
+
+      if (projectType === 'Website') return getCostReply('website cost');
+      if (projectType === 'Mobile app') return getCostReply('app cost');
+      if (projectType === 'Software platform') return getCostReply('software cost');
+      if (projectType === 'Automation') return getCostReply('automation cost');
+      if (projectType === 'AI solution') return getCostReply('ai cost');
+
+      return `Based on what you’ve shared, the cost depends on the final solution type, features, integrations, and timeline.\n\nFor Indian businesses, a practical first version can often be planned from around ₹50,000–₹2 Lakh, while larger software or app projects can go beyond that.\n\nPricing is flexible and can be shaped around what you need now versus what can come later.`;
+    }
+
+    function getCostReply(message) {
+      traceFunction('getCostReply');
+      const contextualReply = getContextualCostReply(message);
+      if (contextualReply) return contextualReply;
+
+      if (matches(message, ['website', 'web development'])) {
+        return `That depends on the features, my friend ✨\n\nMost business websites typically start from around ₹15,000 and increase based on functionality, integrations, and design requirements.\n\nFor a more realistic range, I’d look at the number of pages, UI quality, forms, admin needs, WhatsApp/call actions, payments, and content. Pricing is flexible — many businesses start small and scale later.`;
+      }
+      if (matches(message, ['app', 'mobile app', 'android', 'ios'])) {
+        return `App cost depends on screens, user roles, backend, admin panel, notifications, payments, and integrations ✨\n\nRough guide:\n${KNOWLEDGE_BASE.costGuides.app}\n\nIf you describe the app idea, I can help narrow it into a practical first version. Pricing can be tailored based on what you need now versus what can come later.`;
+      }
+      if (matches(message, ['software', 'platform', 'crm', 'erp', 'dashboard'])) {
+        return `Software cost depends on workflows, roles, APIs, databases, dashboards, reports, and scale.\n\nRough guide:\n${KNOWLEDGE_BASE.costGuides.software}\n\nA focused first version is usually the smartest place to begin 🎯 Pricing is flexible and can be planned in phases.`;
+      }
+      if (matches(message, ['ai', 'chatbot'])) {
+        return `AI solution cost depends on the use case, data, integrations, accuracy needs, and whether it needs human handoff or admin controls.\n\nRough guide:\n${KNOWLEDGE_BASE.costGuides.ai}\n\nIf you tell me what the AI should help with, I can suggest the right first version. It can start lean and become smarter over time.`;
+      }
+      if (matches(message, ['automation'])) {
+        return `Automation cost depends on how many steps, tools, approvals, reminders, and integrations are involved.\n\nRough guide:\n${KNOWLEDGE_BASE.costGuides.automation}\n\nThe best automation projects usually start with one painful manual workflow. That keeps pricing practical and easier to scale.`;
+      }
+      return `Costs depend on what you’re building, how complex it is, and how polished it needs to feel.\n\nQuick rough ranges:\n• Website: ${KNOWLEDGE_BASE.costGuides.website}\n• Mobile app: ${KNOWLEDGE_BASE.costGuides.app}\n• Software: ${KNOWLEDGE_BASE.costGuides.software}\n\nTell me what you need and I’ll help estimate the best-fit solution ✨ Pricing is negotiable and can be tailored to your stage.`;
+    }
+
+    function getHireQuoteReply() {
+      traceFunction('getHireQuoteReply');
+      return `Yes — you can hire Pixel Code Media for a project ✨\n\nI can help you shape the idea first so the team gets a clearer brief instead of a vague request.\n\nTell me what you’re planning to build — website, app, software platform, automation, AI solution, or not sure yet — and I’ll guide you from there.`;
+    }
+
+    function analyzeMessage(text, previousStage) {
+      traceFunction('analyzeMessage');
+      const message = normalize(text);
+      const insight = {
+        projectType: detectProjectType(message),
+        industry: detectIndustry(message),
+        industryDetail: null,
+        goal: detectGoal(message, previousStage),
+        audience: detectAudience(message, previousStage),
+        features: detectFeatures(message, previousStage),
+        timeline: detectTimeline(message, previousStage),
+        budget: detectBudget(message, previousStage),
+        notSure: matches(message, ['not sure', 'unsure', "don't know", 'dont know', 'idk', 'no idea', 'confused'])
+      };
+
+      if (previousStage === 'industry' && !insight.industry && text.length > 1) {
+        insight.industry = 'other businesses';
+        insight.industryDetail = cleanSentence(text);
+      }
+
+      return insight;
+    }
+
+    function updateDiscovery(text, insight, previousStage) {
+      traceFunction('updateDiscovery');
+      if (insight.projectType && (!discovery.projectType || previousStage === 'project_type')) discovery.projectType = insight.projectType;
+      if (insight.industry) discovery.industry = insight.industry;
+      if (insight.industryDetail) discovery.industryDetail = insight.industryDetail;
+      if (insight.goal) discovery.goal = insight.goal;
+      if (insight.audience) discovery.audience = insight.audience;
+      if (insight.timeline) discovery.timeline = insight.timeline;
+      if (insight.budget) discovery.budget = insight.budget;
+
+      if (insight.features.length) {
+        discovery.features = unique([...discovery.features, ...insight.features]).slice(0, 8);
+      }
+
+      if (previousStage === 'project_type' && !discovery.projectType && insight.notSure) {
+        discovery.projectType = 'not sure yet';
+      }
+
+      if (previousStage === 'goal' && !discovery.goal && text.length > 1) {
+        discovery.goal = cleanSentence(text);
+      }
+
+      if (previousStage === 'audience' && !discovery.audience && text.length > 1) {
+        discovery.audience = cleanSentence(text);
+      }
+
+      if (previousStage === 'features' && !discovery.features.length) {
+        if (insight.notSure) {
+          discovery.features = ['Pixie-recommended core feature set'];
+        } else {
+          discovery.features = [`Custom requirements: ${cleanSentence(text)}`];
+        }
+      }
+
+      if (previousStage === 'timeline' && !discovery.timeline && text.length > 1) {
+        discovery.timeline = cleanSentence(text);
+      }
+
+      if (previousStage === 'budget' && !discovery.budget && text.length > 1) {
+        discovery.budget = cleanSentence(text);
+      }
+
+      discovery.notes = [...discovery.notes, cleanSentence(text)].slice(-8);
+    }
+
+    function getNextStage() {
+      traceFunction('getNextStage');
+      if (discovery.industry && !discovery.goal) return 'goal';
+      if (!discovery.projectType) return 'project_type';
+      if (!discovery.industry) return 'industry';
+      if (!discovery.goal) return 'goal';
+      if (!discovery.audience) return 'audience';
+      if (!discovery.features.length) return 'features';
+      if (!discovery.timeline) return 'timeline';
+      if (!discovery.budget) return 'budget';
+      return 'complete';
+    }
+
+    function buildDiscoveryReply(insight, previousStage, nextStage) {
+      traceFunction('buildDiscoveryReply');
+      const understanding = getUnderstanding(insight, previousStage);
+      const recommendation = getRecommendation(nextStage);
+      const question = getQuestion(nextStage);
+
+      return [understanding, recommendation, question].filter(Boolean).join('\n\n');
+    }
+
+    function getUnderstanding(insight, previousStage) {
+      traceFunction('getUnderstanding');
+      const industryName = displayIndustry(discovery.industry);
+      const projectName = displayProjectType(discovery.projectType);
+
+      if (insight.industry === 'tuition centres') {
+        return random(["Ah, a tuition centre. Nice choice 😊", "Nice — tuition centres are a strong use case for digital growth ✨", "That’s a smart area to digitize. Tuition centres usually benefit quickly from better enquiries and management."]);
+      }
+
+      if (insight.industry) {
+        return random([`Ah, ${withArticle(industryName)}. Nice — that gives us a clearer direction ✨`, `Got it — ${withArticle(industryName)}. That helps me think more practically.`, `That context helps. ${displayIndustry(discovery.industry)} projects usually need a solution that is simple for users and useful for the business.`]);
+      }
+
+      if (insight.projectType && insight.projectType !== 'not sure yet' && previousStage === 'project_type') {
+        return random([`Got it — ${withArticle(projectName)}. That’s a solid starting point.`, `Nice idea. ${withArticle(projectName)} could work well if we keep the first version focused.`, `I can definitely help with that — ${withArticle(projectName)} gives us a clear direction.`]);
+      }
+
+      if (insight.notSure) {
+        return "No worries — not being sure yet is completely fine. That’s exactly what this discovery chat is for ✨";
+      }
+
+      if (insight.goal) {
+        return random([`That makes sense. So the main goal is ${discovery.goal}.`, `Good — ${discovery.goal} is a practical goal to build around.`, `That’s a useful target. If we design around ${discovery.goal}, the solution becomes much clearer.`]);
+      }
+
+      if (insight.audience) {
+        return random([`Perfect — designing around ${discovery.audience} will make the solution much sharper.`, `Good to know. If ${discovery.audience} are the main users, the experience needs to be simple and direct.`, `That helps. The best solution should feel natural for ${discovery.audience}.`]);
+      }
+
+      if (insight.features.length) {
+        return random(["Nice, those feature ideas help a lot 👀", "Good — that gives me a better sense of the first version.", "That’s useful. We can shape those into a practical first phase."]);
+      }
+
+      if (insight.timeline) {
+        return random([`Got it — ${discovery.timeline} gives us a useful delivery target.`, `Okay, ${discovery.timeline}. That helps us think about scope realistically.`, `That timeline is helpful. We’ll want to keep the first version focused.`]);
+      }
+
+      if (insight.budget) {
+        return random([`Helpful — ${discovery.budget} gives us a budget signal to plan around.`, `Good to know. With ${discovery.budget}, we can think in phases instead of overbuilding.`, `That budget signal helps. The solution can be shaped around what matters most first.`]);
+      }
+
+      if (previousStage === 'goal' && discovery.goal) {
+        return `Nice — ${discovery.goal} is a clear goal to build around.`;
+      }
+
+      return "Interesting — I’m starting to see the shape of it 👀";
+    }
+
+    function getPlaybook(industry = discovery.industry) {
+      traceFunction('getPlaybook');
+      return INDUSTRY_PLAYBOOK[industry] || null;
+    }
+
+    function listFew(items, count = 3) {
+      traceFunction('listFew');
+      return (items || []).slice(0, count).join(', ');
+    }
+
+    function getIndustryConsultantLine(nextStage) {
+      traceFunction('getIndustryConsultantLine');
+      const playbook = getPlaybook();
+      if (!playbook) return null;
+      const industryName = displayIndustry(discovery.industry);
+
+      if (nextStage === 'goal') {
+        return `For ${withArticle(industryName)}, the common pressure points are usually ${listFew(playbook.problems)}. The right solution depends on which one is hurting the business most right now.`;
+      }
+      if (nextStage === 'project_type') {
+        const goal = normalize(discovery.goal || '');
+        if (goal.includes('booking') || goal.includes('appointment') || goal.includes('lead') || goal.includes('admission') || goal.includes('growth')) {
+          return `Based on that goal, I’d first consider a strong website or landing page with ${listFew(playbook.website, 2)}. If operations are also painful, we can extend it into software later.`;
+        }
+        if (goal.includes('management') || goal.includes('operations')) {
+          return `This sounds more like an operations problem. A simple software platform with ${listFew(playbook.software, 3)} would probably make more sense than only a website.`;
+        }
+      }
+      if (nextStage === 'features') {
+        const website = listFew(playbook.website, 2);
+        const software = listFew(playbook.software, 2);
+        return `For this industry, I’d separate growth features from operations features. Growth usually means ${website}; operations usually means ${software}.`;
+      }
+      if (nextStage === 'timeline') {
+        return `A lean first version should focus on the highest-value workflow first. For ${withArticle(industryName)}, that is often either lead capture or daily operations — not everything at once.`;
+      }
+      if (nextStage === 'budget') {
+        return `Budget planning should be phased. Start with what creates immediate value, then add automation like ${listFew(playbook.automation, 2)} once the core flow is working.`;
+      }
+      return null;
+    }
+
+    function getRecommendation(nextStage) {
+      traceFunction('getRecommendation');
+      const industry = discovery.industry;
+      const goal = normalize(discovery.goal || '');
+      const projectType = discovery.projectType;
+      const industryLine = getIndustryConsultantLine(nextStage);
+      if (industryLine && !(industry === 'tuition centres' && !discovery.goal)) return industryLine;
+
+      if (industry === 'tuition centres' && !discovery.goal) {
+        return "For tuition centres, I’d usually separate the project into two paths: getting more admissions, or making student/class management easier. Sometimes the best answer is both.";
+      }
+
+      if (industry === 'tuition centres' && goal) {
+        if (goal.includes('admission') || goal.includes('lead') || goal.includes('growth')) {
+          return "My first recommendation would be a conversion-focused website with enquiry tracking, WhatsApp/call actions, course pages, and follow-up reminders.";
+        }
+        if (goal.includes('management') || goal.includes('operation') || goal.includes('class')) {
+          return "My first recommendation would be a tuition management system: students, batches, attendance, fees, staff, and reports in one simple place.";
+        }
+        return "This may work best as a combined admissions + management setup, starting simple and growing into a full tuition platform.";
+      }
+
+      if (nextStage === 'project_type') {
+        return "I’d pick the solution based on the problem first, not the technology. A website is great for visibility, a platform is better for operations, automation saves manual work, and AI helps with guidance or decisions.";
+      }
+
+      if (nextStage === 'industry') {
+        return "The industry matters because a school, clinic, recruitment firm, travel company, and retail store all need very different workflows.";
+      }
+
+      if (nextStage === 'goal') {
+        return "The goal will decide the best solution. Growth projects need lead capture and trust-building. Management projects need dashboards, workflows, and reporting. Automation projects need integrations.";
+      }
+
+      if (nextStage === 'audience') {
+        return "I’d design the first version around the people who use it most. That keeps the product focused instead of trying to serve everyone at once.";
+      }
+
+      if (nextStage === 'features') {
+        return `For ${withArticle(displayIndustry(industry))}, I’d keep version one practical: one strong workflow, a clean dashboard, and only the features needed to create value quickly.`;
+      }
+
+      if (nextStage === 'timeline') {
+        return "Timeline depends mostly on complexity. A focused website can move quickly; a platform, app, or AI system needs more planning and testing.";
+      }
+
+      if (nextStage === 'budget') {
+        return "Budget helps decide whether we should recommend a lean starter version, a polished business system, or a more advanced scalable platform.";
+      }
+
+      if (projectType === 'AI solution') {
+        return "For AI projects, I’d start with a controlled assistant or recommendation flow before attempting anything too magical.";
+      }
+
+      return "My instinct is to keep the first version focused, useful, and easy to grow later.";
+    }
+
+    function getQuestion(stage) {
+      traceFunction('getQuestion');
+      switch (stage) {
+        case 'project_type':
+          return "What are you trying to build — website, mobile app, software platform, automation, AI solution, or not sure yet?";
+        case 'industry':
+          return "Which industry is this for? For example: tuition centre, school, clinic/hospital, recruitment agency, home nursing, travel agency, builder, real estate, interior design, retail store, local business, or another business.";
+        case 'goal':
+          if (discovery.industry === 'tuition centres') {
+            return "Do you mainly want more admissions, better management, or a bit of both?";
+          }
+          if (discovery.industry === 'coaching institutes') {
+            return "Is the main goal more course enquiries, demo class bookings, student management, fee tracking, or exam/result communication?";
+          }
+          if (discovery.industry === 'schools') {
+            return "Is the main goal admissions, parent communication, school management, online learning, or something else?";
+          }
+          if (discovery.industry === 'kindergartens') {
+            return "Is the main goal getting more admissions, building parent trust, sharing activity updates, or managing fees/communication?";
+          }
+          if (discovery.industry === 'healthcare') {
+            return "Is the main goal more appointments, easier patient management, staff operations, or online consultation?";
+          }
+          if (discovery.industry === 'dental clinics') {
+            return "Is the main goal more appointment bookings, treatment enquiries, patient follow-up, or clinic management?";
+          }
+          if (discovery.industry === 'eye hospitals') {
+            return "Is the main goal OP appointments, surgery enquiries, patient follow-ups, or hospital workflow management?";
+          }
+          if (discovery.industry === 'recruitment') {
+            return "Is the main goal finding candidates, managing hiring pipelines, posting jobs, or automating screening?";
+          }
+          if (discovery.industry === 'overseas recruitment') {
+            return "Is the main goal candidate enquiries, document collection, application tracking, job alerts, or client/employer management?";
+          }
+          if (discovery.industry === 'home nursing') {
+            return "Is the main goal getting care requests, assigning nurses/caregivers, managing schedules, or tracking patient care?";
+          }
+          if (discovery.industry === 'travel') {
+            return "Is the main goal more travel enquiries, online bookings, itinerary planning, or package management?";
+          }
+          if (discovery.industry === 'real estate') {
+            return "Is the main goal property leads, listing management, agent workflow, or buyer/renter search?";
+          }
+          if (discovery.industry === 'construction') {
+            return "Is the main goal lead generation, project tracking, client updates, vendor management, or portfolio credibility?";
+          }
+          if (discovery.industry === 'interior design') {
+            return "Is the main goal showcasing your portfolio, getting enquiries, managing design projects, or improving client communication?";
+          }
+          if (discovery.industry === 'retail') {
+            return "Is the main goal online sales, inventory management, customer loyalty, store operations, or reporting?";
+          }
+          if (discovery.industry === 'gyms') {
+            return "Is the main goal membership enquiries, trial bookings, renewals, trainer schedules, or attendance/payment tracking?";
+          }
+          if (discovery.industry === 'local businesses') {
+            return "Is the main goal more local enquiries, better online presence, WhatsApp leads, bookings, customer follow-up, or simple operations management?";
+          }
+          return "What’s the main goal: get more customers, manage operations, automate work, add AI, take bookings/payments, or something else?";
+        case 'audience':
+          return "Who will use this most — customers, staff, admins, students/parents, patients, candidates, clients, or another group?";
+        case 'features':
+          return "What features feel important for version one? You can list rough ideas like booking, payments, dashboard, reports, chat, CRM, attendance, inventory, notifications, or just say “not sure.”";
+        case 'timeline':
+          return "When would you ideally like this to go live — urgently, in a few weeks, 1–2 months, 3+ months, or no fixed deadline?";
+        case 'budget':
+          return "Do you have a rough budget range in mind? Even a loose answer is fine — low, medium, premium, or a number/range.";
+        default:
+          return "Want me to turn this into a suggested solution, timeline, budget estimate, and growth plan?";
+      }
+    }
+
+    function askForLeadDetails() {
+      traceFunction('askForLeadDetails');
+      discovery.askedLeadCapture = true;
+      discovery.stage = 'complete';
+      discovery.leadStage = getNextLeadStage();
+      saveDiscovery();
+
+      return "I think I have a solid plan for you ✨\n\nBefore I turn it into a clear project snapshot, send me your name, phone, email, and business name.\n\nYou can send them all together, or one by one — whatever feels easiest 😊";
+    }
+
+    function handleLeadCapture(text) {
+      traceFunction('handleLeadCapture');
+      const message = normalize(text);
+
+      if (matches(message, ['skip', 'skip this', 'later', 'show plan', 'show me the plan'])) {
+        discovery.leadStage = null;
+        discovery.resultGenerated = true;
+        saveDiscovery();
+        return "No worries — I’ll keep it simple for now 😊\n\n" + generateProjectSnapshot();
+      }
+
+      collectLeadDetails(text);
+
+      if (hasLeadDetails()) {
+        discovery.leadStage = null;
+        discovery.stage = 'complete';
+        discovery.resultGenerated = true;
+        saveDiscovery();
+        const name = discovery.leadName ? `, ${discovery.leadName}` : '';
+        return `Perfect${name}. I’ve got what I need ✨\n\n` + generateProjectSnapshot();
+      }
+
+      discovery.leadStage = getNextLeadStage();
+      saveDiscovery();
+      return getLeadFollowUpQuestion();
+    }
+
+    function collectLeadDetails(text) {
+      traceFunction('collectLeadDetails');
+      const clean = cleanSentence(text);
+      const email = text.match(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/i);
+      const phone = text.match(/(?:\+?\d[\d\s().-]{7,}\d)/);
+      const nameLabel = text.match(/(?:^|\n|,|;)\s*(?:name|my name)\s*[:=-]\s*([^,;\n]+)/i);
+      const businessLabel = text.match(/(?:^|\n|,|;)\s*(?:business|business name|company|centre|center|clinic|school)\s*[:=-]\s*([^,;\n]+)/i);
+
+      if (email && !discovery.leadEmail) discovery.leadEmail = email[0].trim();
+      if (phone && !discovery.leadPhone) discovery.leadPhone = phone[0].trim();
+      if (nameLabel && !discovery.leadName) discovery.leadName = cleanSentence(nameLabel[1]);
+      if (businessLabel && !discovery.businessName) discovery.businessName = cleanSentence(businessLabel[1]);
+
+      const parts = text.split(/[\n,;]/).map((part) => cleanSentence(part)).filter(Boolean);
+      if (parts.length >= 4 && !nameLabel && !businessLabel) {
+        if (!discovery.leadName) discovery.leadName = stripLeadNoise(parts[0]);
+        if (!discovery.leadPhone && phone) discovery.leadPhone = phone[0].trim();
+        if (!discovery.leadEmail && email) discovery.leadEmail = email[0].trim();
+        if (!discovery.businessName) discovery.businessName = stripLeadNoise(parts[parts.length - 1]);
+      }
+
+      const stage = discovery.leadStage || getNextLeadStage();
+      if (stage === 'lead_name' && !discovery.leadName && clean && !email && !phone) {
+        discovery.leadName = stripLeadNoise(clean);
+      } else if (stage === 'lead_phone' && !discovery.leadPhone) {
+        discovery.leadPhone = phone ? phone[0].trim() : clean;
+      } else if (stage === 'lead_email' && !discovery.leadEmail) {
+        discovery.leadEmail = email ? email[0].trim() : clean;
+      } else if (stage === 'business_name' && !discovery.businessName) {
+        discovery.businessName = stripLeadNoise(clean);
+      }
+    }
+
+    function getLeadFollowUpQuestion() {
+      traceFunction('getLeadFollowUpQuestion');
+      const stage = discovery.leadStage;
+      if (stage === 'lead_name') {
+        return "Nice — I’m ready to wrap this into a plan. What name should I put on it? 😊";
+      }
+      if (stage === 'lead_phone') {
+        const name = discovery.leadName ? `, ${discovery.leadName}` : '';
+        return `Thanks${name}. What’s the best phone number for this project?`;
+      }
+      if (stage === 'lead_email') {
+        return "Got it. And what email should I attach to the project plan?";
+      }
+      if (stage === 'business_name') {
+        return "Perfect. Last tiny detail — what’s the business name?";
+      }
+      return "Beautiful — I’ve got enough to build your recommendation ✨";
+    }
+
+    function getNextLeadStage() {
+      traceFunction('getNextLeadStage');
+      if (!discovery.leadName) return 'lead_name';
+      if (!discovery.leadPhone) return 'lead_phone';
+      if (!discovery.leadEmail) return 'lead_email';
+      if (!discovery.businessName) return 'business_name';
+      return null;
+    }
+
+    function hasLeadDetails() {
+      traceFunction('hasLeadDetails');
+      return Boolean(discovery.leadName && discovery.leadPhone && discovery.leadEmail && discovery.businessName);
+    }
+
+    function isLeadCaptureActive() {
+      traceFunction('isLeadCaptureActive');
+      return Boolean(discovery.askedLeadCapture && getNextLeadStage() && discovery.stage === 'complete');
+    }
+
+    function stripLeadNoise(value) {
+      traceFunction('stripLeadNoise');
+      return cleanSentence(value)
+        .replace(/^(name|my name|phone|email|business|business name|company)\s*[:=-]\s*/i, '')
+        .trim();
+    }
+
+    function generateProjectSnapshot() {
+      traceFunction('generateProjectSnapshot');
+      const solution = suggestSolution();
+      const features = suggestFeatures();
+      const timeline = estimateTimeline();
+      const budget = estimateBudget();
+      const growth = suggestGrowthOpportunities();
+      const budgetNote = discovery.budget ? `\n\nYour budget signal: ${discovery.budget}` : '';
+      const timelineNote = discovery.timeline ? `\nYour timing signal: ${discovery.timeline}` : '';
+      const preparedFor = discovery.leadName || discovery.businessName
+        ? `Prepared for\n${[discovery.leadName, discovery.businessName].filter(Boolean).join(' — ')}\n\n`
+        : '';
+
+      return `Alright — here’s your Pixie project snapshot ✨\n\n${preparedFor}Suggested solution\n${solution}\n\nRecommended features\n${features.map((feature) => `• ${feature}`).join('\n')}\n\nEstimated timeline\n${timeline}${timelineNote}\n\nBudget estimate\n${budget}${budgetNote}\n\nGrowth opportunities\n${growth.map((item) => `• ${item}`).join('\n')}\n\nMy honest take\nStart with the smallest version that solves the main problem clearly. Once that works, you can grow it into a stronger system without wasting budget early 🚀`;
+    }
+
+    function suggestSolution() {
+      traceFunction('suggestSolution');
+      const industry = discovery.industry;
+      const goal = normalize(discovery.goal || '');
+      const projectType = discovery.projectType;
+      const business = discovery.industryDetail || displayIndustry(industry);
+
+      if (industry === 'tuition centres') {
+        if (goal.includes('admission') || goal.includes('lead') || goal.includes('growth')) {
+          return 'A conversion-focused tuition centre website with admission enquiry tracking, WhatsApp/call CTAs, course pages, and a simple lead follow-up dashboard.';
+        }
+        if (goal.includes('management') || goal.includes('class') || goal.includes('student')) {
+          return 'A tuition centre management platform for students, batches, attendance, fees, staff, and reporting.';
+        }
+        return 'A combined admissions + tuition management system: website for growth, dashboard for daily operations.';
+      }
+
+      const industrySolutions = {
+        'coaching institutes': 'A coaching institute growth and management setup with course landing pages, demo enquiries, batches, attendance, fees, and student progress tracking.',
+        'kindergartens': 'A warm parent-focused kindergarten website plus lightweight parent communication/admission management flow.',
+        'schools': 'A school digital platform with admissions, parent communication, notices, attendance, fees, and admin reporting.',
+        'healthcare': 'A healthcare website or patient management system with appointments, services, reminders, staff/admin workflows, and secure records where needed.',
+        'dental clinics': 'A dental clinic appointment and lead system with treatment pages, before/after gallery, booking flow, patient reminders, and reviews.',
+        'eye hospitals': 'An eye hospital platform with appointment booking, speciality/surgery pages, patient guidance, follow-up reminders, and admin reporting.',
+        'recruitment': 'A recruitment platform with job listings, candidate profiles, employer/admin dashboards, screening workflow, and hiring pipeline tracking.',
+        'overseas recruitment': 'An overseas recruitment platform with country/job pages, candidate registration, document collection, status tracking, and job alerts.',
+        'home nursing': 'A home nursing operations platform with care requests, caregiver matching, scheduling, patient notes, billing, and status updates.',
+        'travel': 'A travel website or booking platform with packages, itinerary enquiries, booking flow, payments, and lead management.',
+        'real estate': 'A real estate listing and lead platform with property search, filters, enquiry capture, agent dashboard, and CRM follow-up.',
+        'construction': 'A construction business system with portfolio/lead capture plus project milestones, documents, client updates, and reporting.',
+        'interior design': 'An interior design portfolio and project management system with enquiries, packages, moodboards, timelines, and client communication.',
+        'retail': 'A retail commerce and operations system with product catalog, checkout, inventory, customer management, and reporting.',
+        'gyms': 'A gym growth and membership system with trial bookings, membership plans, attendance, renewals, trainer schedules, and payment tracking.',
+        'local businesses': 'A practical local business growth setup with Google-friendly website pages, WhatsApp/call actions, enquiry capture, reviews, offers, and simple follow-up tracking.',
+        'other businesses': `A practical digital solution for ${business}: start with the core customer or operations workflow, then expand into automation and reporting.`
+      };
+
+      let base = industrySolutions[industry] || industrySolutions['other businesses'];
+
+      if (projectType === 'Website') base = `A polished, conversion-focused website for ${business} with strong trust-building, enquiry capture, and analytics.`;
+      if (projectType === 'Mobile app') base = `A mobile app experience for ${business}, supported by an admin dashboard to manage users, content, requests, and reports.`;
+      if (projectType === 'Software platform') base = `A custom software platform for ${business}, focused on workflows, dashboards, roles, reports, and scalable operations.`;
+      if (projectType === 'Automation') base = `An automation layer for ${business} that reduces manual work using workflows, reminders, integrations, and reporting.`;
+      if (projectType === 'AI solution') base = `An AI-powered solution for ${business}, ideally starting with a guided assistant, recommendation engine, or smart workflow helper.`;
+      if (projectType === 'not sure yet') base += ' Pixie’s best-fit recommendation is to begin with the simplest solution that directly supports the main goal, then add app/AI/automation once the core flow is validated.';
+
+      return base;
+    }
+
+    function suggestFeatures() {
+      traceFunction('suggestFeatures');
+      const projectType = discovery.projectType;
+      const industry = discovery.industry;
+      const features = [];
+
+      const byIndustry = {
+        'coaching institutes': ['Course landing pages', 'Demo class booking', 'Batch management', 'Attendance', 'Fees', 'Student progress reports'],
+        'tuition centres': ['Course/class pages', 'Admission enquiry form', 'Student and parent records', 'Batch scheduling', 'Attendance and fee tracking', 'Follow-up reminders'],
+        'schools': ['Admissions flow', 'Parent/student portal', 'Attendance', 'Fee management', 'Notices and homework', 'Admin reports'],
+        'kindergartens': ['Admission enquiry', 'Parent trust pages', 'Activity updates', 'Attendance', 'Fee reminders', 'Parent communication'],
+        'healthcare': ['Appointment booking', 'Doctor/staff schedules', 'Patient profiles', 'Reminder notifications', 'Service pages', 'Admin dashboard'],
+        'dental clinics': ['Treatment pages', 'Appointment booking', 'Patient reminders', 'Before/after gallery', 'Reviews', 'Billing'],
+        'eye hospitals': ['Speciality pages', 'Appointment booking', 'Surgery enquiry flow', 'Patient guidance', 'Follow-up reminders', 'Reports'],
+        'recruitment': ['Job posting', 'Candidate profiles', 'Resume upload', 'Screening pipeline', 'Interview tracking', 'Employer/admin dashboard'],
+        'overseas recruitment': ['Country/job pages', 'Candidate registration', 'Document checklist', 'Application status tracking', 'Job alerts', 'Agent/client dashboard'],
+        'home nursing': ['Care request form', 'Caregiver/nurse matching', 'Visit scheduling', 'Patient notes', 'Billing', 'Status updates'],
+        'travel': ['Package listings', 'Itinerary enquiry builder', 'Booking/payment flow', 'Lead CRM', 'Customer notifications', 'Admin dashboard'],
+        'real estate': ['Property listings', 'Search and filters', 'Enquiry capture', 'Agent dashboard', 'Lead CRM', 'Map/media gallery'],
+        'construction': ['Project portfolio', 'Quote request form', 'Project milestones', 'Document storage', 'Client updates', 'Vendor/task tracking'],
+        'interior design': ['Portfolio gallery', 'Design packages', 'Enquiry form', 'Moodboard/project tracker', 'Client approvals', 'Timeline updates'],
+        'retail': ['Product catalog', 'Cart and checkout', 'Inventory', 'Customer accounts', 'Offers/loyalty', 'Sales reports'],
+        'gyms': ['Membership plans', 'Trial booking', 'Attendance', 'Renewal reminders', 'Trainer schedules', 'Payment tracking'],
+        'local businesses': ['Google-friendly service pages', 'WhatsApp/call actions', 'Enquiry form', 'Customer reviews', 'Offers section', 'Simple lead tracking'],
+        'other businesses': ['Lead capture', 'Customer/admin dashboard', 'Core workflow management', 'Notifications', 'Payments or requests', 'Reports']
+      };
+
+      const byType = {
+        'Website': ['Homepage and service pages', 'Contact/enquiry forms', 'WhatsApp/call actions', 'SEO basics', 'Analytics setup'],
+        'Mobile app': ['User accounts', 'Mobile dashboard', 'Push notifications', 'Admin panel', 'Payments or requests'],
+        'Software platform': ['Role-based accounts', 'Main dashboard', 'Workflow management', 'Reports', 'Permissions'],
+        'Automation': ['Workflow mapping', 'Trigger-based actions', 'Integrations', 'Alerts/reminders', 'Activity logs'],
+        'AI solution': ['AI assistant or guided flow', 'Knowledge base', 'Smart recommendations', 'Human handoff', 'Feedback loop'],
+        'not sure yet': ['Discovery-first MVP', 'Core user journey', 'Admin view', 'Lead/request capture', 'Basic reporting']
+      };
+
+      features.push(...(byIndustry[industry] || byIndustry['other businesses']));
+      features.push(...(byType[projectType] || []));
+      features.push(...discovery.features);
+
+      return unique(features).slice(0, 9);
+    }
+
+    function estimateTimeline() {
+      traceFunction('estimateTimeline');
+      const projectType = discovery.projectType;
+      const featureCount = suggestFeatures().length;
+      const complex = projectType === 'Software platform' || projectType === 'Mobile app' || projectType === 'AI solution';
+
+      if (projectType === 'Website') return featureCount > 7 ? 'About 4–7 weeks for a polished website with lead capture and core integrations.' : 'About 2–5 weeks for a focused, professional website.';
+      if (projectType === 'Mobile app') return 'About 8–14 weeks for a strong first mobile app with admin dashboard.';
+      if (projectType === 'Software platform') return 'About 10–18 weeks for a custom platform, depending on workflows, roles, and reports.';
+      if (projectType === 'Automation') return 'About 2–6 weeks for a focused automation system, depending on integrations.';
+      if (projectType === 'AI solution') return 'About 6–12 weeks for a useful AI-assisted first version, depending on data and accuracy needs.';
+      return complex ? 'Likely 8–16 weeks once the solution type is confirmed.' : 'Likely 3–8 weeks for a lean first version.';
+    }
+
+    function estimateBudget() {
+      traceFunction('estimateBudget');
+      const projectType = discovery.projectType;
+      const budgetRanges = {
+        'Website': 'Basic business website: around ₹15,000–₹50,000. More polished custom websites with stronger UI, forms, animations, SEO basics, and integrations can range from ₹50,000–₹2 Lakh+.',
+        'Mobile app': 'Lean mobile app: around ₹1.5 Lakh–₹4 Lakh. Apps with backend, admin panel, payments, notifications, and custom workflows can range from ₹4 Lakh–₹12 Lakh+.',
+        'Software platform': 'Focused software MVP: around ₹2 Lakh–₹6 Lakh. Advanced platforms with roles, dashboards, APIs, databases, reports, and integrations can range from ₹6 Lakh–₹20 Lakh+.',
+        'Automation': 'Focused business automation: around ₹50,000–₹2 Lakh. Multi-step automations with integrations, approvals, reminders, and dashboards can range from ₹2 Lakh–₹6 Lakh+.',
+        'AI solution': 'AI-assisted MVP: around ₹1.5 Lakh–₹5 Lakh. Advanced AI systems with custom data, integrations, accuracy controls, and dashboards can range from ₹5 Lakh–₹20 Lakh+.',
+        'not sure yet': 'A practical discovery/MVP starting point can often be planned from around ₹50,000–₹2 Lakh, then scaled based on business needs.'
+      };
+
+      return `${budgetRanges[projectType] || budgetRanges['not sure yet']} Pricing is flexible, negotiable, and can be tailored to your needs. A business can always start small and scale later.`;
+    }
+
+    function suggestGrowthOpportunities() {
+      traceFunction('suggestGrowthOpportunities');
+      const industry = discovery.industry;
+      const projectType = discovery.projectType;
+      const items = [];
+      const playbook = getPlaybook(industry);
+      if (playbook) {
+        items.push(...playbook.leads.slice(0, 2));
+        items.push(...playbook.automation.slice(0, 2));
+      }
+
+      if (['tuition centres', 'schools'].includes(industry)) {
+        items.push('SEO and local campaigns for admissions growth');
+        items.push('Parent/student portal after the first version');
+      }
+      if (industry === 'healthcare') {
+        items.push('Online appointment funnel with reminders');
+        items.push('Patient education content and follow-up automation');
+      }
+      if (industry === 'recruitment') {
+        items.push('AI screening or candidate matching later');
+        items.push('Employer self-service portal');
+      }
+      if (industry === 'home nursing') {
+        items.push('Caregiver mobile app for visits and notes');
+        items.push('Automated scheduling and availability matching');
+      }
+      if (industry === 'travel') {
+        items.push('Dynamic itinerary builder');
+        items.push('CRM follow-ups for enquiries that do not book immediately');
+      }
+      if (industry === 'real estate') {
+        items.push('Lead scoring and automated follow-ups');
+        items.push('Virtual tours and property recommendation flow');
+      }
+      if (industry === 'construction') {
+        items.push('Client portal for milestones, documents, and updates');
+        items.push('Quote-to-project workflow automation');
+      }
+      if (industry === 'interior design') {
+        items.push('Client approval workflow for designs and materials');
+        items.push('Before/after portfolio campaigns');
+      }
+      if (industry === 'retail') {
+        items.push('Loyalty and retention campaigns');
+        items.push('Inventory and sales forecasting later');
+      }
+
+      if (projectType !== 'AI solution') items.push('Add an AI assistant once common questions/workflows are clear');
+      if (projectType !== 'Automation') items.push('Automate reminders, follow-ups, and reporting after launch');
+      items.push('Use analytics to decide which features to build next');
+
+      return unique(items).slice(0, 5);
+    }
+
+    function detectProjectType(message) {
+      traceFunction('detectProjectType');
+      if (matches(message, ['not sure', 'unsure', "don't know", 'dont know', 'idk', 'no idea'])) return 'not sure yet';
+      if (matches(message, ['ai', 'chatbot', 'assistant', 'gpt', 'machine learning', 'ml', 'recommendation engine'])) return 'AI solution';
+      if (matches(message, ['automation', 'automate', 'workflow', 'zapier', 'integration', 'integrations'])) return 'Automation';
+      if (matches(message, ['mobile app', 'ios', 'android', 'native app'])) return 'Mobile app';
+      if (matches(message, ['software platform', 'platform', 'saas', 'portal', 'dashboard', 'crm', 'erp', 'management system', 'admin system'])) return 'Software platform';
+      if (matches(message, ['website', 'web site', 'landing page', 'site', 'webpage', 'ecommerce website', 'e-commerce website'])) return 'Website';
+      if (matches(message, ['app'])) return 'Mobile app';
+      return null;
+    }
+
+    function detectIndustry(message) {
+      traceFunction('detectIndustry');
+      const industries = [
+        ['coaching institutes', ['coaching institute', 'coaching institutes', 'coaching centre', 'coaching center', 'entrance coaching', 'neet coaching', 'jee coaching', 'ielts coaching']],
+        ['tuition centres', ['tuition', 'tuition centre', 'tuition center', 'tutoring', 'learning centre', 'learning center']],
+        ['kindergartens', ['kindergarten', 'preschool', 'pre school', 'play school', 'playschool', 'nursery school']],
+        ['overseas recruitment', ['overseas recruitment', 'manpower agency', 'overseas jobs', 'gulf recruitment', 'abroad recruitment', 'foreign recruitment']],
+        ['dental clinics', ['dental clinic', 'dentist', 'dental hospital', 'orthodontic', 'implant clinic']],
+        ['eye hospitals', ['eye hospital', 'eye clinic', 'ophthalmology', 'eye care', 'lasik', 'cataract']],
+        ['home nursing', ['home nursing', 'home care', 'elder care', 'caregiver', 'caregivers', 'nursing service', 'nurse at home']],
+        ['interior design', ['interior design', 'interior designer', 'interiors', 'renovation design']],
+        ['real estate', ['real estate', 'property', 'properties', 'realtor', 'broker', 'apartment', 'rental']],
+        ['recruitment', ['recruitment', 'hiring', 'staffing', 'hr', 'jobs', 'job portal', 'candidate', 'candidates']],
+        ['construction', ['construction', 'contractor', 'builders', 'builder', 'civil work', 'architecture firm', 'construction company']],
+        ['healthcare', ['healthcare', 'clinic', 'hospital', 'doctor', 'doctors', 'patient', 'pharmacy', 'medical']],
+        ['schools', ['school', 'schools', 'academy', 'college']],
+        ['travel', ['travel agency', 'travel', 'tour', 'tourism', 'holiday', 'hotel', 'trip', 'booking agency']],
+        ['gyms', ['gym', 'fitness centre', 'fitness center', 'fitness studio', 'health club']],
+        ['retail', ['retail', 'shop', 'store', 'ecommerce', 'e-commerce', 'boutique', 'supermarket']],
+        ['local businesses', ['local business', 'small business', 'local shop', 'local service', 'salon', 'restaurant', 'cafe', 'bakery']],
+        ['other businesses', ['business', 'company', 'service business', 'agency', 'other']]
+      ];
+
+      for (const [industry, keywords] of industries) {
+        if (matches(message, keywords)) return industry;
+      }
+      return null;
+    }
+
+    function detectGoal(message, previousStage) {
+      traceFunction('detectGoal');
+      const goals = [];
+      if (matches(message, ['admission', 'admissions', 'enquiry', 'enquiries'])) goals.push('more admissions');
+      if (matches(message, ['lead', 'leads', 'customers', 'sales', 'growth', 'marketing', 'more clients', 'more patients', 'more bookings'])) goals.push('growth and lead generation');
+      if (matches(message, ['management', 'manage', 'operations', 'admin', 'dashboard', 'tracking', 'reports', 'organize'])) goals.push('better management');
+      if (matches(message, ['booking', 'appointments', 'appointment', 'schedule', 'scheduling'])) goals.push('booking and scheduling');
+      if (matches(message, ['payment', 'payments', 'fees', 'billing', 'invoice', 'invoices'])) goals.push('payments and billing');
+      if (matches(message, ['automation', 'automate', 'manual work', 'save time'])) goals.push('automation');
+      if (matches(message, ['ai', 'chatbot', 'assistant', 'recommendation'])) goals.push('AI assistance');
+      if (matches(message, ['both', 'all of it']) && previousStage === 'goal') goals.push('growth and better management');
+      return unique(goals).join(' + ') || null;
+    }
+
+    function detectAudience(message, previousStage) {
+      traceFunction('detectAudience');
+      const audiences = [];
+      if (matches(message, ['student', 'students', 'parent', 'parents'])) audiences.push('students and parents');
+      if (matches(message, ['patient', 'patients'])) audiences.push('patients');
+      if (matches(message, ['candidate', 'candidates', 'job seeker', 'job seekers'])) audiences.push('candidates');
+      if (matches(message, ['client', 'clients'])) audiences.push('clients');
+      if (matches(message, ['customer', 'customers', 'buyer', 'buyers'])) audiences.push('customers');
+      if (matches(message, ['staff', 'team', 'employees', 'admin', 'admins', 'managers'])) audiences.push('staff and admins');
+      if (matches(message, ['agent', 'agents'])) audiences.push('agents');
+      if (matches(message, ['nurse', 'nurses', 'caregiver', 'caregivers'])) audiences.push('caregivers');
+      if (previousStage === 'audience' && audiences.length === 0 && message.length > 1) audiences.push(cleanSentence(message));
+      return unique(audiences).join(', ') || null;
+    }
+
+    function detectFeatures(message, previousStage) {
+      traceFunction('detectFeatures');
+      const found = [];
+      const featureMap = [
+        ['booking', ['booking', 'bookings', 'appointment', 'appointments']],
+        ['payments', ['payment', 'payments', 'fees', 'billing', 'invoice', 'checkout']],
+        ['dashboard', ['dashboard', 'admin panel', 'admin', 'portal']],
+        ['reports', ['report', 'reports', 'analytics']],
+        ['CRM / lead tracking', ['crm', 'lead tracking', 'follow up', 'follow-up', 'leads']],
+        ['enquiry/admission forms', ['enquiry form', 'enquiry forms', 'admission form', 'admission forms', 'forms']],
+        ['WhatsApp/call actions', ['whatsapp', 'call button', 'call actions']],
+        ['attendance', ['attendance']],
+        ['student management', ['student management', 'student records', 'student portal']],
+        ['inventory', ['inventory', 'stock']],
+        ['notifications', ['notification', 'notifications', 'reminder', 'reminders', 'alerts']],
+        ['chat', ['chat', 'chatbot', 'messages', 'messaging']],
+        ['property listings', ['listing', 'listings', 'properties']],
+        ['job listings', ['job listing', 'job listings', 'jobs']],
+        ['scheduling', ['schedule', 'scheduling', 'calendar']],
+        ['AI assistant', ['ai assistant', 'ai', 'assistant']],
+        ['integrations', ['integration', 'integrations', 'api']]
+      ];
+      for (const [feature, keywords] of featureMap) {
+        if (matches(message, keywords)) found.push(feature);
+      }
+      if (previousStage === 'features' && found.length === 0 && !matches(message, ['not sure', 'unsure', 'idk'])) {
+        found.push(`Custom requirements: ${cleanSentence(message)}`);
+      }
+      return unique(found);
+    }
+
+    function detectTimeline(message, previousStage) {
+      traceFunction('detectTimeline');
+      const timePattern = /\b(\d+\s*(day|days|week|weeks|month|months)|\d+\s*-\s*\d+\s*(week|weeks|month|months))\b/i;
+      const match = message.match(timePattern);
+      if (match) return match[0];
+      if (matches(message, ['urgent', 'asap', 'immediately', 'soon'])) return 'urgent / as soon as possible';
+      if (matches(message, ['few weeks'])) return 'a few weeks';
+      if (matches(message, ['1-2 months', '1 to 2 months', 'one to two months'])) return '1–2 months';
+      if (matches(message, ['3 months', 'three months', '3+ months'])) return '3+ months';
+      if (matches(message, ['no fixed deadline', 'no deadline', 'flexible'])) return 'flexible / no fixed deadline';
+      if (previousStage === 'timeline' && message.length > 1) return cleanSentence(message);
+      return null;
+    }
+
+    function detectBudget(message, previousStage) {
+      traceFunction('detectBudget');
+      const hasBudgetSignal = /(₹|rs\.?|inr|budget|price|cost|quote|k\b|lakh|Lakhs|crore|cr\b|thousand|rupees|premium|affordable|cheap)/i.test(message);
+      const looksLikeTimeline = /\b(day|days|week|weeks|month|months|urgent|asap|deadline)\b/i.test(message);
+
+      if (matches(message, ['low budget', 'small budget', 'cheap', 'affordable'])) return 'low / lean budget';
+      if (matches(message, ['medium budget', 'moderate'])) return 'medium budget';
+      if (matches(message, ['premium', 'high budget', 'enterprise'])) return 'premium budget';
+      if (matches(message, ['not sure', 'no budget', 'unknown']) && previousStage === 'budget') return 'not sure yet';
+
+      if (!hasBudgetSignal && previousStage !== 'budget') return null;
+      if (looksLikeTimeline && !hasBudgetSignal) return null;
+
+      const budgetPattern = /((₹|rs\.?|inr)?\s*\d+[\d,]*(\.\d+)?\s*(k|lakh|Lakhs|crore|cr|thousand|rupees)?)(\s*(-|to)\s*(₹|rs\.?|inr)?\s*\d+[\d,]*(\.\d+)?\s*(k|lakh|Lakhs|crore|cr|thousand|rupees)?)?/i;
+      const match = message.match(budgetPattern);
+      if (match) return match[0].trim();
+
+      if (previousStage === 'budget' && message.length > 1 && !looksLikeTimeline) return cleanSentence(message);
+      return null;
+    }
+
+    function hasMinimumForSnapshot() {
+      traceFunction('hasMinimumForSnapshot');
+      return Boolean(discovery.projectType && discovery.industry && discovery.goal);
+    }
+
+    function hasEnoughForSnapshot() {
+      traceFunction('hasEnoughForSnapshot');
+      const filled = [discovery.projectType, discovery.industry, discovery.goal, discovery.audience, discovery.features.length, discovery.timeline, discovery.budget].filter(Boolean).length;
+      return filled >= 4;
+    }
+
+    function isReset(message) {
+      traceFunction('isReset');
+      return matches(message, ['reset', 'start over', 'new project', 'clear chat']);
+    }
+
+    function isGreeting(message) {
+      traceFunction('isGreeting');
+      return matches(message, ['hi', 'hello', 'hey', 'yo']);
+    }
+
+    function matches(message, words) {
+      traceFunction('matches');
+      return words.some((word) => {
+        const cleanWord = normalize(word);
+        const escaped = cleanWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        if (cleanWord.includes(' ') || cleanWord.includes("'")) return message.includes(cleanWord);
+        return new RegExp(`\\b${escaped}\\b`, 'i').test(message);
+      });
+    }
+
+    function normalize(value) {
+      traceFunction('normalize');
+      return String(value || '')
+        .toLowerCase()
+        .replace(/[’]/g, "'")
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    function cleanSentence(value) {
+      traceFunction('cleanSentence');
+      return String(value || '').trim().replace(/\s+/g, ' ');
+    }
+
+    function unique(items) {
+      traceFunction('unique');
+      return [...new Set(items.filter(Boolean))];
+    }
+
+    function displayIndustry(industry) {
+      traceFunction('displayIndustry');
+      if (!industry) return 'your business';
+      if (discovery.industryDetail) return discovery.industryDetail;
+      const labels = {
+        'tuition centres': 'tuition centre',
+        'coaching institutes': 'coaching institute',
+        'schools': 'school',
+        'kindergartens': 'kindergarten',
+        'healthcare': 'healthcare business',
+        'dental clinics': 'dental clinic',
+        'eye hospitals': 'eye hospital',
+        'recruitment': 'recruitment business',
+        'overseas recruitment': 'overseas recruitment agency',
+        'home nursing': 'home nursing service',
+        'travel': 'travel agency',
+        'real estate': 'real estate business',
+        'construction': 'construction company',
+        'interior design': 'interior design business',
+        'gyms': 'gym or fitness business',
+        'retail': 'retail business',
+        'local businesses': 'local business',
+        'other businesses': 'business'
+      };
+      return labels[industry] || industry;
+    }
+
+    function displayProjectType(projectType) {
+      traceFunction('displayProjectType');
+      return projectType || 'digital solution';
+    }
+
+    function withArticle(phrase) {
+      traceFunction('withArticle');
+      if (!phrase) return 'a project';
+      const lower = phrase.toLowerCase();
+      if (lower.startsWith('a ') || lower.startsWith('an ') || lower.startsWith('the ') || lower.endsWith('s')) return phrase;
+      return /^[aeiou]/i.test(phrase) ? `an ${phrase}` : `a ${phrase}`;
+    }
+
+    function random(items) {
+      traceFunction('random');
+      const list = Array.isArray(items) ? items.filter((item) => item !== undefined && item !== null) : [];
+      if (!list.length) return '';
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+  
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0bb4b459edf8ae4',t:'MTc4MTQ2MDY0OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0bbb732be179bc1',t:'MTc4MTQ2NTA3MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
