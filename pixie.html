@@ -350,44 +350,44 @@
       position: absolute;
       left: max(12px, calc((100vw - 900px) / 2 + 14px));
       bottom: calc(100% - 18px);
-      width: 166px;
-      height: 172px;
+      width: 138px;
+      height: 144px;
       z-index: 12;
       pointer-events: none;
-      --bot-shell: #fffdfb;
-      --bot-shell-2: #f4f0ed;
-      --bot-shell-3: #e6e0dc;
-      --bot-panel: #fff7f9;
-      --bot-panel-2: #ffe8ee;
-      --bot-silver: #d8dce2;
-      --bot-silver-2: #eef1f4;
-      --bot-accent: #f06f93;
-      --bot-accent-soft: #ffc2d1;
-      --bot-coral: #f48676;
-      --bot-blue: #9fd7ff;
-      --bot-blue-soft: #d9f0ff;
-      --bot-eye-dark: #1d1b22;
-      --bot-eye-mid: #504556;
-      --bot-eye-rose: #e9799b;
-      --bot-eye-light: #ffe0ea;
+      --bot-shell: #ffe8aa;
+      --bot-shell-2: #ffc75a;
+      --bot-shell-3: #f59e0b;
+      --bot-panel: #fff5cf;
+      --bot-panel-2: #ffc65a;
+      --bot-silver: #ffb21f;
+      --bot-silver-2: #fff1b8;
+      --bot-accent: #f97316;
+      --bot-accent-soft: #ffd36b;
+      --bot-coral: #fb923c;
+      --bot-blue: #60a5fa;
+      --bot-blue-soft: #fff0b3;
+      --bot-eye-dark: #08070a;
+      --bot-eye-mid: #1f2937;
+      --bot-eye-rose: #fb7185;
+      --bot-eye-light: #ffffff;
       --bot-eye-shine: #ffffff;
-      --bot-line: rgba(45, 38, 48, 0.20);
-      --bot-cheek: #ff9bb4;
-      --bot-seat: rgba(255, 255, 255, 0.74);
-      --bot-seat-line: rgba(240, 111, 147, 0.22);
-      --bot-ui-panel: rgba(255, 255, 255, 0.90);
-      --bot-ui-line: rgba(240, 111, 147, 0.40);
-      --bot-shadow: rgba(105, 76, 89, 0.24);
-      --bot-ground-shadow: rgba(64, 45, 56, 0.16);
+      --bot-line: #07070a;
+      --bot-cheek: #fb923c;
+      --bot-seat: rgba(255, 255, 255, 0.0);
+      --bot-seat-line: rgba(240, 111, 147, 0.0);
+      --bot-ui-panel: rgba(255, 255, 255, 0.92);
+      --bot-ui-line: rgba(147, 197, 253, 0.62);
+      --bot-shadow: rgba(42, 38, 54, 0.22);
+      --bot-ground-shadow: rgba(64, 45, 56, 0.14);
     }
 
     .pixie-avatar-stage::after {
       content: '';
       position: absolute;
-      left: 44px;
-      bottom: 5px;
-      width: 72px;
-      height: 14px;
+      left: 36px;
+      bottom: 4px;
+      width: 60px;
+      height: 11px;
       border-radius: 999px;
       background: radial-gradient(ellipse at center, var(--bot-ground-shadow) 0%, rgba(64, 45, 56, 0.08) 42%, transparent 72%);
       filter: blur(2px);
@@ -398,13 +398,14 @@
 
     .pixie-avatar {
       position: absolute;
-      left: -8px;
+      left: -3px;
       bottom: 0;
-      width: 166px;
-      height: 170px;
+      width: 138px;
+      height: 142px;
       transform-origin: 50% 92%;
-      filter: drop-shadow(0 20px 28px var(--bot-shadow));
-      pointer-events: none;
+      filter: drop-shadow(0 14px 22px var(--bot-shadow));
+      pointer-events: auto;
+      cursor: pointer;
       z-index: 1;
       will-change: transform;
       animation: avatarBreathe 3.45s ease-in-out infinite, avatarSway 6.6s ease-in-out infinite;
@@ -433,8 +434,6 @@
     .pixie-tablet,
     .pixie-tablet-lines,
     .pixie-mouth-idle,
-    .pixie-foot-left,
-    .pixie-foot-right,
     .pixie-processor,
     .pixie-zzz {
       transform-box: fill-box;
@@ -491,6 +490,8 @@
 
     .pixie-eye-smile,
     .pixie-eye-think,
+    .pixie-eye-sleep,
+    .pixie-eye-curious,
     .pixie-brows-happy,
     .pixie-brows-think,
     .pixie-brows-focused,
@@ -499,6 +500,7 @@
     .pixie-mouth-open,
     .pixie-mouth-think,
     .pixie-mouth-focused,
+    .pixie-mouth-sleepy,
     .pixie-tablet-lines,
     .pixie-processor,
     .pixie-zzz {
@@ -506,21 +508,15 @@
     }
 
     .pixie-arm-left {
-      transform-origin: 86% 28%;
+      transform-origin: 86% 24%;
+      animation: avatarIdleArmLeft 5.8s ease-in-out infinite;
     }
 
     .pixie-arm-right {
-      transform-origin: 14% 28%;
+      transform-origin: 14% 24%;
+      animation: avatarIdleArmRight 6.2s ease-in-out infinite;
     }
 
-    .pixie-foot-left,
-    .pixie-foot-right {
-      animation: avatarFootDangle 6.2s ease-in-out infinite;
-    }
-
-    .pixie-foot-right {
-      animation-delay: 1.35s;
-    }
 
     .pixie-tablet {
       opacity: 0.14;
@@ -657,6 +653,17 @@
       animation: none;
     }
 
+
+    .pixie-avatar[data-state="thinking"] .pixie-arm-left {
+      transform: rotate(-22deg) translate(2px, -1px);
+      animation: none;
+    }
+
+    .pixie-avatar[data-state="thinking"] .pixie-arm-right {
+      transform: rotate(8deg) translateY(1px);
+      animation: none;
+    }
+
     .pixie-avatar[data-state="thinking"] .pixie-eye-open,
     .pixie-avatar[data-state="thinking"] .pixie-brows-idle,
     .pixie-avatar[data-state="thinking"] .pixie-mouth-idle {
@@ -740,6 +747,43 @@
       opacity: 1;
     }
 
+
+    .pixie-avatar.avatar-sleepy .pixie-eye-smile,
+    .pixie-avatar.avatar-sleepy .pixie-mouth-focused {
+      opacity: 0;
+    }
+
+    .pixie-avatar.avatar-sleepy .pixie-eye-sleep,
+    .pixie-avatar.avatar-sleepy .pixie-mouth-sleepy,
+    .pixie-avatar.avatar-sleepy .pixie-zzz {
+      opacity: 1;
+    }
+
+    .pixie-avatar.avatar-look-left .pixie-brows-think,
+    .pixie-avatar.avatar-look-right .pixie-brows-think {
+      opacity: 1;
+    }
+
+    .pixie-avatar.avatar-look-left .pixie-brows-idle,
+    .pixie-avatar.avatar-look-right .pixie-brows-idle {
+      opacity: 0;
+    }
+
+
+    .pixie-avatar.avatar-look-left .pixie-eye-open,
+    .pixie-avatar.avatar-look-right .pixie-eye-open,
+    .pixie-avatar.avatar-look-left .pixie-mouth-idle,
+    .pixie-avatar.avatar-look-right .pixie-mouth-idle {
+      opacity: 0;
+    }
+
+    .pixie-avatar.avatar-look-left .pixie-eye-curious,
+    .pixie-avatar.avatar-look-right .pixie-eye-curious,
+    .pixie-avatar.avatar-look-left .pixie-mouth-think,
+    .pixie-avatar.avatar-look-right .pixie-mouth-think {
+      opacity: 1;
+    }
+
     .pixie-avatar.avatar-look-left .pixie-face {
       animation: none;
       transform: translateX(-2.5px);
@@ -750,9 +794,55 @@
       transform: translateX(2.5px);
     }
 
+
+    .pixie-avatar.avatar-pointer .pixie-pupils {
+      animation: none;
+      transform: translate(var(--eye-x, 0px), var(--eye-y, 0px));
+    }
+
+    .pixie-avatar.avatar-hover .pixie-eye-smile,
+    .pixie-avatar.avatar-hover .pixie-mouth-happy,
+    .pixie-avatar.avatar-hover .pixie-brows-happy {
+      opacity: 1;
+    }
+
+    .pixie-avatar.avatar-hover .pixie-eye-open,
+    .pixie-avatar.avatar-hover .pixie-mouth-idle,
+    .pixie-avatar.avatar-hover .pixie-brows-idle {
+      opacity: 0;
+    }
+
+    .pixie-avatar.avatar-curious .pixie-eye-open,
+    .pixie-avatar.avatar-curious .pixie-mouth-idle,
+    .pixie-avatar.avatar-curious .pixie-brows-idle {
+      opacity: 0;
+    }
+
+    .pixie-avatar.avatar-curious .pixie-eye-curious,
+    .pixie-avatar.avatar-curious .pixie-mouth-think,
+    .pixie-avatar.avatar-curious .pixie-brows-think {
+      opacity: 1;
+    }
+
+    .pixie-avatar.avatar-bored .pixie-eye-open,
+    .pixie-avatar.avatar-bored .pixie-mouth-idle,
+    .pixie-avatar.avatar-bored .pixie-brows-idle {
+      opacity: 0;
+    }
+
+    .pixie-avatar.avatar-bored .pixie-eye-sleep,
+    .pixie-avatar.avatar-bored .pixie-mouth-sleepy,
+    .pixie-avatar.avatar-bored .pixie-zzz {
+      opacity: 1;
+    }
+
+    .pixie-avatar.avatar-bored {
+      animation: avatarBoredDrift 4.4s ease-in-out infinite;
+    }
+
     @keyframes avatarBreathe {
       0%, 100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-1.5px) scale(1.007); }
+      50% { transform: translateY(-1.2px) scale(1.004); }
     }
 
     @keyframes avatarSway {
@@ -762,7 +852,7 @@
 
     @keyframes avatarTinyFloat {
       0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-0.8px); }
+      50% { transform: translateY(-1.6px); }
     }
 
     @keyframes avatarBodySettle {
@@ -772,28 +862,28 @@
 
     @keyframes avatarHeadIdle {
       0%, 100% { transform: rotate(0deg) translateY(0); }
-      24% { transform: rotate(-1.25deg) translateY(-0.4px); }
-      52% { transform: rotate(0.95deg) translateY(0.3px); }
-      78% { transform: rotate(-0.5deg) translateY(0); }
+      24% { transform: rotate(-0.75deg) translateY(-0.25px); }
+      52% { transform: rotate(0.65deg) translateY(0.2px); }
+      78% { transform: rotate(-0.35deg) translateY(0); }
     }
 
     @keyframes avatarLookAround {
-      0%, 18%, 100% { transform: translate(0, 0); }
-      28%, 40% { transform: translate(-1.3px, .25px); }
-      56%, 68% { transform: translate(1.3px, -.2px); }
-      82%, 90% { transform: translate(.25px, .75px); }
+      0%, 16%, 100% { transform: translate(0, 0); }
+      26%, 39% { transform: translate(-1.8px, .1px); }
+      54%, 67% { transform: translate(1.8px, -.2px); }
+      82%, 91% { transform: translate(.2px, .9px); }
     }
 
     @keyframes avatarPupilLife {
-      0%, 18%, 100% { transform: translate(0, 0); }
-      28%, 40% { transform: translate(-1.1px, 0.2px); }
-      56%, 68% { transform: translate(1.2px, -0.2px); }
-      82%, 90% { transform: translate(0.2px, 0.8px); }
+      0%, 16%, 100% { transform: translate(0, 0); }
+      26%, 39% { transform: translate(-2px, 0.1px); }
+      54%, 67% { transform: translate(2px, -0.2px); }
+      82%, 91% { transform: translate(0.3px, 1px); }
     }
 
     @keyframes avatarBlink {
-      0%, 70%, 74%, 82%, 86%, 100% { transform: scaleY(1); }
-      72%, 84% { transform: scaleY(0.08); }
+      0%, 68%, 72%, 80%, 84%, 100% { transform: scaleY(1); }
+      70%, 82% { transform: scaleY(0.08); }
     }
 
     @keyframes avatarStatusPulse {
@@ -822,6 +912,19 @@
       80% { transform: rotate(1deg); }
     }
 
+
+    @keyframes avatarIdleArmLeft {
+      0%, 100% { transform: rotate(0deg) translateY(0); }
+      45% { transform: rotate(-2.4deg) translateY(-0.8px); }
+      72% { transform: rotate(1.4deg) translateY(0.4px); }
+    }
+
+    @keyframes avatarIdleArmRight {
+      0%, 100% { transform: rotate(0deg) translateY(0); }
+      42% { transform: rotate(2.1deg) translateY(-0.7px); }
+      78% { transform: rotate(-1.5deg) translateY(0.4px); }
+    }
+
     @keyframes avatarPodRight {
       0%, 64%, 100% { transform: rotate(0deg); }
       68% { transform: rotate(4deg) translateY(-1px); }
@@ -833,14 +936,10 @@
       50% { transform: scaleX(1.06) translateY(-0.22px); }
     }
 
-    @keyframes avatarFootDangle {
-      0%, 100% { transform: rotate(0deg); }
-      50% { transform: rotate(2.8deg) translateY(.7px); }
-    }
 
     @keyframes avatarSentJump {
       0% { transform: translateY(0) scale(1); }
-      40% { transform: translateY(-6px) scale(1.026); }
+      40% { transform: translateY(-3px) scale(1.014); }
       100% { transform: translateY(0) scale(1); }
     }
 
@@ -876,18 +975,18 @@
 
     @keyframes avatarSuccessBounce {
       0% { transform: translateY(0) scale(1); }
-      30% { transform: translateY(-6px) scale(1.036); }
-      58% { transform: translateY(0) scale(0.995); }
-      78% { transform: translateY(-2px) scale(1.014); }
+      30% { transform: translateY(-3.5px) scale(1.018); }
+      58% { transform: translateY(0) scale(0.998); }
+      78% { transform: translateY(-1.4px) scale(1.006); }
       100% { transform: translateY(0) scale(1); }
     }
 
     @keyframes avatarWave {
       0%, 100% { transform: rotate(0deg); }
-      22% { transform: rotate(-16deg); }
-      46% { transform: rotate(11deg); }
-      68% { transform: rotate(-12deg); }
-      86% { transform: rotate(6deg); }
+      24% { transform: rotate(-9deg); }
+      50% { transform: rotate(6deg); }
+      74% { transform: rotate(-6deg); }
+      88% { transform: rotate(3deg); }
     }
 
     @keyframes avatarStretch {
@@ -904,6 +1003,12 @@
     @keyframes avatarSleepyBlink {
       0%, 100% { transform: scaleY(1); }
       20%, 72% { transform: scaleY(0.05); }
+    }
+
+
+    @keyframes avatarBoredDrift {
+      0%, 100% { transform: translateY(1px) rotate(-0.6deg) scale(.99); }
+      50% { transform: translateY(3px) rotate(0.6deg) scale(.988); }
     }
 
     .composer-shell {
@@ -1040,31 +1145,31 @@
       }
 
       .pixie-avatar-stage {
-        --bot-shell: #272a31;
-        --bot-shell-2: #343943;
-        --bot-shell-3: #535b66;
-        --bot-panel: #1f222a;
-        --bot-panel-2: #34303a;
-        --bot-silver: #cfd5dc;
-        --bot-silver-2: #3d4651;
-        --bot-accent: #ff7da3;
-        --bot-accent-soft: #ffc3d3;
-        --bot-coral: #ff9283;
-        --bot-blue: #9bd8ff;
-        --bot-blue-soft: #d6f0ff;
-        --bot-eye-dark: #fff9fc;
-        --bot-eye-mid: #ff9dbc;
-        --bot-eye-rose: #ffc6d8;
+        --bot-shell: #ffe8aa;
+        --bot-shell-2: #ffc75a;
+        --bot-shell-3: #f59e0b;
+        --bot-panel: #fff5cf;
+        --bot-panel-2: #ffc65a;
+        --bot-silver: #ffb21f;
+        --bot-silver-2: #fff1b8;
+        --bot-accent: #f97316;
+        --bot-accent-soft: #ffd36b;
+        --bot-coral: #fb923c;
+        --bot-blue: #60a5fa;
+        --bot-blue-soft: #fff0b3;
+        --bot-eye-dark: #08070a;
+        --bot-eye-mid: #1f2937;
+        --bot-eye-rose: #fb7185;
         --bot-eye-light: #ffffff;
         --bot-eye-shine: #ffffff;
-        --bot-line: rgba(255, 255, 255, 0.16);
-        --bot-cheek: #fb7185;
-        --bot-seat: rgba(26, 24, 36, 0.80);
-        --bot-seat-line: rgba(255, 125, 163, 0.28);
-        --bot-ui-panel: rgba(36, 31, 47, 0.80);
-        --bot-ui-line: rgba(155, 216, 255, 0.54);
-        --bot-shadow: rgba(0, 0, 0, 0.44);
-        --bot-ground-shadow: rgba(0, 0, 0, 0.36);
+        --bot-line: #07070a;
+        --bot-cheek: #fb923c;
+        --bot-seat: rgba(26, 24, 36, 0.0);
+        --bot-seat-line: rgba(255, 125, 163, 0.0);
+        --bot-ui-panel: rgba(255, 255, 255, 0.92);
+        --bot-ui-line: rgba(147, 197, 253, 0.70);
+        --bot-shadow: rgba(0, 0, 0, 0.34);
+        --bot-ground-shadow: rgba(0, 0, 0, 0.30);
       }
 
       body {
@@ -1197,21 +1302,21 @@
       .pixie-avatar-stage {
         left: 6px;
         bottom: calc(100% - 12px);
-        width: 118px;
-        height: 128px;
+        width: 100px;
+        height: 108px;
       }
 
       .pixie-avatar-stage::after {
-        left: 31px;
+        left: 27px;
         bottom: 3px;
-        width: 52px;
-        height: 10px;
+        width: 43px;
+        height: 8px;
         filter: blur(1.6px);
       }
 
       .pixie-avatar {
-        width: 118px;
-        height: 122px;
+        width: 100px;
+        height: 104px;
       }
 
       #messageInput {
@@ -1258,164 +1363,155 @@
         <div id="pixieAvatar" class="pixie-avatar" data-state="idle" role="img" aria-label="Pixie, a friendly digital business consultant companion">
           <svg viewBox="0 0 160 168" aria-hidden="true" focusable="false">
             <defs>
-              <linearGradient id="botShellGrad" x1="38" y1="24" x2="121" y2="142" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stop-color="var(--bot-shell)" />
-                <stop offset="0.55" stop-color="var(--bot-shell-2)" />
-                <stop offset="1" stop-color="var(--bot-shell-3)" />
+              <linearGradient id="pixieHeadFill" x1="33" y1="38" x2="129" y2="115" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#ffe69a" />
+                <stop offset="0.44" stop-color="#ffc957" />
+                <stop offset="1" stop-color="#f59e0b" />
               </linearGradient>
-              <linearGradient id="botFaceGrad" x1="43" y1="36" x2="118" y2="99" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stop-color="var(--bot-panel)" />
-                <stop offset="1" stop-color="var(--bot-panel-2)" />
+              <linearGradient id="pixieInnerScreen" x1="38" y1="48" x2="122" y2="105" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#fff2b8" />
+                <stop offset="0.55" stop-color="#ffc95c" />
+                <stop offset="1" stop-color="#f6a313" />
               </linearGradient>
-              <linearGradient id="botSilverGrad" x1="50" y1="82" x2="108" y2="148" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stop-color="var(--bot-silver-2)" />
-                <stop offset="1" stop-color="var(--bot-silver)" />
+              <linearGradient id="pixieBodyFill" x1="54" y1="108" x2="106" y2="154" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#ffeaa7" />
+                <stop offset="0.52" stop-color="#ffb72b" />
+                <stop offset="1" stop-color="#f59e0b" />
               </linearGradient>
-              <linearGradient id="botAccentGrad" x1="59" y1="95" x2="101" y2="142" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stop-color="var(--bot-accent-soft)" />
-                <stop offset="1" stop-color="var(--bot-accent)" />
+              <linearGradient id="pixieAccentFill" x1="16" y1="63" x2="145" y2="148" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#ffb22e" />
+                <stop offset="0.54" stop-color="#fb7c16" />
+                <stop offset="1" stop-color="#ea580c" />
               </linearGradient>
-              <linearGradient id="botPanelGrad" x1="53" y1="113" x2="107" y2="143" gradientUnits="userSpaceOnUse">
-                <stop offset="0" stop-color="var(--bot-ui-panel)" />
-                <stop offset="1" stop-color="rgba(217,240,255,.50)" />
+              <linearGradient id="pixieCream" x1="38" y1="42" x2="123" y2="72" gradientUnits="userSpaceOnUse">
+                <stop offset="0" stop-color="#fffdf2" />
+                <stop offset="1" stop-color="#fff0b6" />
               </linearGradient>
-              <radialGradient id="botEyeGrad" cx="43%" cy="28%" r="76%">
-                <stop offset="0" stop-color="var(--bot-eye-light)" />
-                <stop offset="0.24" stop-color="var(--bot-eye-rose)" />
-                <stop offset="0.55" stop-color="var(--bot-eye-mid)" />
-                <stop offset="1" stop-color="var(--bot-eye-dark)" />
+              <radialGradient id="pixieEye" cx="36%" cy="30%" r="70%">
+                <stop offset="0" stop-color="#2a2a2a" />
+                <stop offset="1" stop-color="#030306" />
               </radialGradient>
             </defs>
 
-            <ellipse cx="80" cy="154" rx="45" ry="7" fill="var(--bot-shadow)" opacity="0.30" />
-            <path class="pixie-chat-ledge" d="M29 138c10-8 92-8 102 0 6 5 2 13-8 15H37c-10-2-14-10-8-15Z" fill="var(--bot-seat)" stroke="var(--bot-seat-line)" />
-            <path d="M40 139h80" stroke="rgba(255,255,255,.70)" stroke-width="2.2" stroke-linecap="round" />
+            <ellipse cx="80" cy="154" rx="39" ry="8" fill="var(--bot-ground-shadow)" opacity="0.55" />
 
             <g class="pixie-root">
-              <g class="pixie-legs">
-                <path d="M66 135c-5 5-8 11-8 18 7 2 15-2 18-10" fill="url(#botSilverGrad)" stroke="var(--bot-line)" />
-                <path d="M94 135c5 5 8 11 8 18-7 2-15-2-18-10" fill="url(#botSilverGrad)" stroke="var(--bot-line)" />
-                <path class="pixie-foot-left" d="M58 153c5 2 12 0 16-4" stroke="var(--bot-accent)" stroke-width="3" stroke-linecap="round" />
-                <path class="pixie-foot-right" d="M86 149c4 4 11 6 16 4" stroke="var(--bot-accent)" stroke-width="3" stroke-linecap="round" />
+              <g class="pixie-arm-left">
+                <path d="M54 111c-8 1-15 6-19 14" fill="none" stroke="var(--bot-line)" stroke-width="14" stroke-linecap="round" />
+                <path d="M54 111c-8 1-15 6-19 14" fill="none" stroke="url(#pixieAccentFill)" stroke-width="8" stroke-linecap="round" />
+                <circle cx="53" cy="111" r="11.5" fill="#ff9b18" stroke="var(--bot-line)" stroke-width="5.5" />
+                <circle cx="53" cy="111" r="5" fill="#ff5b0a" stroke="var(--bot-line)" stroke-width="3" />
+                <path d="M34 125c-7 0-11-5-10-11" fill="none" stroke="var(--bot-line)" stroke-width="11" stroke-linecap="round" />
+                <path d="M34 125c-7 0-11-5-10-11" fill="none" stroke="url(#pixieAccentFill)" stroke-width="6.2" stroke-linecap="round" />
+                <path d="M34 126c2 7 8 10 15 8" fill="none" stroke="var(--bot-line)" stroke-width="11" stroke-linecap="round" />
+                <path d="M34 126c2 7 8 10 15 8" fill="none" stroke="url(#pixieAccentFill)" stroke-width="6.2" stroke-linecap="round" />
+              </g>
+
+              <g class="pixie-arm-right">
+                <path d="M106 111c8 2 14 7 18 15" fill="none" stroke="var(--bot-line)" stroke-width="14" stroke-linecap="round" />
+                <path d="M106 111c8 2 14 7 18 15" fill="none" stroke="url(#pixieAccentFill)" stroke-width="8" stroke-linecap="round" />
+                <circle cx="107" cy="111" r="11.5" fill="#ff9b18" stroke="var(--bot-line)" stroke-width="5.5" />
+                <circle cx="107" cy="111" r="5" fill="#ff5b0a" stroke="var(--bot-line)" stroke-width="3" />
+                <path class="pixie-hand-right" d="M124 126c6-1 10-5 9-11" fill="none" stroke="var(--bot-line)" stroke-width="11" stroke-linecap="round" />
+                <path d="M124 126c6-1 10-5 9-11" fill="none" stroke="url(#pixieAccentFill)" stroke-width="6.2" stroke-linecap="round" />
+                <path d="M124 127c-1 7-6 10-13 8" fill="none" stroke="var(--bot-line)" stroke-width="11" stroke-linecap="round" />
+                <path d="M124 127c-1 7-6 10-13 8" fill="none" stroke="url(#pixieAccentFill)" stroke-width="6.2" stroke-linecap="round" />
               </g>
 
               <g class="pixie-body">
-                <path d="M56 91c7-11 41-11 48 0 8 13 12 30 9 41-3 11-15 15-33 15s-30-4-33-15c-3-11 1-28 9-41Z" fill="url(#botShellGrad)" stroke="var(--bot-line)" />
-                <path d="M64 101c5-10 27-10 32 0 5 9 5 24 0 32-4 6-28 6-32 0-5-8-5-23 0-32Z" fill="url(#botSilverGrad)" opacity="0.96" />
-                <circle cx="80" cy="119" r="10" fill="var(--bot-panel)" stroke="var(--bot-line)" />
-                <circle cx="80" cy="119" r="6" fill="var(--bot-accent-soft)" />
+                <path d="M58 110c7-7 37-7 44 0 7 8 7 25 1 32-6 7-15 10-23 10s-17-3-23-10c-6-7-6-24 1-32Z" fill="url(#pixieBodyFill)" stroke="var(--bot-line)" stroke-width="6.5" stroke-linejoin="round" />
+                <path d="M62 116c7 4 29 4 36 0" fill="none" stroke="#fff0af" stroke-width="5" stroke-linecap="round" opacity=".88" />
+                <path d="M58 133c11 7 33 7 44 0" fill="none" stroke="#f68b0e" stroke-width="9" stroke-linecap="round" opacity="0.55" />
+                <circle cx="80" cy="130" r="13.5" fill="var(--bot-line)" />
+                <circle cx="80" cy="130" r="8" fill="#fff4b8" />
               </g>
 
-              <g class="pixie-tablet">
-                <rect x="54" y="115" width="52" height="28" rx="10" fill="url(#botPanelGrad)" stroke="var(--bot-ui-line)" />
-                <circle cx="65" cy="125" r="2.2" fill="var(--bot-blue)" opacity=".76" />
-                <g class="pixie-tablet-lines" stroke="var(--bot-ui-line)" stroke-width="2" stroke-linecap="round">
-                  <path d="M73 124h19" />
-                  <path d="M64 132h30" />
-                  <path d="M64 138h17" />
-                </g>
-              </g>
-
-              <g class="pixie-arm-left">
-                <path d="M61 103c-10 7-14 17-10 22 3 5 13 1 18-10" fill="none" stroke="var(--bot-silver)" stroke-width="8" stroke-linecap="round" />
-                <circle cx="61" cy="103" r="6" fill="var(--bot-accent-soft)" stroke="var(--bot-line)" />
-                <path d="M48 126c4 4 10 4 14 0" fill="none" stroke="var(--bot-shell-3)" stroke-width="4" stroke-linecap="round" />
-              </g>
-              <g class="pixie-arm-right">
-                <path d="M99 103c10 7 14 17 10 22-3 5-13 1-18-10" fill="none" stroke="var(--bot-silver)" stroke-width="8" stroke-linecap="round" />
-                <circle cx="99" cy="103" r="6" fill="var(--bot-accent-soft)" stroke="var(--bot-line)" />
-                <path class="pixie-hand-right" d="M112 126c-4 4-10 4-14 0" fill="none" stroke="var(--bot-shell-3)" stroke-width="4" stroke-linecap="round" />
-              </g>
+              <g class="pixie-tablet"></g>
 
               <g class="pixie-head">
-                <path d="M71 30v-9" stroke="var(--bot-line)" stroke-width="4" stroke-linecap="round" />
-                <circle class="pixie-status-ring" cx="71" cy="17" r="10" fill="var(--bot-accent-soft)" opacity=".36" />
-                <circle class="pixie-status-light" cx="71" cy="17" r="6.3" fill="var(--bot-accent)" />
+                <path d="M80 35V27" stroke="var(--bot-line)" stroke-width="4.6" stroke-linecap="round" />
+                <circle class="pixie-status-ring" cx="80" cy="24" r="9" fill="#fff4b8" stroke="var(--bot-line)" stroke-width="4.5" />
+                <circle class="pixie-status-light" cx="80" cy="24" r="5" fill="#f75b0b" />
 
                 <g class="pixie-side-pod-left">
-                  <path d="M45 58c-12 4-20 14-20 27s8 23 20 27Z" fill="url(#botSilverGrad)" stroke="var(--bot-line)" />
-                  <path d="M35 66c-5 5-7 12-7 19s2 14 7 19" fill="none" stroke="var(--bot-accent)" stroke-width="4" stroke-linecap="round" />
+                  <path d="M34 62C21 67 13 79 13 92s8 25 21 30Z" fill="#ffb72b" stroke="var(--bot-line)" stroke-width="6.4" stroke-linejoin="round" />
+                  <path d="M25 71c-5 12-5 30 0 42" fill="none" stroke="#f7650c" stroke-width="5.6" stroke-linecap="round" />
+                  <path d="M35 66v52" stroke="var(--bot-line)" stroke-width="4.4" stroke-linecap="round" opacity=".95" />
+                  <circle cx="6" cy="92" r="7" fill="var(--bot-line)" />
+                  <path d="M14 92H6" stroke="var(--bot-line)" stroke-width="5.6" stroke-linecap="round" />
                 </g>
                 <g class="pixie-side-pod-right">
-                  <path d="M115 58c12 4 20 14 20 27s-8 23-20 27Z" fill="url(#botSilverGrad)" stroke="var(--bot-line)" />
-                  <path d="M125 66c5 5 7 12 7 19s-2 14-7 19" fill="none" stroke="var(--bot-accent)" stroke-width="4" stroke-linecap="round" />
+                  <path d="M126 62c13 5 21 17 21 30s-8 25-21 30Z" fill="#ffb72b" stroke="var(--bot-line)" stroke-width="6.4" stroke-linejoin="round" />
+                  <path d="M135 71c5 12 5 30 0 42" fill="none" stroke="#f7650c" stroke-width="5.6" stroke-linecap="round" />
+                  <path d="M125 66v52" stroke="var(--bot-line)" stroke-width="4.4" stroke-linecap="round" opacity=".95" />
+                  <circle cx="154" cy="92" r="7" fill="var(--bot-line)" />
+                  <path d="M146 92h8" stroke="var(--bot-line)" stroke-width="5.6" stroke-linecap="round" />
                 </g>
 
-                <rect x="38" y="31" width="84" height="76" rx="28" fill="url(#botShellGrad)" stroke="var(--bot-line)" />
-                <rect x="47" y="43" width="66" height="53" rx="21" fill="url(#botFaceGrad)" opacity="0.96" />
-                <path d="M51 45c9-7 48-7 58 0" fill="none" stroke="rgba(255,255,255,.72)" stroke-width="3" stroke-linecap="round" />
-                <path d="M48 48c-6 14-6 31 0 45" fill="none" stroke="rgba(255,255,255,.42)" stroke-width="2.5" stroke-linecap="round" />
+                <rect x="27" y="35" width="106" height="80" rx="28" fill="url(#pixieHeadFill)" stroke="var(--bot-line)" stroke-width="6.8" />
+                <rect x="35" y="45" width="90" height="61" rx="21" fill="url(#pixieInnerScreen)" stroke="url(#pixieCream)" stroke-width="8" />
+                <path d="M39 56C51 43 109 43 121 56" fill="none" stroke="var(--bot-line)" stroke-width="5.2" stroke-linecap="round" />
+                <path d="M43 54c12-7 62-7 74 0" fill="none" stroke="#fffce9" stroke-width="4.4" stroke-linecap="round" />
+                <path d="M37 64c-5 12-6 28-2 39" fill="none" stroke="#fff9dd" stroke-width="4.6" stroke-linecap="round" opacity=".9" />
+                <path d="M123 64c5 14 5 28 0 39" fill="none" stroke="#ef8b0b" stroke-width="6.5" stroke-linecap="round" opacity=".38" />
 
-                <g class="pixie-processor" fill="none" stroke="var(--bot-blue)" stroke-width="2" stroke-linecap="round">
-                  <path d="M69 38h22" />
-                  <path d="M74 34h12" opacity=".7" />
+                <g class="pixie-processor" fill="none" stroke="#60a5fa" stroke-width="2.2" stroke-linecap="round">
+                  <path d="M69 40h22" />
+                  <circle cx="80" cy="44" r="2" fill="#60a5fa" stroke="none" />
                 </g>
 
                 <g class="pixie-face">
-                  <g class="pixie-brows" stroke="var(--bot-eye-dark)" stroke-width="2.2" stroke-linecap="round" fill="none" opacity=".72">
-                    <g class="pixie-brows-idle">
-                      <path d="M61 56c4-2 8-2 12 0" />
-                      <path d="M87 56c4-2 8-2 12 0" />
-                    </g>
-                    <g class="pixie-brows-happy">
-                      <path d="M60 57c4-3 9-3 13 0" />
-                      <path d="M87 57c4-3 9-3 13 0" />
-                    </g>
-                    <g class="pixie-brows-think">
-                      <path d="M60 55c4-3 9-2 13 1" />
-                      <path d="M88 57c4-3 9-4 13-2" />
-                    </g>
-                    <g class="pixie-brows-focused">
-                      <path d="M60 57c4-1 9-1 13 1" />
-                      <path d="M87 58c4-2 9-2 13-1" />
-                    </g>
+                  <g class="pixie-brows" stroke="var(--bot-line)" stroke-width="2.4" stroke-linecap="round" fill="none" opacity=".32">
+                    <g class="pixie-brows-idle"><path d="M54 62c5-2 12-2 17 0" /><path d="M89 62c5-2 12-2 17 0" /></g>
+                    <g class="pixie-brows-happy"><path d="M54 63c5-4 12-4 17 0" /><path d="M89 63c5-4 12-4 17 0" /></g>
+                    <g class="pixie-brows-think"><path d="M54 59c5-4 12-3 17 1" /><path d="M89 63c5-4 12-5 17-2" /></g>
+                    <g class="pixie-brows-focused"><path d="M54 63c5-1 12-1 17 1" /><path d="M89 64c5-2 12-2 17-1" /></g>
                   </g>
 
                   <g class="pixie-eyes">
                     <g class="pixie-eye-open">
-                      <ellipse cx="67" cy="67" rx="10.5" ry="12" fill="rgba(255,255,255,.94)" />
-                      <ellipse cx="93" cy="67" rx="10.5" ry="12" fill="rgba(255,255,255,.94)" />
-                      <ellipse cx="67" cy="68" rx="7.8" ry="9.3" fill="url(#botEyeGrad)" />
-                      <ellipse cx="93" cy="68" rx="7.8" ry="9.3" fill="url(#botEyeGrad)" />
+                      <circle cx="63" cy="76" r="15" fill="url(#pixieEye)" />
+                      <circle cx="97" cy="76" r="15" fill="url(#pixieEye)" />
                       <g class="pixie-pupils">
-                        <ellipse cx="67" cy="70" rx="3.6" ry="4.8" fill="var(--bot-eye-dark)" opacity=".66" />
-                        <ellipse cx="93" cy="70" rx="3.6" ry="4.8" fill="var(--bot-eye-dark)" opacity=".66" />
-                        <circle cx="70" cy="62" r="2.6" fill="var(--bot-eye-shine)" />
-                        <circle cx="96" cy="62" r="2.6" fill="var(--bot-eye-shine)" />
-                        <circle cx="64" cy="73" r="1.45" fill="rgba(255,255,255,.56)" />
-                        <circle cx="90" cy="73" r="1.45" fill="rgba(255,255,255,.56)" />
-                        <circle cx="72" cy="68" r="1" fill="rgba(255,255,255,.42)" />
-                        <circle cx="98" cy="68" r="1" fill="rgba(255,255,255,.42)" />
+                        <circle cx="57" cy="69" r="4.2" fill="#ffffff" />
+                        <circle cx="68" cy="67" r="2.5" fill="#ffffff" opacity=".96" />
+                        <circle cx="56" cy="80" r="2" fill="#ffffff" opacity=".78" />
+                        <circle cx="91" cy="69" r="4.2" fill="#ffffff" />
+                        <circle cx="102" cy="67" r="2.5" fill="#ffffff" opacity=".96" />
+                        <circle cx="90" cy="80" r="2" fill="#ffffff" opacity=".78" />
                       </g>
                     </g>
-                    <g class="pixie-eye-smile" stroke="var(--bot-eye-dark)" stroke-width="3" stroke-linecap="round" fill="none">
-                      <path d="M59 68c5 6 12 6 17 0" />
-                      <path d="M85 68c5 6 12 6 17 0" />
+                    <g class="pixie-eye-smile" stroke="var(--bot-line)" stroke-width="5.2" stroke-linecap="round" fill="none">
+                      <path d="M50 76c7 8 19 8 26 0" /><path d="M84 76c7 8 19 8 26 0" />
                     </g>
                     <g class="pixie-eye-think">
-                      <ellipse cx="67" cy="66" rx="8.6" ry="6.8" fill="rgba(255,255,255,.92)" />
-                      <ellipse cx="93" cy="64" rx="8.6" ry="6.8" fill="rgba(255,255,255,.92)" />
-                      <ellipse cx="67" cy="65" rx="5.2" ry="4.6" fill="var(--bot-eye-dark)" />
-                      <ellipse cx="93" cy="63" rx="5.2" ry="4.6" fill="var(--bot-eye-dark)" />
-                      <circle cx="69" cy="63" r="1.8" fill="var(--bot-eye-shine)" />
-                      <circle cx="95" cy="61" r="1.8" fill="var(--bot-eye-shine)" />
+                      <circle cx="63" cy="73" r="14" fill="var(--bot-eye-dark)" /><circle cx="97" cy="71" r="14" fill="var(--bot-eye-dark)" />
+                      <circle cx="57" cy="65" r="4" fill="#fff" /><circle cx="91" cy="63" r="4" fill="#fff" />
+                      <circle cx="68" cy="64" r="2" fill="#fff" opacity=".82" /><circle cx="102" cy="62" r="2" fill="#fff" opacity=".82" />
+                    </g>
+                    <g class="pixie-eye-sleep" stroke="var(--bot-line)" stroke-width="5" stroke-linecap="round" fill="none">
+                      <path d="M51 76h24" /><path d="M85 76h24" />
+                    </g>
+                    <g class="pixie-eye-curious" stroke="var(--bot-line)" stroke-width="5" stroke-linecap="round" fill="none">
+                      <path d="M51 74c7 6 18 6 25 0" />
+                      <circle cx="97" cy="75" r="14" fill="var(--bot-eye-dark)" stroke="none" />
+                      <circle cx="91" cy="68" r="4" fill="#fff" stroke="none" /><circle cx="102" cy="67" r="2.3" fill="#fff" stroke="none" />
                     </g>
                   </g>
 
-                  <circle cx="57" cy="82" r="3.7" fill="var(--bot-cheek)" opacity="0.25" />
-                  <circle cx="103" cy="82" r="3.7" fill="var(--bot-cheek)" opacity="0.25" />
-                  <path class="pixie-mouth-idle" d="M74 87c3.8 3.5 8.2 3.5 12 0" fill="none" stroke="var(--bot-eye-dark)" stroke-width="2.45" stroke-linecap="round" />
-                  <path class="pixie-mouth-happy" d="M72 84c5.2 7.5 11.8 7.5 17 0" fill="none" stroke="var(--bot-eye-dark)" stroke-width="2.6" stroke-linecap="round" />
-                  <path class="pixie-mouth-big" d="M70 83c6.5 10 13.5 10 20 0" fill="none" stroke="var(--bot-eye-dark)" stroke-width="2.75" stroke-linecap="round" />
-                  <ellipse class="pixie-mouth-open" cx="80" cy="88" rx="3.7" ry="4.8" fill="var(--bot-eye-dark)" />
-                  <path class="pixie-mouth-think" d="M76 88h8" fill="none" stroke="var(--bot-eye-dark)" stroke-width="2.35" stroke-linecap="round" />
-                  <path class="pixie-mouth-focused" d="M75 88c3 1.4 7 1.4 10 0" fill="none" stroke="var(--bot-eye-dark)" stroke-width="2.15" stroke-linecap="round" />
+                  <path class="pixie-mouth-idle" d="M70 94l6 6h8l6-6" fill="none" stroke="var(--bot-line)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+                  <path class="pixie-mouth-happy" d="M68 92c7 8 17 8 24 0" fill="none" stroke="var(--bot-line)" stroke-width="4.8" stroke-linecap="round" />
+                  <path class="pixie-mouth-big" d="M66 91c9 11 19 11 28 0" fill="none" stroke="var(--bot-line)" stroke-width="4.8" stroke-linecap="round" />
+                  <ellipse class="pixie-mouth-open" cx="80" cy="96" rx="4" ry="3.6" fill="var(--bot-line)" />
+                  <path class="pixie-mouth-think" d="M74 96h12" fill="none" stroke="var(--bot-line)" stroke-width="4.2" stroke-linecap="round" />
+                  <path class="pixie-mouth-focused" d="M72 95h16" fill="none" stroke="var(--bot-line)" stroke-width="4" stroke-linecap="round" />
+                  <path class="pixie-mouth-sleepy" d="M74 96c4 3 8 3 12 0" fill="none" stroke="var(--bot-line)" stroke-width="3.8" stroke-linecap="round" />
                 </g>
               </g>
 
               <g class="pixie-zzz" fill="var(--bot-eye-mid)" opacity="0">
-                <text x="111" y="55" font-size="9" font-weight="800">Z</text>
-                <text x="121" y="46" font-size="7" font-weight="800" opacity=".75">Z</text>
+                <text x="116" y="55" font-size="11" font-weight="900">Z</text>
+                <text x="128" y="44" font-size="8" font-weight="900" opacity=".75">Z</text>
               </g>
             </g>
           </svg>
@@ -1471,6 +1567,8 @@
     let avatarLifeEnabled = true;
     let avatarStateTimer = null;
     let avatarIdleTimer = null;
+    let avatarInactivityTimer = null;
+    let avatarPointerBound = false;
 
     const STORAGE_KEY = 'pixie-final-consultant-chat-history-v6';
     const STATE_KEY = 'pixie-final-consultant-state-v6';
@@ -1563,11 +1661,11 @@
       ],
       teamPrinciple: 'Both team members have equal priority, equal authority, and equal importance — they simply focus on different specializations.',
       costGuides: {
-        website: 'A business website may start around ₹15,000 depending on requirements. More polished websites with stronger UI, content, forms, SEO basics, and integrations can range from ₹50,000 to ₹2 Lakh+.',
-        app: 'A mobile app may start around ₹1.5 Lakh–₹4 Lakh for a lean first version. More complete apps with admin panels, payments, notifications, and complex workflows can go ₹4 Lakh–₹12 Lakh+.',
-        software: 'Custom software may start around ₹2 Lakh–₹6 Lakh for a focused MVP. Larger platforms with roles, dashboards, APIs, databases, and reports can go ₹6 Lakh–₹20 Lakh+.',
-        ai: 'AI solutions may start around ₹1.5 Lakh–₹5 Lakh for a focused assistant, automation, or recommendation flow. More advanced AI systems depend on data, integrations, accuracy needs, and scale.',
-        automation: 'Business automation can start around ₹50,000–₹2 Lakh for focused workflows, and increase when multiple tools, approvals, notifications, and dashboards are involved.'
+        website: 'A business website may start around ₹6,990 depending on requirements. More polished websites with stronger UI, content, forms, SEO basics, and integrations can range from ₹14,990–₹24,990+ depending on requirements.',
+        app: 'A mobile app may start around flexible module-wise pricing for a lean first version. More complete apps with admin panels, payments, notifications, and complex workflows can go custom phased app pricing.',
+        software: 'Custom software may start around custom module-wise pricing for a focused MVP. Larger platforms with roles, dashboards, APIs, databases, and reports can go custom phased software pricing.',
+        ai: 'AI solutions may start around flexible AI pricing for a focused assistant, automation, or recommendation flow. More advanced AI systems depend on data, integrations, accuracy needs, and scale.',
+        automation: 'Business automation can start around ₹14,990–₹24,990 for focused workflows, and increase when multiple tools, approvals, notifications, and dashboards are involved.'
       }
     };
 
@@ -1693,6 +1791,43 @@
       }
     };
 
+
+
+    /* Pixie Knowledge Engine V3 intelligence-only upgrade — UI untouched. */
+    const PIXIE_SOLUTION_PLAYBOOK = {
+      Website:{understands:['business websites','landing pages','e-commerce','lead generation websites','portfolio websites','appointment websites','recruitment websites','school websites','clinic websites'],mvp:['clear homepage','service/product pages','trust proof','WhatsApp/call CTA','forms/analytics'],range:'₹6,990–₹24,990+ depending on requirements'},
+      'Mobile app':{understands:['Android apps','iOS apps','Flutter apps','business apps','school apps','healthcare apps','staff apps'],mvp:['login/roles','core mobile flow','push notifications','admin panel','reports'],range:'affordable phased pricing based on screens and features'},
+      'Software platform':{understands:['CRM','ERP','HRMS','attendance systems','fee management','student management','recruitment systems','clinic management','inventory systems','booking systems'],mvp:['role dashboard','core workflow','records database','reports','reminders'],range:'custom phased pricing based on workflow and modules'},
+      'AI solution':{understands:['AI assistants','internal AI tools','knowledge bases','WhatsApp AI','AI automation','Document AI','lead qualification AI'],mvp:['controlled knowledge base','guided assistant','human handoff','feedback loop','admin review'],range:'custom affordable pricing based on AI scope'},
+      Automation:{understands:['WhatsApp automation','email automation','lead automation','workflow automation','reminder systems','approval systems'],mvp:['workflow map','trigger rules','WhatsApp/email alerts','status tracking','manual override'],range:'custom affordable pricing based on workflow steps'},
+      'Digital marketing':{understands:['lead generation','SEO basics','landing pages','campaign funnels','conversion tracking'],mvp:['landing page','tracking','campaign creatives','WhatsApp lead flow','follow-up CRM'],range:'flexible setup pricing based on campaign needs'},
+      Branding:{understands:['brand identity','positioning','logo direction','visual consistency','trust messaging'],mvp:['positioning','visual language','colour/type system','messaging','usage kit'],range:'flexible branding pricing based on deliverables'},
+      'UI/UX design':{understands:['user flows','wireframes','prototypes','dashboards','mobile UX'],mvp:['journey map','wireframes','key screens','prototype','handoff'],range:'flexible UI/UX pricing based on screens'}
+    };
+    const PIXIE_OBJECTION_PLAYBOOK = {
+      expensive:['too expensive','costly','very costly','price high','expensive','cheaper','high price'],
+      noWebsite:["i don't need a website",'i dont need a website','no need website','website not needed','dont want website'],
+      alreadyWhatsapp:['already use whatsapp','we use whatsapp','only whatsapp','whatsapp is enough','customers whatsapp'],
+      smallBusiness:['business is small','small business','very small business','just starting','small shop','small centre','small clinic'],
+      noSoftware:["i don't need software",'i dont need software','no need software','software not needed'],
+      alreadyExcel:['already use excel','using excel','excel is enough','google sheet','spreadsheet'],
+      customersNoWebsite:["customers don't use websites",'customers dont use websites','customers not online','people call only'],
+      noBudget:["don't have budget",'dont have budget','no budget','low budget','budget problem','not enough budget']
+    };
+    Object.assign(INDUSTRY_PLAYBOOK,{clinics:{problems:['appointment calls','patient follow-up','trust building'],website:['doctor/service pages','appointment request','reviews'],software:['appointments','patient profiles','billing'],leads:['local SEO for treatments','doctor profile pages'],automation:['appointment reminders','follow-up messages']},hospitals:{problems:['doctor schedules','OP enquiries','patient communication'],website:['department pages','doctor profiles','appointment booking'],software:['OP booking','patient records','department dashboards'],leads:['speciality landing pages','health camp leads'],automation:['appointment reminders','camp follow-up']},restaurants:{problems:['table bookings','online ordering','repeat customers'],website:['digital menu','online ordering','table booking'],software:['orders','reservations','sales reports'],leads:['local food SEO','offer landing pages'],automation:['order updates','booking reminders']},manufacturing:{problems:['B2B enquiries','catalog clarity','production tracking'],website:['product catalog','quotation form','certifications'],software:['inventory','production status','dealer CRM'],leads:['B2B landing pages','quotation funnel'],automation:['quote follow-ups','stock alerts']},logistics:{problems:['shipment status calls','booking requests','client reporting'],website:['service lanes','quote request','tracking enquiry'],software:['booking management','shipment tracking','client reports'],leads:['route/service landing pages','B2B lead forms'],automation:['shipment updates','document reminders']},builders:{problems:['project credibility','buyer enquiries','site visit follow-up'],website:['project pages','floor plans','site visit booking'],software:['lead CRM','unit inventory','broker dashboard'],leads:['project landing pages','location SEO'],automation:['site visit reminders','buyer follow-ups']},'service businesses':{problems:['missed calls','quote follow-up','customer trust'],website:['service pages','quote request','reviews'],software:['booking CRM','staff assignment','invoices'],leads:['local SEO pages','service offers'],automation:['missed enquiry follow-up','review requests']}});
+    const PIXIE_V3_VARIATIONS = (()=>{function make(a,b,c){const r=[];for(const x of a)for(const y of b)for(const z of c){r.push(`${x}\n\n${y}\n\n${z}`);if(r.length>=120)return r}return r}
+      const a=['Hi 👋','Hello ✨','Hey there 😊','Welcome in 👋','Nice to meet you ✨','Hi, I’m here 😊','Hey, happy to help','Hello, let’s think this through','Hi there','Consultant mode on 👋'];
+      const b=['I’m Pixie, your friendly digital business consultant.','I can help with websites, apps, software, automation, AI, marketing, branding, UI/UX, and growth.','Tell me the business or idea, and I’ll shape the smartest next step.','I’m here to make digital decisions clearer, not push services.','I can turn a rough idea into a practical plan.','I’ll ask useful questions and recommend what fits best.','I can think like a product advisor, software architect, and growth strategist.','I’ll keep the advice practical for Indian SMEs.','I can compare website, app, software, AI, automation, branding, and marketing options.','Let’s avoid overbuilding and find the highest-value first version.'];
+      const c=['What are you planning?','What would you like to build?','Tell me about your business.','Where should we start?','What problem are you trying to solve?','Growth, operations, or both?','What’s the idea?','Which industry is this for?','What outcome do you want?','Share the rough version — I’ll refine it.'];
+      const d=['Good context.','That helps.','Understood.','Got it.','Helpful detail.','Nice, clearer direction.','I see the shape now.','That is practical context.','Good signal.','One layer clearer.'];
+      const e=['The next decision should be based on the business outcome.','I’d separate growth needs from operations needs.','The first version should solve one painful workflow.','Scope control matters because features grow quickly.','The solution should fit how customers and staff behave.','For Indian SMEs, phasing protects budget.','A digital solution should bring leads, save time, improve trust, or improve control.','Avoid building large before the workflow is proven.','This can start lean and expand later.','Technology should follow the problem.'];
+      const f=['Let me ask the next useful question.','Here’s what I’d clarify next.','One practical question:','I need one more detail.','This will narrow the scope.','Let’s make it concrete.','I’ll keep it simple.','This helps estimate better.','That tells us what to build first.','Let’s reduce guesswork.'];
+      const g=['My practical recommendation:','Strategically, I’d suggest:','If I were advising this project, I’d start with:','The safest direction is:','The highest-value first move is:','I wouldn’t overbuild this; I’d begin with:','From an architecture view:','For growth-first planning:','For operations-first planning:','My honest consultant take:'];
+      const h=['start with the workflow that creates value fastest.','combine trust-building with measurable lead capture.','launch a focused MVP, then add automation after usage.','keep the customer journey simple and admin side structured.','use WhatsApp where customers already are, but track enquiries properly.','build around roles, reports, and repeatable processes.','treat the website/app/software as a business funnel, not a standalone asset.','choose features by revenue impact and time saved.','prioritize clarity, credibility, speed, and follow-up.','separate must-haves from phase-two features.'];
+      const i=['That keeps cost practical.','That reduces risk.','That makes launch easier.','That gives room to scale.','That beats building everything at once.','That creates a stronger foundation.','That helps estimate accurately.','That makes the product easier.','That keeps the business case clear.','That is usually the smarter SME path.'];
+      return {greetings:make(a,b,c),followUps:make(d,e,f),recommendations:make(g,h,i),closings:make(['Next step:','If you want to move forward:','To make this sharper:','Before deciding:','A sensible next step:','From here:','The practical move:','To reduce guesswork:','If we continue:','When ready:'],['share business type, goal, must-have features, timeline, and rough budget.','we can turn this into a clear scope and roadmap.','we can separate phase one and phase two.','we can estimate from requirements instead of guessing.','we can identify website vs software vs app vs AI vs automation.','we can map user journey and admin workflow.','we can focus on leads, operations, or both.','we can prepare a practical recommendation.','we can keep version one lean and useful.','we can decide what not to build yet.'],['No pressure — clarity first.','I’ll guide you step by step.','That makes the estimate realistic.','That keeps things practical.','That’s advisor-first.','Rough answers are fine.','A short answer is enough.','We’ll keep it simple.','Trustworthy plan first, sale later.','Then contact becomes useful, not premature.'])};})();
+    let pixieVariationMemory = Object.create(null);
+
     let history = loadHistory();
     let discovery = loadDiscovery();
     let pixieIsTyping = false;
@@ -1763,6 +1898,8 @@
           logChat('textarea input updated');
           autoResizeInput();
           updateSendButtonState();
+          wakeAvatarFromBored();
+          resetAvatarInactivityTimer();
           avatarReactTyping();
         } catch (error) {
           logChatError('input handler failed', error);
@@ -2168,6 +2305,8 @@
         avatarSetState('idle');
         avatarMicro('avatar-wave', 1300);
         scheduleAvatarIdleTrick();
+        bindAvatarPointerInteractions();
+        resetAvatarInactivityTimer();
 
         if (themeMedia && typeof themeMedia.addEventListener === 'function') {
           themeMedia.addEventListener('change', () => {
@@ -2259,13 +2398,96 @@
       window.setTimeout(() => pixieAvatar && pixieAvatar.classList.remove(className), duration);
     }
 
+    function bindAvatarPointerInteractions() {
+      traceFunction('bindAvatarPointerInteractions');
+      if (avatarPointerBound || !pixieAvatar) return;
+      avatarPointerBound = true;
+
+      try {
+        pixieAvatar.addEventListener('mouseenter', () => {
+          wakeAvatarFromBored();
+          resetAvatarInactivityTimer();
+          pixieAvatar.classList.add('avatar-hover');
+          avatarMicro('avatar-wave', 900);
+        });
+        pixieAvatar.addEventListener('mouseleave', () => {
+          pixieAvatar.classList.remove('avatar-hover');
+          avatarReturnIdle(500);
+        });
+        pixieAvatar.addEventListener('click', () => {
+          wakeAvatarFromBored();
+          resetAvatarInactivityTimer();
+          avatarSetState('success');
+          avatarMicro('avatar-celebrate', 1200);
+          avatarReturnIdle(1500);
+        });
+      } catch (error) {
+        logChatError('avatar pointer binding failed', error);
+      }
+
+      try {
+        document.addEventListener('mousemove', handleAvatarPointerMove, { passive: true });
+        document.addEventListener('mousedown', () => {
+          wakeAvatarFromBored();
+          resetAvatarInactivityTimer();
+        }, { passive: true });
+        document.addEventListener('keydown', () => {
+          wakeAvatarFromBored();
+          resetAvatarInactivityTimer();
+        }, { passive: true });
+      } catch (error) {
+        logChatError('avatar document interaction binding failed', error);
+      }
+    }
+
+    function handleAvatarPointerMove(event) {
+      traceFunction('handleAvatarPointerMove');
+      if (!avatarLifeEnabled || !pixieAvatar || !event || typeof pixieAvatar.getBoundingClientRect !== 'function') return;
+      wakeAvatarFromBored();
+      resetAvatarInactivityTimer();
+      try {
+        const rect = pixieAvatar.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height * 0.45;
+        const dx = event.clientX - cx;
+        const dy = event.clientY - cy;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        const near = distance < 260;
+        const eyeX = Math.max(-3.2, Math.min(3.2, dx / 42));
+        const eyeY = Math.max(-2.6, Math.min(2.6, dy / 55));
+        pixieAvatar.style.setProperty('--eye-x', `${eyeX}px`);
+        pixieAvatar.style.setProperty('--eye-y', `${eyeY}px`);
+        pixieAvatar.classList.toggle('avatar-pointer', near);
+        if (near && pixieAvatar.dataset.state === 'idle') pixieAvatar.classList.add('avatar-curious');
+        if (!near) pixieAvatar.classList.remove('avatar-curious');
+      } catch (error) {
+        logChatError('avatar pointer move failed', error);
+      }
+    }
+
+    function resetAvatarInactivityTimer() {
+      traceFunction('resetAvatarInactivityTimer');
+      window.clearTimeout(avatarInactivityTimer);
+      avatarInactivityTimer = window.setTimeout(() => {
+        if (!pixieIsTyping && pixieAvatar && pixieAvatar.dataset.state === 'idle') {
+          pixieAvatar.classList.add('avatar-bored');
+        }
+      }, 60000);
+    }
+
+    function wakeAvatarFromBored() {
+      traceFunction('wakeAvatarFromBored');
+      if (!pixieAvatar) return;
+      pixieAvatar.classList.remove('avatar-bored', 'avatar-sleepy', 'avatar-curious');
+    }
+
     function scheduleAvatarIdleTrick() {
       traceFunction('scheduleAvatarIdleTrick');
       window.clearTimeout(avatarIdleTimer);
-      const delay = 9000 + Math.random() * 11000;
+      const delay = 6000 + Math.random() * 4000;
       avatarIdleTimer = window.setTimeout(() => {
         if (avatarLifeEnabled && !pixieIsTyping && pixieAvatar?.dataset.state === 'idle') {
-          avatarMicro(random(['avatar-wave', 'avatar-stretch', 'avatar-sleepy', 'avatar-look-left', 'avatar-look-right']), 1500);
+          avatarMicro(random(['avatar-wave', 'avatar-stretch', 'avatar-look-left', 'avatar-look-right', 'avatar-curious']), 1500);
         }
         scheduleAvatarIdleTrick();
       }, delay);
@@ -2867,21 +3089,21 @@ If you share the project type, I can help narrow it down.`;
 
       if (industry === 'tuition centres') {
         if (!projectType && !discovery.goal) {
-          return `For a tuition centre, cost depends on whether you mainly want admissions growth or management software.\n\nA practical admissions website may start around ₹15,000–₹50,000. With course pages, enquiry forms, WhatsApp/call actions, SEO basics, testimonials, and lead follow-up, it can move toward ₹50,000–₹1.5 Lakh+.\n\nIf you need student management, batches, fees, attendance, parent communication, and reports, that becomes tuition centre software and may start around ₹1.5 Lakh–₹4 Lakh+.\n\nThe smart move is to start with the part that creates value fastest, then scale.`;
+          return `For a tuition centre, cost depends on whether you mainly want admissions growth or management software.\n\nA practical admissions website may start around ₹6,990–₹14,990. With course pages, enquiry forms, WhatsApp/call actions, SEO basics, testimonials, and lead follow-up, it can move toward ₹14,990–₹24,990+.\n\nIf you need student management, batches, fees, attendance, parent communication, and reports, that becomes tuition centre software and may start around flexible module-wise pricing.\n\nThe smart move is to start with the part that creates value fastest, then scale.`;
         }
         if (projectType === 'Website' || normalize(goal).includes('admission') || normalize(goal).includes('lead')) {
-          return `For a tuition centre focused on admissions, a practical website usually starts around ₹15,000–₹50,000.\n\nIf you want course pages, enquiry forms, WhatsApp/call actions, SEO basics, testimonials, and lead follow-up, it can move toward ₹50,000–₹1.5 Lakh+.\n\nIf you also need student management, batches, fees, attendance, or reports, that becomes more like tuition centre software and may start around ₹1.5 Lakh–₹4 Lakh+.\n\nThe smart approach is to start with the part that creates value fastest — usually admissions first, then management.`;
+          return `For a tuition centre focused on admissions, a practical website usually starts around ₹6,990–₹14,990.\n\nIf you want course pages, enquiry forms, WhatsApp/call actions, SEO basics, testimonials, and lead follow-up, it can move toward ₹14,990–₹24,990+.\n\nIf you also need student management, batches, fees, attendance, or reports, that becomes more like tuition centre software and may start around flexible module-wise pricing.\n\nThe smart approach is to start with the part that creates value fastest — usually admissions first, then management.`;
         }
-        return `For tuition centre software, pricing depends on whether you need students, batches, attendance, fees, staff roles, parent communication, reports, and admin dashboards.\n\nA focused first version may start around ₹1.5 Lakh–₹4 Lakh, while a more complete platform can go higher depending on features.\n\nYou can also start smaller and scale module by module.`;
+        return `For tuition centre software, pricing depends on whether you need students, batches, attendance, fees, staff roles, parent communication, reports, and admin dashboards.\n\nA focused first version may start around flexible module-wise pricing, while a more complete platform can go higher depending on features.\n\nYou can also start smaller and scale module by module.`;
       }
 
       if (industry === 'retail' || industry === 'local businesses') {
-        return `For ${displayIndustry(industry)}, cost depends on whether you need a simple website, ecommerce, inventory, offers, WhatsApp enquiries, or customer follow-up.\n\nA basic online presence may start around ₹15,000–₹50,000. Ecommerce or operational software can move from ₹75,000 to ₹3 Lakh+ depending on features.\n\nStarting lean and scaling after real customer usage is usually the safest path.`;
+        return `For ${displayIndustry(industry)}, cost depends on whether you need a simple website, ecommerce, inventory, offers, WhatsApp enquiries, or customer follow-up.\n\nA basic online presence may start around ₹6,990–₹14,990. Ecommerce or operational software can move from flexible pricing based on features depending on features.\n\nStarting lean and scaling after real customer usage is usually the safest path.`;
       }
 
       const playbook = getPlaybook(industry);
       if (playbook) {
-        return `For ${withArticle(displayIndustry(industry))}, pricing depends on whether you need a website for growth, software for operations, or both.\n\nA practical website/landing page may start around ₹15,000–₹50,000. If it includes stronger design, enquiry flows, WhatsApp actions, SEO basics, and trust-building sections, it can move toward ₹50,000–₹1.5 Lakh+.\n\nIf you need software features like ${listFew(playbook.software, 3)}, the project can start around ₹1.5 Lakh–₹5 Lakh+ depending on user roles, integrations, and scale.\n\nThe best estimate comes after understanding your exact needs, and the work can be phased so you start small and scale later.`;
+        return `For ${withArticle(displayIndustry(industry))}, pricing depends on whether you need a website for growth, software for operations, or both.\n\nA practical website/landing page may start around ₹6,990–₹14,990. If it includes stronger design, enquiry flows, WhatsApp actions, SEO basics, and trust-building sections, it can move toward ₹14,990–₹24,990+.\n\nIf you need software features like ${listFew(playbook.software, 3)}, the project can start around custom module-wise pricing depending on user roles, integrations, and scale.\n\nThe best estimate comes after understanding your exact needs, and the work can be phased so you start small and scale later.`;
       }
 
       if (projectType === 'Website') return getCostReply('website cost');
@@ -2890,7 +3112,7 @@ If you share the project type, I can help narrow it down.`;
       if (projectType === 'Automation') return getCostReply('automation cost');
       if (projectType === 'AI solution') return getCostReply('ai cost');
 
-      return `Based on what you’ve shared, the cost depends on the final solution type, features, integrations, and timeline.\n\nFor Indian businesses, a practical first version can often be planned from around ₹50,000–₹2 Lakh, while larger software or app projects can go beyond that.\n\nPricing is flexible and can be shaped around what you need now versus what can come later.`;
+      return `Based on what you’ve shared, the cost depends on the final solution type, features, integrations, and timeline.\n\nFor Indian businesses, a practical first version can often be planned from around ₹14,990–₹24,990, while larger software or app projects can go beyond that.\n\nPricing is flexible and can be shaped around what you need now versus what can come later.`;
     }
 
     function getCostReply(message) {
@@ -3472,12 +3694,12 @@ If you share the project type, I can help narrow it down.`;
       traceFunction('estimateBudget');
       const projectType = discovery.projectType;
       const budgetRanges = {
-        'Website': 'Basic business website: around ₹15,000–₹50,000. More polished custom websites with stronger UI, forms, animations, SEO basics, and integrations can range from ₹50,000–₹2 Lakh+.',
-        'Mobile app': 'Lean mobile app: around ₹1.5 Lakh–₹4 Lakh. Apps with backend, admin panel, payments, notifications, and custom workflows can range from ₹4 Lakh–₹12 Lakh+.',
-        'Software platform': 'Focused software MVP: around ₹2 Lakh–₹6 Lakh. Advanced platforms with roles, dashboards, APIs, databases, reports, and integrations can range from ₹6 Lakh–₹20 Lakh+.',
-        'Automation': 'Focused business automation: around ₹50,000–₹2 Lakh. Multi-step automations with integrations, approvals, reminders, and dashboards can range from ₹2 Lakh–₹6 Lakh+.',
-        'AI solution': 'AI-assisted MVP: around ₹1.5 Lakh–₹5 Lakh. Advanced AI systems with custom data, integrations, accuracy controls, and dashboards can range from ₹5 Lakh–₹20 Lakh+.',
-        'not sure yet': 'A practical discovery/MVP starting point can often be planned from around ₹50,000–₹2 Lakh, then scaled based on business needs.'
+        'Website': 'Basic business website: around ₹6,990–₹14,990. More polished custom websites with stronger UI, forms, animations, SEO basics, and integrations can range from ₹14,990–₹24,990+.',
+        'Mobile app': 'Lean mobile app: around flexible module-wise pricing. Apps with backend, admin panel, payments, notifications, and custom workflows can range from custom phased app pricing.',
+        'Software platform': 'Focused software MVP: around custom module-wise pricing. Advanced platforms with roles, dashboards, APIs, databases, reports, and integrations can range from custom phased software pricing.',
+        'Automation': 'Focused business automation: around ₹14,990–₹24,990. Multi-step automations with integrations, approvals, reminders, and dashboards can range from custom module-wise pricing.',
+        'AI solution': 'AI-assisted MVP: around flexible AI pricing. Advanced AI systems with custom data, integrations, accuracy controls, and dashboards can range from custom AI pricing.',
+        'not sure yet': 'A practical discovery/MVP starting point can often be planned from around ₹14,990–₹24,990, then scaled based on business needs.'
       };
 
       return `${budgetRanges[projectType] || budgetRanges['not sure yet']} Pricing is flexible, negotiable, and can be tailored to your needs. A business can always start small and scale later.`;
@@ -3764,6 +3986,429 @@ If you share the project type, I can help narrow it down.`;
       return /^[aeiou]/i.test(phrase) ? `an ${phrase}` : `a ${phrase}`;
     }
 
+
+
+    function variation(type){traceFunction('variation');const pool=PIXIE_V3_VARIATIONS[type]||[];if(!pool.length)return'';const used=pixieVariationMemory[type]||new Set();let avail=pool.filter(x=>!used.has(x));if(!avail.length){used.clear();avail=pool.slice()}const picked=avail[Math.floor(Math.random()*avail.length)];used.add(picked);pixieVariationMemory[type]=used;return picked}
+    function getContextScore(){traceFunction('getContextScore');return [discovery.projectType,discovery.industry,discovery.goal,discovery.audience,discovery.features&&discovery.features.length,discovery.timeline,discovery.budget].filter(Boolean).length}
+    function qualifyLeadIntent(message){traceFunction('qualifyLeadIntent');let score=0,reasons=[];if(isContactIntent(message)){score+=5;reasons.push('contact')}if(isHireOrQuoteIntent(message)){score+=5;reasons.push('quote')}if(isDiscoveryRequest(message)){score+=4;reasons.push('project')}if(isCostIntent(message)){score+=3;reasons.push('pricing')}if(isTimelineIntent(message)){score+=2;reasons.push('timeline')}if(detectProjectType(message)){score+=2;reasons.push('solution')}if(detectIndustry(message)){score+=2;reasons.push('industry')}if(detectGoal(message,discovery.stage)){score+=2;reasons.push('goal')}if(matches(message,['need','want','build','develop','launch','urgent','asap','consultation']))score+=2;score+=Math.min(getContextScore(),4);return{level:score>=8?'High Intent':score>=4?'Medium Intent':'Low Intent',score,reasons}}
+    function detectObjection(message){traceFunction('detectObjection');for(const [k,list] of Object.entries(PIXIE_OBJECTION_PLAYBOOK)){if(matches(message,list))return k}return null}
+    function getObjectionReply(key){traceFunction('getObjectionReply');const ind=displayIndustry(discovery.industry), play=getPlaybook(discovery.industry);if(key==='expensive')return`Totally fair — if something feels expensive, it should be questioned, not forced 😊\n\nFor ${withArticle(ind)}, I’d judge value before price. Requirements, complexity, features, integrations, design quality, content readiness, and timeline affect pricing.\n\nA safer path is phased:\n• Phase 1: smallest useful version\n• Phase 2: automation/reporting after usage\n• Phase 3: advanced features only if ROI is clear\n\nNo pressure — build only where it clearly saves time, improves trust, or brings enquiries.`;
+      if(key==='noWebsite')return`That can be completely valid. Not every business needs a website immediately.\n\nA website helps when you need Google visibility, trust before a call, service explanation, enquiry capture, appointment flow, or campaign landing pages. If referrals and WhatsApp already convert well, we may start smaller — maybe Google Business Profile, a one-page landing page, or WhatsApp enquiry automation.\n\nAdvisor-first answer: build only if it supports a real goal.`;
+      if(key==='alreadyWhatsapp')return`WhatsApp is a strength, especially for Indian SMEs. I wouldn’t replace it.\n\nThe opportunity is to make WhatsApp more organised: enquiry source tracking, auto-replies, follow-up reminders, lead status labels, missed enquiry recovery, and a simple CRM/dashboard behind it.\n\nSo the question is not “website or WhatsApp?” It’s “how do we stop losing WhatsApp leads?”`;
+      if(key==='smallBusiness')return`Small businesses should be careful with digital spending — I agree.\n\nFor ${withArticle(ind)}, I’d avoid a big system at the start. Start with a trust-building page, WhatsApp/call lead capture, a basic enquiry tracker, or one automation that saves daily time.\n\nStart lean, prove value, then scale.`;
+      if(key==='noSoftware')return`That’s reasonable. Software is not automatically needed.\n\nYou need software only when manual work becomes hard to control — repeated follow-ups, missed payments, scattered data, staff dependency, reporting delays, or too much Excel cleanup.\n\nIf operations are simple, improve the process first. If it becomes repetitive, build module by module.`;
+      if(key==='alreadyExcel')return`Excel is a good starting point — many businesses should start there.\n\nThe warning signs are multiple people editing, missed follow-ups, slow reports, duplicated data, poor mobile access, or no live status for the owner.\n\nA custom system should not replace Excel for style; it should replace the messy parts with a cleaner workflow.`;
+      if(key==='customersNoWebsite')return`That may be true for direct buying behaviour. Many customers may not “use websites” daily.\n\nBut websites often support trust silently: Google search, Maps, reviews, service proof, photos, package clarity, and a quick path to WhatsApp/call.\n\nIf needed, build it as a trust + enquiry bridge, not a brochure.`;
+      if(key==='noBudget'){const idea=play?`start with ${listFew(play.leads,1)} or ${listFew(play.automation,1)}`:'improve Google Business Profile and track WhatsApp enquiries';return`No problem — then the priority is clarity, not spending.\n\nBefore development, ${idea}, collect reviews, and track every enquiry source for 2–3 weeks.\n\nWhen there is budget, build the part that already shows business value. That keeps risk low.`}return`No pressure. Tell me the concern and I’ll suggest the least risky digital path.`}
+    function isSupportIntent(message){traceFunction('isSupportIntent');return matches(message,['support','maintenance','after launch','post launch','bug fixing','updates','hosting support','do you provide support'])}
+    function isMarketingBrandingIntent(message){traceFunction('isMarketingBrandingIntent');return matches(message,['digital marketing','marketing','lead generation','seo','ads','branding','brand identity','logo','ui ux','ui/ux','user experience','prototype'])}
+    function getSupportReply(){traceFunction('getSupportReply');return`Yes — support can be provided after launch.\n\nThe support model depends on the project. Websites may need content, maintenance, hosting, and updates. Apps/software may need bug fixes, backups, monitoring, security checks, and feature improvements.\n\nSupport scope, response time, and monthly cost should be agreed clearly because requirements and complexity affect effort.`}
+    function getMarketingBrandingReply(message){traceFunction('getMarketingBrandingReply');if(matches(message,['branding','brand','logo','identity']))return`Yes — branding can be planned as part of digital growth. Branding is not just a logo; it is positioning, trust, visual consistency, messaging, and how customers remember you.\n\nA practical branding direction should answer: who should trust you, why should they choose you, and where will the brand appear most?`;if(matches(message,['ui ux','ui/ux','ux','interface','user experience','prototype']))return`Yes — UI/UX is core for websites, apps, and software. Good UX reduces confusion, improves conversion, and makes staff workflows easier.\n\nThe first step is mapping the main user journey and designing key screens before development.`;return`Yes — digital marketing and lead generation can be planned around the business goal.\n\nFor Indian SMEs, marketing works best when connected to a funnel: landing page/website → WhatsApp/call enquiry → source tracking → follow-up reminders → simple CRM/reporting.`}
+
+    function createPixieReply(rawMessage){traceFunction('createPixieReply');const text=rawMessage.trim(),message=normalize(text),previousStage=discovery.stage;if(isReset(message)){discovery={...defaultDiscovery};pixieVariationMemory=Object.create(null);saveDiscovery();return`Fresh start ✨\n\n${variation('greetings')}`}if(isLeadCaptureActive())return handleLeadCapture(text);if(isGreeting(message)&&message.length<=18&&history.filter(i=>i.role==='user').length<=1)return variation('greetings');const insight=analyzeMessage(text,previousStage),objection=detectObjection(message);if(objection){if(insight.projectType||insight.industry||insight.goal||insight.audience||insight.features.length||insight.timeline||insight.budget){updateDiscovery(text,insight,previousStage);discovery.stage=getNextStage();saveDiscovery()}return`${getObjectionReply(objection)}\n\n${variation('closings')}`}if(isClearlyUnrelated(message)||!isBusinessRelevant(message))return getBusinessOnlyRedirect();const fresh=Boolean(insight.projectType||insight.industry||insight.goal||insight.audience||insight.features.length||insight.timeline||insight.budget);if(fresh&&(isCostIntent(message)||isTimelineIntent(message)||isCapabilityIntent(message)||isHireOrQuoteIntent(message))){updateDiscovery(text,insight,previousStage);discovery.stage=getNextStage();saveDiscovery()}const knowledgeReply=getKnowledgeReply(message);if(knowledgeReply)return withLeadConversion(message,advisorWrap(knowledgeReply,message),{reason:getLeadConversionReason(message),explicit:isContactIntent(message)});const wantsResult=matches(message,['generate','summary','proposal','estimate','quote','result','recommendation','recommend','plan','snapshot'])||(matches(message,['cost','budget','timeline','price','how long'])&&hasEnoughForSnapshot());if(!(fresh&&(isCostIntent(message)||isTimelineIntent(message)||isCapabilityIntent(message)||isHireOrQuoteIntent(message))))updateDiscovery(text,insight,previousStage);if(wantsResult&&hasMinimumForSnapshot()){discovery.resultGenerated=true;discovery.stage='complete';saveDiscovery();return withLeadConversion(message,generateProjectSnapshot(),{reason:'project'})}const nextStage=getNextStage();discovery.stage=nextStage;saveDiscovery();if(nextStage==='complete'){discovery.resultGenerated=true;saveDiscovery();return withLeadConversion(message,generateProjectSnapshot(),{reason:'project'})}return withLeadConversion(message,buildDiscoveryReply(insight,previousStage,nextStage),{reason:isDiscoveryRequest(message)?'project':getLeadConversionReason(message)})}
+    function advisorWrap(reply,message){traceFunction('advisorWrap');if(!reply||isContactIntent(message)||isIdentityIntent(message)||isTeamIntent(message)||isWebsiteOwnerIntent(message))return reply;if(qualifyLeadIntent(message).level==='Low Intent')return reply;return`${reply}\n\n${random([variation('closings'),variation('recommendations')])}`}
+    function getKnowledgeReply(message){traceFunction('getKnowledgeReply');if(isDiscoveryRequest(message))return null;if(isContactIntent(message))return getContactReply();if(isSupportIntent(message))return getSupportReply();if(isTeamIntent(message))return getTeamReply();if(isWebsiteOwnerIntent(message))return getWebsiteOwnerReply();if(isIdentityIntent(message))return getIdentityReply();if(isServicesIntent(message))return getServicesReply();if(isMarketingBrandingIntent(message))return getMarketingBrandingReply(message);if(isCapabilityIntent(message))return getCapabilityReply(message);if(isCostIntent(message))return getCostReply(message);if(isTimelineIntent(message))return getTimelineReply(message);if(isHireOrQuoteIntent(message))return getHireQuoteReply();return null}
+    function withLeadConversion(message,reply,options={}){traceFunction('withLeadConversion');const reason=options.reason||getLeadConversionReason(message),explicit=Boolean(options.explicit);if(!shouldOfferContact(message,{reason,explicit}))return reply;discovery.contactOfferCount=(discovery.contactOfferCount||0)+1;discovery.lastContactOfferTurn=getUserTurnCount();saveDiscovery();return`${reply}\n\n${getSoftContactCTA(reason)}\n\n[[CONTACT_CARDS]]`}
+    function shouldOfferContact(message,options={}){traceFunction('shouldOfferContact');if(options.explicit)return true;const reason=options.reason||getLeadConversionReason(message);if(!reason)return false;const count=discovery.contactOfferCount||0,last=typeof discovery.lastContactOfferTurn==='number'?discovery.lastContactOfferTurn:-99,turn=getUserTurnCount();if(count>=2||turn<2||turn-last<3)return false;if(qualifyLeadIntent(message).level!=='High Intent')return false;if(getContextScore()<3&&discovery.stage!=='complete')return false;return['pricing','quote','timeline','project','capability','general'].includes(reason)}
+    function getSoftContactCTA(reason){traceFunction('getSoftContactCTA');if(reason==='contact')return'Here are the direct contact options:';if(reason==='pricing')return'Now that the basics are clearer, the team can give a more realistic estimate if you’d like.';if(reason==='quote')return'For a proper quotation, the team can review scope, complexity, features, and timeline.';if(reason==='timeline')return'If timing is important, the team can quickly check feasibility with you.';return'If this direction feels right, you can discuss it with the team without pressure.'}
+    function isBusinessRelevant(message){traceFunction('isBusinessRelevant');if(hasActiveBusinessContext())return true;if(isHighIntent(message)||isDiscoveryRequest(message)||isCostIntent(message)||isTimelineIntent(message)||isMarketingBrandingIntent(message)||isSupportIntent(message))return true;if(detectProjectType(message)||detectIndustry(message)||detectGoal(message,discovery.stage))return true;return matches(message,['lead generation','grow online','online growth','digital marketing','digitize','digital transformation','operations','workflow','branding','ui ux','ui/ux'])}
+    function getBusinessOnlyRedirect(){traceFunction('getBusinessOnlyRedirect');return`I’m mainly here to help with digital solutions, websites, apps, software, automation, AI, digital marketing, branding, UI/UX, lead generation, and business growth 😊\n\nIf you’re planning something for a business, tell me the industry and goal. I’ll think like an advisor, not a scripted support bot.`}
+    function getServicesReply(){traceFunction('getServicesReply');const services=unique([...KNOWLEDGE_BASE.company.services,'Digital Marketing','Lead Generation Systems','Branding','UI/UX Strategy','Business Growth Consulting','Digital Transformation for Indian SMEs','WhatsApp Automation','Internal AI Tools','HRMS / Attendance / Booking / Inventory Systems']);return`Pixel Code Media can help across:\n\n${services.map(s=>`• ${s}`).join('\n')}\n\nThe value is choosing the right solution for the business problem — not forcing a website, app, or software when another path is smarter.\n\nTell me your industry and goal, and I’ll recommend the best-fit direction.`}
+    function getCapabilityReply(message){traceFunction('getCapabilityReply');const type=detectProjectType(message);if(type&&PIXIE_SOLUTION_PLAYBOOK[type]){const d=PIXIE_SOLUTION_PLAYBOOK[type];return`Yes — Pixel Code Media can help with ${type.toLowerCase()} projects.\n\nPixie understands: ${d.understands.join(', ')}.\n\nA smart first version usually includes: ${d.mvp.join(', ')}.\n\nThe right scope depends on users, workflow, integrations, timeline, and budget.`}return getServicesReply()}
+    function getCostReply(message){traceFunction('getCostReply');const contextual=getContextualCostReply(message);if(contextual)return contextual;const note='Pricing is not fixed. Requirements, complexity, features, integrations, design depth, content readiness, and timeline affect the final estimate.';for(const [type,d] of Object.entries(PIXIE_SOLUTION_PLAYBOOK)){const key=type.toLowerCase();if(matches(message,[key,'website','app','software','automation','ai','marketing','branding','ui ux','ui/ux'].filter(Boolean))&&((type==='Website'&&matches(message,['website','web development','landing page','ecommerce website']))||(type==='Mobile app'&&matches(message,['app','mobile app','android','ios','flutter']))||(type==='Software platform'&&matches(message,['software','platform','crm','erp','dashboard','hrms','inventory','booking system']))||(type==='AI solution'&&matches(message,['ai','chatbot','assistant','document ai','knowledge base']))||(type==='Automation'&&matches(message,['automation','whatsapp automation','email automation']))||(type==='Digital marketing'&&matches(message,['digital marketing','marketing','lead generation','seo','ads']))||(type==='Branding'&&matches(message,['branding','brand identity','logo']))||(type==='UI/UX design'&&matches(message,['ui ux','ui/ux','prototype','user experience']))))return`${type} cost depends on scope. A practical Indian range is ${d.range}.\n\nA focused first version usually includes ${d.mvp.join(', ')}.\n\n${note}`}
+      return`Costs depend on what you’re building, how complex it is, and how polished it needs to feel.\n\nQuick INR guide:\n• Website: ₹6,990–₹24,990+\n• Mobile app: custom phased app pricing\n• Software: custom phased software pricing\n• Automation: custom workflow-based pricing\n• AI solution: custom affordable AI pricing\n\n${note}`}
+    function getContextualCostReply(message){traceFunction('getContextualCostReply');if(matches(message,['website','app','mobile app','software','platform','crm','erp','dashboard','ai','chatbot','automation','digital marketing','branding','ui ux','ui/ux']))return null;if(!hasActiveBusinessContext())return null;const play=getPlaybook(discovery.industry),note='Requirements, complexity, features, integrations, design quality, and timeline affect pricing — this is a practical INR range, not a fixed quote.';if(discovery.industry==='tuition centres')return`For tuition centre software, cost depends on modules like students, batches, attendance, fees, staff roles, parent communication, reports, and admin dashboard.\n\nA focused first version may start around flexible module-wise pricing. A fuller platform with parent/student portal, payments, automation, and advanced reports can go higher. If the goal is admissions only, a conversion-focused website may start around ₹6,990–₹14,990 and move toward ₹24,990+ with stronger lead systems.\n\n${note}`;if(play)return`For ${withArticle(displayIndustry(discovery.industry))}, pricing depends on whether the priority is growth, operations, or both.\n\nA website/landing page with ${listFew(play.website,2)} may start around ₹6,990–₹14,990 and move toward ₹14,990–₹24,990+. Custom software with ${listFew(play.software,3)} may start around custom module-wise pricing for a focused MVP and increase with roles, reports, APIs, and automation.\n\n${note}`;return null}
+    function buildDiscoveryReply(insight,previousStage,nextStage){traceFunction('buildDiscoveryReply');return[getUnderstanding(insight,previousStage),getStrategicInsight(nextStage),getRecommendation(nextStage),getQuestion(nextStage)].filter(Boolean).join('\n\n')}
+    function getStrategicInsight(nextStage){traceFunction('getStrategicInsight');const play=getPlaybook(discovery.industry);if(play&&discovery.goal)return`Business consultant view: the opportunity is probably around ${listFew(play.leads,1)} and ${listFew(play.automation,1)}. But I’d validate the core workflow before adding too many features.`;if(discovery.projectType&&PIXIE_SOLUTION_PLAYBOOK[discovery.projectType])return`Architecture view: ${discovery.projectType} projects work best when version one focuses on ${listFew(PIXIE_SOLUTION_PLAYBOOK[discovery.projectType].mvp,3)}. Everything else can be phased.`;if(nextStage==='budget')return'For Indian SMEs, the safest approach is: validate demand → capture leads properly → reduce one manual workflow → add software/automation only where it saves time or increases revenue.';return null}
+    function getRecommendation(nextStage){traceFunction('getRecommendation');const play=getPlaybook(discovery.industry),goal=normalize(discovery.goal||'');const line=getIndustryConsultantLine(nextStage);if(line)return line;if(play&&goal){if(matches(goal,['lead','growth','customer','admission','appointment']))return`${variation('recommendations')}\n\nFor ${withArticle(displayIndustry(discovery.industry))}, I’d lean toward ${listFew(play.website,3)} plus follow-up automation like ${listFew(play.automation,2)}.`;if(matches(goal,['management','operation','tracking','report']))return`${variation('recommendations')}\n\nThis sounds like an operations system: ${listFew(play.software,4)} matters more than a brochure-style website.`}if(nextStage==='project_type')return'I’d choose the solution based on the business problem first: website for visibility/trust, app for repeat mobile usage, software for operations, automation for repeated manual work, AI for guided decisions, and marketing/branding/UI-UX for growth and perception.';return variation('recommendations')}
+    function getIndustryConsultantLine(nextStage){traceFunction('getIndustryConsultantLine');const play=getPlaybook();if(!play)return null;const ind=displayIndustry(discovery.industry);if(nextStage==='goal')return`For ${withArticle(ind)}, common pressure points are ${listFew(play.problems,3)}. The right solution depends on which pain is most costly now.`;if(nextStage==='features')return`I’d split features into growth and operations. Growth could be ${listFew(play.website,3)}; operations could be ${listFew(play.software,3)}.`;if(nextStage==='budget')return`For budget planning, start with immediate value, then add automation like ${listFew(play.automation,2)} after the core flow works.`;return null}
+    function getQuestion(stage){traceFunction('getQuestion');const q={clinics:'Is the main goal more appointments, patient follow-up, clinic management, reviews, or staff scheduling?',hospitals:'Is the main goal OP appointments, doctor scheduling, patient follow-up, or hospital workflow?',restaurants:'Is the main goal menu visibility, online orders, table bookings, offers, or repeat customers?',manufacturing:'Is the main goal B2B enquiries, product catalog, quotation tracking, inventory, or production status?',logistics:'Is the main goal shipment enquiries, tracking, booking management, driver coordination, or client reporting?',builders:'Is the main goal project enquiries, site visit bookings, unit inventory, broker coordination, or buyer follow-up?','service businesses':'Is the main goal local enquiries, quote requests, booking slots, staff assignment, follow-up, or reviews?'};if(stage==='project_type')return'What are you trying to build — website, mobile app, software platform, automation, AI solution, digital marketing, branding, UI/UX, or not sure yet?';if(stage==='industry')return'Which industry is this for? For example: tuition centre, school, recruitment, clinic, hospital, home nursing, retail, real estate, builder, construction, interior design, travel, manufacturing, logistics, restaurant, gym, or service business.';if(stage==='goal')return q[discovery.industry]||'What’s the main goal: get more customers, manage operations, automate work, add AI, improve branding/UI, take bookings/payments, or something else?';if(stage==='audience')return'Who will use this most — customers, staff, admins, students/parents, patients, candidates, agents, vendors, clients, or management?';if(stage==='features')return'What features feel important for version one? You can list booking, payments, dashboard, reports, CRM, attendance, inventory, notifications, WhatsApp, AI assistant — or say “not sure.”';if(stage==='timeline')return'When would you ideally like this to go live — urgently, in a few weeks, 1–2 months, 3+ months, or no fixed deadline?';if(stage==='budget')return'Do you have a rough INR budget range in mind — low, medium, premium, ₹6,990, ₹9,990, ₹14,990, ₹24,990, or “not sure”?';return'Want me to turn this into a suggested solution, timeline, budget estimate, and growth plan?'}
+    function askForLeadDetails(){traceFunction('askForLeadDetails');discovery.askedLeadCapture=true;discovery.stage='complete';discovery.leadStage=getNextLeadStage();saveDiscovery();return`I have enough to create a useful project snapshot ✨\n\nYou can send your name, phone, email, and business name — or type “show plan” and I’ll show the recommendation without contact details.\n\nNo pressure — the plan comes first.`}
+    function detectProjectType(message){traceFunction('detectProjectType');if(matches(message,['not sure','unsure',"don't know",'dont know','idk','no idea']))return'not sure yet';if(matches(message,['digital marketing','marketing campaign','seo','ads','lead generation','growth campaign']))return'Digital marketing';if(matches(message,['branding','brand identity','logo','brand design']))return'Branding';if(matches(message,['ui ux','ui/ux','ux design','prototype','wireframe','interface design']))return'UI/UX design';if(matches(message,['ai','chatbot','assistant','gpt','machine learning','ml','recommendation engine','document ai','knowledge base']))return'AI solution';if(matches(message,['automation','automate','workflow','zapier','integration','integrations','whatsapp automation','email automation']))return'Automation';if(matches(message,['mobile app','ios','android','native app','flutter app','staff app','business app']))return'Mobile app';if(matches(message,['software platform','platform','saas','portal','dashboard','crm','erp','hrms','attendance system','fee management','student management','recruitment system','clinic management','inventory system','booking system','management system','admin system']))return'Software platform';if(matches(message,['website','web site','landing page','site','webpage','ecommerce website','e-commerce website','portfolio website','appointment website','school website','clinic website','recruitment website']))return'Website';if(matches(message,['app']))return'Mobile app';return null}
+    function detectIndustry(message){traceFunction('detectIndustry');const industries=[['coaching institutes',['coaching institute','coaching centre','neet coaching','jee coaching','ielts coaching']],['tuition centres',['tuition','tuition centre','tuition center','tutoring','learning centre']],['kindergartens',['kindergarten','preschool','play school','playschool','nursery school']],['overseas recruitment',['overseas recruitment','manpower agency','gulf recruitment','abroad recruitment']],['dental clinics',['dental clinic','dentist','dental hospital','orthodontic','implant clinic']],['eye hospitals',['eye hospital','eye clinic','ophthalmology','lasik','cataract']],['home nursing',['home nursing','home care','elder care','caregiver','nursing service','nurse at home']],['clinics',['clinic','clinics','doctor clinic','polyclinic']],['hospitals',['hospital','hospitals','medical centre','medical center']],['builders',['builder','builders','real estate developer','flat project','apartment project']],['interior design',['interior design','interior designer','interiors','renovation design']],['real estate',['real estate','property','properties','realtor','broker','apartment','rental']],['recruitment',['recruitment','hiring','staffing','hr','jobs','job portal','candidate']],['construction',['construction','contractor','civil work','architecture firm','construction company']],['manufacturing',['manufacturing','factory','industrial','manufacturer','production unit']],['logistics',['logistics','transport','courier','shipping','fleet','warehouse','delivery company']],['restaurants',['restaurant','restaurants','cafe','hotel','food business','cloud kitchen','bakery']],['schools',['school','schools','academy','college']],['travel',['travel agency','travel','tour','tourism','holiday','trip','booking agency']],['gyms',['gym','fitness centre','fitness center','fitness studio','health club']],['retail',['retail','shop','store','ecommerce','e-commerce','boutique','supermarket']],['service businesses',['service business','salon','spa','repair service','cleaning service','agency']],['local businesses',['local business','small business','local shop','local service']],['other businesses',['business','company','other']]];for(const [ind,keys] of industries){if(matches(message,keys))return ind}return null}
+    function displayIndustry(industry){traceFunction('displayIndustry');if(!industry)return'your business';if(discovery.industryDetail)return discovery.industryDetail;const labels={'tuition centres':'tuition centre','coaching institutes':'coaching institute',schools:'school',kindergartens:'kindergarten',healthcare:'healthcare business',clinics:'clinic',hospitals:'hospital','dental clinics':'dental clinic','eye hospitals':'eye hospital',recruitment:'recruitment business','overseas recruitment':'overseas recruitment agency','home nursing':'home nursing service',travel:'travel agency','real estate':'real estate business',builders:'builder / real estate developer',construction:'construction company','interior design':'interior design business',gyms:'gym or fitness business',retail:'retail business',manufacturing:'manufacturing business',logistics:'logistics business',restaurants:'restaurant or food business','service businesses':'service business','local businesses':'local business','other businesses':'business'};return labels[industry]||industry}
+
+
+
+    function estimateBudgetV3Marker(){return true}
+    function suggestSolution(){traceFunction('suggestSolution');const ind=discovery.industry, type=discovery.projectType, play=getPlaybook(ind), biz=discovery.industryDetail||displayIndustry(ind);if(type&&PIXIE_SOLUTION_PLAYBOOK[type]){const d=PIXIE_SOLUTION_PLAYBOOK[type];if(play)return`A ${type.toLowerCase()} direction for ${biz}, focused on ${listFew(d.mvp,3)} and supported by industry needs like ${listFew(play.website.concat(play.software),3)}.`;return`A practical ${type.toLowerCase()} for ${biz}, starting with ${listFew(d.mvp,4)} and expanding only after the core value is proven.`}if(play)return`A practical digital growth + operations setup for ${biz}: use ${listFew(play.website,3)} for trust/leads and ${listFew(play.software,3)} if daily management is painful.`;return`A practical digital solution for ${biz}: start with the core customer or operations workflow, then expand into automation, reporting, and AI when useful.`}
+    function suggestFeatures(){traceFunction('suggestFeatures');const ind=discovery.industry,type=discovery.projectType,play=getPlaybook(ind),features=[];if(play){const goal=normalize(discovery.goal||'');if(goal.includes('lead')||goal.includes('growth')||goal.includes('customer')||goal.includes('admission')||goal.includes('appointment'))features.push(...play.website,...play.leads,...play.automation);else if(goal.includes('management')||goal.includes('operation')||goal.includes('tracking')||goal.includes('report'))features.push(...play.software,...play.automation);else features.push(...play.website.slice(0,3),...play.software.slice(0,3),...play.automation.slice(0,2))}if(type&&PIXIE_SOLUTION_PLAYBOOK[type])features.push(...PIXIE_SOLUTION_PLAYBOOK[type].mvp);features.push(...(discovery.features||[]));if(!features.length)features.push('Lead/request capture','Admin dashboard','Core workflow management','Reports','Notifications','WhatsApp/call actions');return unique(features).slice(0,9)}
+    function estimateTimeline(){traceFunction('estimateTimeline');const t=discovery.projectType;if(t==='Website')return'About 2–5 weeks for a focused website; 4–8+ weeks if design, content, integrations, booking, payments, or animations are deeper.';if(t==='Mobile app')return'About 8–14+ weeks for a strong first mobile app with backend, admin dashboard, testing, and deployment.';if(t==='Software platform')return'About 8–16+ weeks for custom software depending on workflows, roles, reports, integrations, and testing.';if(t==='Automation')return'About 2–6 weeks for focused automation depending on tools, triggers, reminders, approvals, and testing.';if(t==='AI solution')return'About 6–12+ weeks for a useful AI-assisted first version depending on data, integrations, accuracy, and handoff rules.';if(t==='Digital marketing')return'About 2–6 weeks to set up a practical landing page, tracking, creatives, and lead follow-up flow; ongoing campaigns depend on goals.';if(t==='Branding')return'About 2–4+ weeks for a lean identity; deeper positioning and brand systems can take longer.';if(t==='UI/UX design')return'About 2–6+ weeks depending on screens, user flows, prototype depth, and revision rounds.';return'Likely 3–8 weeks for a lean first version, or 8–16+ weeks if it becomes app/software/AI.'}
+    function estimateBudget(){traceFunction('estimateBudget');const t=discovery.projectType,note='Pricing is flexible and never fixed without requirements. Complexity, features, integrations, design quality, content readiness, and timeline affect the estimate. The work can be phased.';if(t&&PIXIE_SOLUTION_PLAYBOOK[t])return`${t}: practical Indian range ${PIXIE_SOLUTION_PLAYBOOK[t].range}. ${note}`;return`A practical discovery/MVP starting point can often be planned from around ₹14,990–₹24,990, while larger app/software/AI projects can go higher. ${note}`}
+    function suggestGrowthOpportunities(){traceFunction('suggestGrowthOpportunities');const play=getPlaybook(discovery.industry),items=[];if(play){items.push(...play.leads.slice(0,2),...play.automation.slice(0,2))}const ind=discovery.industry;if(ind==='manufacturing')items.push('B2B product SEO and quotation follow-up automation','Dealer/distributor enquiry funnel');if(ind==='logistics')items.push('Shipment status automation','Client dashboard for recurring accounts');if(ind==='restaurants')items.push('Repeat customer offers and review requests','Instagram-to-WhatsApp ordering funnel');if(ind==='builders')items.push('Project landing pages with site visit booking','Broker and buyer follow-up CRM');if(ind==='clinics'||ind==='hospitals')items.push('Local treatment/service pages','Appointment reminders and review collection');if(discovery.projectType!=='AI solution')items.push('Add an AI assistant once common questions/workflows are clear');if(discovery.projectType!=='Automation')items.push('Automate reminders, follow-ups, and reporting after launch');items.push('Use analytics to decide which features to build next');return unique(items).slice(0,5)}
+    function getTimelineReply(message){traceFunction('getTimelineReply');const type=detectProjectType(message)||discovery.projectType;if(type){const old=discovery.projectType;discovery.projectType=type;const out=estimateTimeline()+`\n\nTimeline depends on requirements, content readiness, integrations, feedback speed, testing depth, and launch process.`;discovery.projectType=old;return out}return`Timeline depends on solution type and feature depth.\n\nRough guide:\n• Website: 2–8 weeks\n• Mobile app: 8–14+ weeks\n• Software platform: 8–16+ weeks\n• Automation: 2–6 weeks\n• AI solution: 6–12+ weeks\n• Branding/UI-UX: 2–6+ weeks\n\nIf you share the project type and industry, I can narrow it down.`}
+
+
+
+    /* PIXIE CONVERSATION ENGINE V4 — concise recommendation engine
+       Goal: understand enough, recommend within 3–5 messages, stop survey loops. */
+
+    const PIXIE_V4_DONE_KEY = 'pixieV4RecommendationDone';
+
+    function createPixieReply(rawMessage) {
+      traceFunction('createPixieReplyV4');
+      const text = String(rawMessage || '').trim();
+      const message = normalize(text);
+      const previousStage = discovery.stage;
+
+      if (isReset(message)) {
+        discovery = { ...defaultDiscovery, v4: { askedGoal: false, recommendationDone: false } };
+        pixieVariationMemory = Object.create(null);
+        saveDiscovery();
+        return 'Fresh start ✨\n\nTell me your business and what you want to improve — growth, management, automation, website, app, or software.';
+      }
+
+      if (isGreeting(message) && message.length <= 18 && getUserTurnCount() <= 1) {
+        return 'Hi 👋 I’m Pixie.\n\nTell me what business you run or what you want to build, and I’ll recommend the smartest next step.';
+      }
+
+      const insight = analyzeMessage(text, previousStage);
+      updateV4Context(text, message, insight, previousStage);
+      saveDiscovery();
+
+      const objection = detectObjection(message);
+      if (objection) return getV4ObjectionReply(objection);
+
+      if (isContactIntent(message)) return getV4ContactReply();
+      if (isCostIntent(message)) return getV4PricingReply(message);
+      if (isTimelineIntent(message)) return getV4TimelineReply(message);
+
+      const knowledgeReply = getV4KnowledgeReply(message);
+      if (knowledgeReply) return knowledgeReply;
+
+      if (isClearlyUnrelated(message) || !isBusinessRelevant(message)) return getBusinessOnlyRedirect();
+
+      if (shouldRecommendNow(message)) return getV4RecommendationReply();
+
+      return getV4MostImportantQuestion(message);
+    }
+
+    function updateV4Context(text, message, insight, previousStage) {
+      traceFunction('updateV4Context');
+      discovery.v4 = discovery.v4 && typeof discovery.v4 === 'object' ? discovery.v4 : {};
+      const beforeGoal = discovery.goal;
+      updateDiscovery(text, insight, previousStage);
+
+      if (!discovery.industry && insight.industry) discovery.industry = insight.industry;
+      if (!discovery.projectType && insight.projectType) discovery.projectType = insight.projectType;
+      if (!discovery.goal && insight.goal) discovery.goal = insight.goal;
+
+      if (!discovery.goal && previousStage === 'goal' && text.length > 1) discovery.goal = cleanSentence(text);
+      if (!discovery.goal && matches(message, ['more admissions', 'admissions', 'more admission'])) discovery.goal = 'more admissions';
+      if (!discovery.goal && matches(message, ['better management', 'manage better', 'management'])) discovery.goal = 'better management';
+      if (!discovery.goal && matches(message, ['both', 'growth and management', 'admissions and management'])) discovery.goal = 'growth and better management';
+
+      if (discovery.goal && discovery.goal !== beforeGoal) discovery.v4.problem = getV4ProblemLabel();
+      discovery.stage = getV4Stage();
+    }
+
+    function getV4Stage() {
+      traceFunction('getV4Stage');
+      if (!discovery.industry && !discovery.projectType && !discovery.goal) return 'business';
+      if (!discovery.goal && !discovery.projectType) return 'goal';
+      if (!discovery.industry && discovery.projectType) return 'business';
+      if (!discovery.goal && discovery.industry && !discovery.projectType) return 'goal';
+      return 'complete';
+    }
+
+    function shouldRecommendNow(message) {
+      traceFunction('shouldRecommendNow');
+      if (discovery.v4?.recommendationDone) return true;
+      const lead = qualifyLeadIntent(message);
+      if (discovery.industry && discovery.goal) return true;
+      if (discovery.industry && discovery.projectType) return true;
+      if (discovery.projectType && discovery.goal) return true;
+      if (lead.level === 'High Intent' && (discovery.industry || discovery.projectType || discovery.goal)) return true;
+      return false;
+    }
+
+    function getV4MostImportantQuestion(message) {
+      traceFunction('getV4MostImportantQuestion');
+      discovery.v4 = discovery.v4 && typeof discovery.v4 === 'object' ? discovery.v4 : {};
+
+      if (discovery.industry && !discovery.goal && !discovery.v4.askedGoal) {
+        discovery.v4.askedGoal = true;
+        discovery.stage = 'goal';
+        saveDiscovery();
+        return getV4GoalQuestion();
+      }
+
+      if (discovery.projectType && !discovery.industry && !discovery.v4.askedIndustry) {
+        discovery.v4.askedIndustry = true;
+        discovery.stage = 'business';
+        saveDiscovery();
+        return `Got it — ${displayProjectType(discovery.projectType)} 😊\n\nWhich business or industry is this for?`;
+      }
+
+      if (discovery.goal && !discovery.industry && !discovery.v4.askedIndustry) {
+        discovery.v4.askedIndustry = true;
+        discovery.stage = 'business';
+        saveDiscovery();
+        return `That sounds like a ${discovery.goal} goal.\n\nWhich business is this for?`;
+      }
+
+      if (discovery.industry || discovery.projectType || discovery.goal) return getV4RecommendationReply();
+
+      return 'Tell me your business type and main goal 😊\n\nExample: “I run a tuition centre and want more admissions.”';
+    }
+
+    function getV4GoalQuestion() {
+      traceFunction('getV4GoalQuestion');
+      const industry = discovery.industry;
+      if (industry === 'tuition centres' || industry === 'coaching institutes') return 'Nice 😊\n\nAre you mainly looking for more admissions or better management?';
+      if (industry === 'schools' || industry === 'kindergartens') return 'Nice 😊\n\nIs the main goal more admissions, parent communication, or school management?';
+      if (['clinics','hospitals','healthcare','dental clinics','eye hospitals'].includes(industry)) return 'Got it 😊\n\nIs the main goal more appointments, patient trust, or easier management?';
+      if (['recruitment','overseas recruitment'].includes(industry)) return 'Understood 😊\n\nIs the main goal more candidates, more clients, or better recruitment management?';
+      if (industry === 'home nursing') return 'Got it 😊\n\nIs the main goal more care requests or easier caregiver scheduling?';
+      if (['retail','restaurants'].includes(industry)) return 'Nice 😊\n\nIs the main goal more sales, online orders, or inventory/order management?';
+      if (['real estate','builders'].includes(industry)) return 'Understood 😊\n\nIs the main goal more property enquiries, site visits, or lead tracking?';
+      if (['construction','interior design'].includes(industry)) return 'Nice 😊\n\nIs the main goal more enquiries, better portfolio trust, or project management?';
+      if (['manufacturing','logistics'].includes(industry)) return 'Got it 😊\n\nIs the main goal more B2B enquiries or better operations tracking?';
+      if (industry === 'gyms') return 'Nice 😊\n\nIs the main goal more memberships, trial bookings, or renewal management?';
+      return 'Nice 😊\n\nAre you mainly looking for more leads, better management, automation, or a stronger online presence?';
+    }
+
+    function getV4RecommendationReply() {
+      traceFunction('getV4RecommendationReply');
+      const rec = buildV4Recommendation();
+      discovery.v4 = discovery.v4 && typeof discovery.v4 === 'object' ? discovery.v4 : {};
+      discovery.v4.recommendationDone = true;
+      discovery.v4.problem = rec.problem;
+      discovery.v4.recommendation = rec.solution;
+      discovery.resultGenerated = true;
+      discovery.stage = 'complete';
+      discovery.contactOfferCount = Math.max(discovery.contactOfferCount || 0, 1);
+      discovery.lastContactOfferTurn = getUserTurnCount();
+      saveDiscovery();
+      return `${rec.problem} 😊\n\n${rec.solution}\n\n${rec.benefit}\n\nWould you like a quick estimate from our team? ✨\n\n[[CONTACT_CARDS]]`;
+    }
+
+    function buildV4Recommendation() {
+      traceFunction('buildV4Recommendation');
+      const industry = discovery.industry;
+      const goal = normalize(discovery.goal || '');
+      const type = discovery.projectType;
+      const play = getPlaybook(industry);
+
+      if (industry === 'tuition centres' || industry === 'coaching institutes') {
+        if (goal.includes('management') || goal.includes('better management')) return { problem:'That sounds like a management problem', solution:'A simple tuition management system for students, batches, attendance, fees, and reminders would likely help.', benefit:'It reduces manual work and gives you better control over daily operations.' };
+        if (goal.includes('both')) return { problem:'That sounds like both a growth and management problem', solution:'A tuition website for admissions plus a small management dashboard would be the smartest first version.', benefit:'It helps parents enquire easily while keeping student and fee tracking organised.' };
+        return { problem:'That sounds like a lead generation problem', solution:'A professional tuition centre website with enquiry forms, WhatsApp integration, course pages, and local SEO would likely help.', benefit:'It makes it easier for parents to find, trust, and contact your centre.' };
+      }
+
+      if (['clinics','hospitals','healthcare','dental clinics','eye hospitals'].includes(industry)) {
+        if (goal.includes('management')) return { problem:'That sounds like a clinic management problem', solution:'A clinic management system with appointments, patient records, billing, and reminders would likely help.', benefit:'It reduces front-desk pressure and keeps patient follow-ups organised.' };
+        return { problem:'That sounds like an appointment and trust problem', solution:'A professional healthcare website with service pages, doctor details, appointment enquiry, WhatsApp, and local SEO would likely help.', benefit:'It helps patients trust you faster and contact the clinic more easily.' };
+      }
+
+      if (['recruitment','overseas recruitment'].includes(industry)) return { problem:'That sounds like a hiring pipeline problem', solution:'A recruitment website or ATS-style platform with job listings, candidate forms, document tracking, and status updates would help.', benefit:'It reduces scattered WhatsApp follow-ups and makes candidates and clients easier to manage.' };
+      if (industry === 'home nursing') return { problem:'That sounds like a care request management problem', solution:'A home nursing website with care request forms plus a caregiver scheduling dashboard would help.', benefit:'It builds trust and makes nurse/caregiver assignment easier.' };
+      if (['retail','restaurants'].includes(industry)) return { problem:'That sounds like a sales and repeat-customer problem', solution:'A catalog/order website with WhatsApp ordering, offers, and basic customer tracking would help.', benefit:'It makes buying easier and gives you a better way to follow up with customers.' };
+      if (['real estate','builders'].includes(industry)) return { problem:'That sounds like a property lead problem', solution:'Project/property landing pages with enquiry forms, WhatsApp, site visit booking, and lead tracking would help.', benefit:'It improves trust and helps you follow up with serious buyers faster.' };
+      if (['construction','interior design'].includes(industry)) return { problem:'That sounds like a trust and enquiry problem', solution:'A strong portfolio website with quote requests, project proof, WhatsApp, and optional project tracking would help.', benefit:'It shows credibility and converts interested visitors into enquiries.' };
+      if (industry === 'manufacturing') return { problem:'That sounds like a B2B enquiry problem', solution:'A product catalog website with quotation forms and follow-up tracking would help.', benefit:'It makes your products clearer and helps convert business enquiries professionally.' };
+      if (industry === 'logistics') return { problem:'That sounds like a tracking and enquiry problem', solution:'A logistics website with quote requests plus shipment/status update automation would help.', benefit:'It reduces repeated calls and improves client confidence.' };
+      if (industry === 'gyms') return { problem:'That sounds like a membership growth problem', solution:'A gym website with plans, trial booking, WhatsApp follow-up, and renewal reminders would help.', benefit:'It brings more trials and keeps member follow-up organised.' };
+      if (industry === 'schools' || industry === 'kindergartens') return { problem:'That sounds like an admissions and parent trust problem', solution:'A school website with admission enquiry, parent trust sections, gallery, notices, and WhatsApp contact would help.', benefit:'It helps parents understand the institution and enquire with confidence.' };
+
+      if (type && PIXIE_SOLUTION_PLAYBOOK[type]) {
+        const d = PIXIE_SOLUTION_PLAYBOOK[type];
+        return { problem:`That sounds like a ${type.toLowerCase()} opportunity`, solution:`A focused first version with ${listFew(d.mvp, 4)} would be a practical start.`, benefit:'It solves the core need first without overbuilding.' };
+      }
+
+      if (play) return { problem:`That sounds like a business growth problem`, solution:`A focused solution using ${listFew(play.website, 2)} and ${listFew(play.automation, 1)} would be a practical start.`, benefit:'It improves trust, captures enquiries, and reduces missed follow-ups.' };
+
+      return { problem:'That sounds like a digital growth problem', solution:'A focused website or workflow system with enquiry capture, WhatsApp, and simple tracking would be a smart first step.', benefit:'It gives you visibility, trust, and a clearer way to manage leads.' };
+    }
+
+    function getV4PricingReply(message) {
+      traceFunction('getV4PricingReply');
+      const rec = buildV4Recommendation();
+      const industry = discovery.industry;
+      const type = detectProjectType(message) || discovery.projectType;
+      let range = 'A practical first version can often start around ₹14,990–₹24,990, depending on scope.';
+
+      if (industry === 'tuition centres' && normalize(discovery.goal || '').includes('admission')) range = 'For a tuition admissions website, a lean version may start around ₹6,990–₹14,990; stronger lead generation can move toward ₹14,990–₹24,990+.';
+      else if (industry === 'tuition centres') range = 'For tuition centre software, a focused first version may start around flexible module-wise pricing.';
+      else if (type && PIXIE_SOLUTION_PLAYBOOK[type]) range = `${type} projects can range around ${PIXIE_SOLUTION_PLAYBOOK[type].range}.`;
+      else if (industry) range = `For ${withArticle(displayIndustry(industry))}, a website may start around ₹6,990–₹14,990, while custom software can start around custom module-wise pricing.`;
+
+      discovery.v4 = discovery.v4 && typeof discovery.v4 === 'object' ? discovery.v4 : {};
+      discovery.v4.recommendationDone = true;
+      discovery.stage = 'complete';
+      saveDiscovery();
+      return `${range}\n\nFinal pricing depends on requirements, complexity, features, integrations, design, and timeline.\n\nFor your case: ${rec.solution}\n\nWant a quick estimate from our team? ✨\n\n[[CONTACT_CARDS]]`;
+    }
+
+    function getV4TimelineReply(message) {
+      traceFunction('getV4TimelineReply');
+      const type = detectProjectType(message) || discovery.projectType;
+      let line = 'A lean first version usually takes around 3–8 weeks, depending on scope.';
+      if (type === 'Website') line = 'A focused website usually takes around 2–5 weeks; a polished custom one can take 4–8+ weeks.';
+      if (type === 'Mobile app') line = 'A lean mobile app usually takes around 8–14+ weeks.';
+      if (type === 'Software platform') line = 'A focused software MVP usually takes around 8–16+ weeks.';
+      if (type === 'Automation') line = 'A focused automation usually takes around 2–6 weeks.';
+      if (type === 'AI solution') line = 'A useful AI-assisted first version usually takes around 6–12+ weeks.';
+      return `${line}\n\nTimeline depends on features, integrations, content readiness, feedback speed, and testing.\n\nWould you like the team to check feasibility? ✨\n\n[[CONTACT_CARDS]]`;
+    }
+
+    function getV4KnowledgeReply(message) {
+      traceFunction('getV4KnowledgeReply');
+      if (isSupportIntent(message)) return 'Yes — support can be provided after launch.\n\nThe scope depends on the project: maintenance, updates, bug fixes, hosting checks, backups, or feature improvements.';
+      if (isServicesIntent(message)) return 'Pixel Code Media builds websites, apps, custom software, AI solutions, automation, branding, UI/UX, and lead generation systems.\n\nTell me your business and goal, and I’ll suggest the best-fit solution.';
+      if (isMarketingBrandingIntent(message)) return getV4MarketingBrandingReply(message);
+      if (isCapabilityIntent(message)) return getV4CapabilityReply(message);
+      if (isIdentityIntent(message)) return 'I’m Pixie ✨\n\nA friendly digital business consultant inside the Pixel Code Media portfolio.';
+      if (isTeamIntent(message)) return getTeamReply();
+      if (isWebsiteOwnerIntent(message)) return getWebsiteOwnerReply();
+      if (isHireOrQuoteIntent(message)) return 'Yes — Pixel Code Media can help with projects.\n\nTell me your business and goal, and I’ll recommend the right direction before you ask the team for a quote.';
+      return null;
+    }
+
+    function getV4CapabilityReply(message) {
+      traceFunction('getV4CapabilityReply');
+      const type = detectProjectType(message);
+      if (type && PIXIE_SOLUTION_PLAYBOOK[type]) {
+        const d = PIXIE_SOLUTION_PLAYBOOK[type];
+        return `Yes — ${type.toLowerCase()} projects can be built.\n\nA smart first version usually includes ${listFew(d.mvp, 4)}.\n\nWhich business is this for?`;
+      }
+      return 'Yes — websites, apps, software, AI, automation, branding, UI/UX, and marketing systems can be built.\n\nTell me the business type and I’ll suggest the right option.';
+    }
+
+    function getV4MarketingBrandingReply(message) {
+      traceFunction('getV4MarketingBrandingReply');
+      if (matches(message, ['branding','brand','logo'])) return 'Branding helps if people need to trust and remember your business.\n\nA practical first step is positioning, visual identity, messaging, and consistent website/social usage.';
+      if (matches(message, ['ui ux','ui/ux','prototype','user experience'])) return 'UI/UX helps make websites, apps, and software easier to use.\n\nA practical first step is mapping the main user journey and designing the key screens.';
+      return 'Lead generation works best when marketing connects to a funnel.\n\nLanding page + WhatsApp/call flow + tracking + follow-up reminders is a strong first setup.';
+    }
+
+    function getV4ContactReply() {
+      traceFunction('getV4ContactReply');
+      return 'Absolutely ✨\n\nYou can connect directly with the Pixel Code Media team.\n\n[[CONTACT_CARDS]]';
+    }
+
+    function getV4ObjectionReply(key) {
+      traceFunction('getV4ObjectionReply');
+      if (key === 'expensive') return 'Fair point — it should feel worth it, not forced.\n\nThe safer approach is to start with the smallest useful version and expand only if it brings leads, saves time, or improves control.';
+      if (key === 'alreadyWhatsapp') return 'WhatsApp is useful — I wouldn’t replace it.\n\nThe smarter move is to add structure around it: enquiry tracking, auto-replies, reminders, and missed follow-up recovery.';
+      if (key === 'noWebsite') return 'That can be valid.\n\nA website is only worth it if it improves trust, Google visibility, enquiries, or booking. Otherwise, start with WhatsApp/Google improvements first.';
+      if (key === 'smallBusiness') return 'For a small business, don’t overbuild.\n\nStart lean: one page, WhatsApp enquiry flow, simple tracking, or one automation that saves time.';
+      if (key === 'noSoftware') return 'That’s reasonable.\n\nSoftware is useful only when manual work, Excel, follow-ups, reports, or tracking become hard to manage.';
+      if (key === 'alreadyExcel') return 'Excel is a good start.\n\nMove to software only when reports are slow, data is messy, follow-ups are missed, or multiple people need live access.';
+      if (key === 'customersNoWebsite') return 'That may be true.\n\nBut a website can still support Google trust, reviews, service proof, and then send people to WhatsApp or call.';
+      if (key === 'noBudget') return 'No problem — then don’t rush development.\n\nStart by tracking enquiries, improving Google presence, collecting reviews, and building only when the business case is clear.';
+      return 'No pressure.\n\nThe right solution should match the business value, not just the trend.';
+    }
+
+    function getV4ProblemLabel() {
+      traceFunction('getV4ProblemLabel');
+      const goal = normalize(discovery.goal || '');
+      if (goal.includes('admission') || goal.includes('lead') || goal.includes('growth') || goal.includes('customer')) return 'lead generation problem';
+      if (goal.includes('management') || goal.includes('operation') || goal.includes('tracking')) return 'management problem';
+      if (goal.includes('automation')) return 'automation problem';
+      if (goal.includes('ai')) return 'AI assistance opportunity';
+      return 'business improvement opportunity';
+    }
+
+
+
+    /* PIXIE V4 FIX — no intent messages as goals, no pricing confusion. */
+    function updateV4Context(text, message, insight, previousStage) {
+      traceFunction('updateV4ContextV4Fix');
+      discovery.v4 = discovery.v4 && typeof discovery.v4 === 'object' ? discovery.v4 : {};
+      const beforeGoal = discovery.goal;
+      const intentOnly = isCostIntent(message) || isTimelineIntent(message) || isContactIntent(message) || isHireOrQuoteIntent(message) || isSupportIntent(message) || detectObjection(message);
+
+      if (insight.projectType && !discovery.projectType) discovery.projectType = insight.projectType;
+      if (insight.industry && !discovery.industry) discovery.industry = insight.industry;
+      if (insight.audience && !discovery.audience) discovery.audience = insight.audience;
+      if (insight.timeline && !discovery.timeline) discovery.timeline = insight.timeline;
+      if (insight.budget && !discovery.budget) discovery.budget = insight.budget;
+      if (insight.features && insight.features.length) discovery.features = unique([...(discovery.features || []), ...insight.features]).slice(0, 8);
+
+      if (!intentOnly) {
+        if (insight.goal && !discovery.goal) discovery.goal = insight.goal;
+        if (!discovery.goal && previousStage === 'goal' && text.length > 1) discovery.goal = cleanSentence(text);
+      }
+
+      if (!discovery.goal && matches(message, ['more admissions', 'admissions', 'more admission'])) discovery.goal = 'more admissions';
+      if (!discovery.goal && matches(message, ['better management', 'manage better', 'management'])) discovery.goal = 'better management';
+      if (!discovery.goal && matches(message, ['both', 'growth and management', 'admissions and management'])) discovery.goal = 'growth and better management';
+
+      discovery.notes = [...(discovery.notes || []), cleanSentence(text)].slice(-8);
+      if (discovery.goal && discovery.goal !== beforeGoal) discovery.v4.problem = getV4ProblemLabel();
+      discovery.stage = getV4Stage();
+    }
+
+    function getV4PricingReply(message) {
+      traceFunction('getV4PricingReplyV4Fix');
+      const rec = buildV4Recommendation();
+      const industry = discovery.industry;
+      const type = detectProjectType(message) || discovery.projectType;
+      const goal = normalize(discovery.goal || '');
+      let range = 'A practical first version can often start around ₹14,990–₹24,990, depending on scope.';
+
+      if (industry === 'tuition centres' && !goal) range = 'For a tuition centre, an admissions website may start around ₹6,990–₹14,990, while tuition management software may start around flexible module-wise pricing.';
+      else if (industry === 'tuition centres' && (goal.includes('admission') || goal.includes('lead') || goal.includes('growth'))) range = 'For a tuition admissions website, a lean version may start around ₹6,990–₹14,990; stronger lead generation can move toward ₹14,990–₹24,990+.';
+      else if (industry === 'tuition centres') range = 'For tuition centre software, a focused first version may start around flexible module-wise pricing.';
+      else if (type && PIXIE_SOLUTION_PLAYBOOK[type]) range = `${type} projects can range around ${PIXIE_SOLUTION_PLAYBOOK[type].range}.`;
+      else if (industry) range = `For ${withArticle(displayIndustry(industry))}, a website may start around ₹6,990–₹14,990, while custom software can start around custom module-wise pricing.`;
+
+      discovery.v4 = discovery.v4 && typeof discovery.v4 === 'object' ? discovery.v4 : {};
+      discovery.v4.recommendationDone = true;
+      discovery.stage = 'complete';
+      saveDiscovery();
+      return `${range}\n\nFinal pricing depends on requirements, complexity, features, integrations, design, and timeline.\n\n${rec.solution}\n\nWant a quick estimate from our team? ✨\n\n[[CONTACT_CARDS]]`;
+    }
+
+
+
+    /* PIXIE AFFORDABLE PRICING FINAL OVERRIDE */
+    const PIXIE_AFFORDABLE_EXAMPLES = ['₹6,990+', '₹7,990+', '₹9,990+', '₹14,990+', '₹24,990+'];
+    function getAffordablePriceLine(type, industry) {
+      traceFunction('getAffordablePriceLine');
+      if (type === 'Website') return 'A simple business website can start from around ₹6,990–₹9,990 depending on requirements 😊';
+      if (type === 'Digital marketing') return 'A lead-generation setup can start affordably and scale based on campaign needs.';
+      if (type === 'Branding') return 'Branding can be planned flexibly based on logo, identity, and content needs.';
+      if (type === 'UI/UX design') return 'UI/UX pricing depends on number of screens and prototype depth.';
+      if (type === 'Mobile app') return 'Mobile apps are best priced in phases, starting with only the most important screens and features.';
+      if (type === 'Software platform') return 'Custom software pricing depends on modules, but it can start small and grow step by step.';
+      if (type === 'Automation') return 'Automation pricing depends on workflow steps, tools, and reminders — it can start with one small process.';
+      if (type === 'AI solution') return 'AI solution pricing depends on data, use case, and integrations, so it is planned flexibly.';
+      if (industry === 'tuition centres') return 'For a tuition centre, an admissions website can start from around ₹6,990–₹9,990 depending on requirements 😊';
+      if (industry === 'clinics' || industry === 'healthcare' || industry === 'hospitals') return 'For a clinic, a simple website can start from around ₹6,990–₹14,990 depending on requirements 😊';
+      return 'A simple business website can start from around ₹6,990–₹9,990 depending on requirements 😊';
+    }
+
+    function getV4PricingReply(message) {
+      traceFunction('getV4PricingReplyAffordable');
+      const type = detectProjectType(message) || discovery.projectType || 'Website';
+      const line = getAffordablePriceLine(type, discovery.industry);
+      const rec = buildV4Recommendation();
+      discovery.v4 = discovery.v4 && typeof discovery.v4 === 'object' ? discovery.v4 : {};
+      discovery.v4.recommendationDone = true;
+      discovery.stage = 'complete';
+      saveDiscovery();
+      return `${line}\n\nPricing is never fixed — it depends on features, pages, integrations, content, and requirements.\n\n${rec.solution}\n\nWould you like a quick affordable estimate from our team? ✨\n\n[[CONTACT_CARDS]]`;
+    }
+
+    function getCostReply(message) {
+      traceFunction('getCostReplyAffordable');
+      const type = detectProjectType(message) || discovery.projectType || 'Website';
+      const line = getAffordablePriceLine(type, discovery.industry);
+      return `${line}\n\nPixel Code Media focuses on premium quality with affordable, flexible pricing.\n\nFinal pricing depends on features and requirements — you can start small and scale later.`;
+    }
+
+    function getContextualCostReply(message) {
+      traceFunction('getContextualCostReplyAffordable');
+      return getCostReply(message);
+    }
+
+    function estimateBudget() {
+      traceFunction('estimateBudgetAffordable');
+      return `${getAffordablePriceLine(discovery.projectType || 'Website', discovery.industry)} Pricing is flexible and depends on features and requirements. Start small, then scale when needed.`;
+    }
+
     function random(items) {
       traceFunction('random');
       const list = Array.isArray(items) ? items.filter((item) => item !== undefined && item !== null) : [];
@@ -3773,5 +4418,5 @@ If you share the project type, I can help narrow it down.`;
 
   
   </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0bb4b459edf8ae4',t:'MTc4MTQ2MDY0OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0bbb732be179bc1',t:'MTc4MTQ2NTA3MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0bb4b459edf8ae4',t:'MTc4MTQ2MDY0OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0bbb732be179bc1',t:'MTc4MTQ2NTA3MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0c31cf5eeaf7eaa',t:'MTc4MTU0MjYzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
