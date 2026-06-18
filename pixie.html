@@ -1346,8 +1346,6 @@
 </head>
 <body>
   <main class="app" aria-label="Pixie chatbot">
-      
-    </header>
 
     <section id="messages" class="messages" aria-live="polite" aria-label="Chat history"></section>
 
@@ -8529,6 +8527,712 @@ If you share the project type, I can help narrow it down.`;
       return `You can directly contact our team using the details below.\n\n${masterSalesContactLines()}`;
     }
 
+
+    /* PIXIE RESPONSE VARIATION SYSTEM — FINAL OVERRIDE
+       Rotate wording for frequent sales topics while keeping prices, services,
+       company facts, and contact details identical. */
+
+    function pickPixieVariant(topic, variants) {
+      traceFunction('pickPixieVariant');
+      ensureConsultantProfile();
+      const p = discovery.businessProfile;
+      p.responseVariantMemory = p.responseVariantMemory && typeof p.responseVariantMemory === 'object' ? p.responseVariantMemory : {};
+      const list = Array.isArray(variants) ? variants.filter(Boolean) : [];
+      if (!list.length) return '';
+      const last = p.responseVariantMemory[topic];
+      let pool = list.length > 1 ? list.filter((item) => item !== last) : list;
+      if (!pool.length) pool = list;
+      const selected = pool[Math.floor(Math.random() * pool.length)];
+      p.responseVariantMemory[topic] = selected;
+      saveDiscovery();
+      return selected;
+    }
+
+    function getSalesContactBlock(includeWebsite = false) {
+      traceFunction('getSalesContactBlock');
+      const base = `📞 Call: ${PIXIE_OFFICIAL_CONTACT.phone}\n💬 WhatsApp: ${PIXIE_OFFICIAL_CONTACT.whatsapp}\n📧 Email: ${PIXIE_OFFICIAL_CONTACT.email}`;
+      return includeWebsite ? `${base}\n🌐 Website: ${PIXIE_OFFICIAL_CONTACT.website}` : base;
+    }
+
+    function getMasterSalesQuickResponse(rawText, message) {
+      traceFunction('getMasterSalesQuickResponseVariant');
+      const original = normalize(rawText);
+      const short = original.length <= 90;
+
+      if (isMasterSalesGreeting(original)) return getVariantGreetingResponse();
+      if (isMasterSalesAboutIntent(message, short)) return getVariantAboutCompanyResponse();
+      if (isMasterSalesContactIntent(message, short)) return getMasterSalesContactResponse();
+      if (isMasterSalesWebsiteIntent(message, short)) return getMasterSalesWebsiteResponse(message);
+      if (isMasterSalesAppIntent(message, short)) return getMasterSalesAppResponse(message);
+      if (isMasterSalesSoftwareIntent(message, short)) return getMasterSalesSoftwareResponse(message);
+      if (isMasterSalesPricingIntent(message, short)) return getMasterSalesPricingResponse();
+      if (isMasterSalesServicesIntent(message, short)) return getMasterSalesServicesResponse();
+      if (isMasterSalesAiAutomationIntent(message, short)) return getMasterSalesAutomationResponse(message);
+      if (isMasterSalesMarketingIntent(message, short)) return getMasterSalesMarketingResponse(message);
+      if (isMasterSalesProceedIntent(message)) return getMasterSalesProceedResponse();
+      return null;
+    }
+
+    function isMasterSalesAboutIntent(message, short) {
+      traceFunction('isMasterSalesAboutIntent');
+      return short && matches(message, ['about company', 'about pixel code media', 'who are you', 'company details', 'about your company', 'what is pixel code media']);
+    }
+
+    function getVariantGreetingResponse() {
+      traceFunction('getVariantGreetingResponse');
+      return pickPixieVariant('greeting', [
+        'Hello 👋\n\nWelcome.\n\nHow can I help you today?',
+        'Hi, welcome.\n\nWhat would you like help with today?',
+        'Hello.\n\nHow can I assist you with your digital project today?',
+        'Hi there.\n\nAre you looking for a website, app, software, or something else?',
+        'Welcome.\n\nTell me what you are planning to build.'
+      ]);
+    }
+
+    function getMasterSalesPricingResponse() {
+      traceFunction('getMasterSalesPricingResponseVariant');
+      const contact = getSalesContactBlock(false);
+      return pickPixieVariant('pricing', [
+        `Our solutions are designed to be affordable and budget-friendly.\n\n🌐 Website Development — Starting from ₹5,999\n📱 Mobile App Development — Starting from ₹7,999\n⚙️ Custom Software — Based on requirements\n\nFinal pricing depends on features, pages, integrations, and complexity.\n\nWhat type of project are you planning?\n\n${contact}`,
+        `Here is the basic pricing idea:\n\n🌐 Websites start from ₹5,999\n📱 Mobile apps start from ₹7,999\n⚙️ Custom software is priced based on requirements\n\nThe final cost depends on the scope, features, and functionality needed.\n\nWhich service are you interested in?\n\n${contact}`,
+        `We keep pricing startup-friendly and suitable for small businesses.\n\n🌐 Website Development: Starting from ₹5,999\n📱 Mobile App Development: Starting from ₹7,999\n⚙️ Custom Software: Based on requirements\n\nExact cost depends on project complexity and features.\n\nWhat are you planning to build?\n\n${contact}`,
+        `Affordable project options are available:\n\n🌐 Website Development — from ₹5,999\n📱 Mobile App Development — from ₹7,999\n⚙️ Custom Software — based on your requirements\n\nPricing changes based on design, features, integrations, and timeline.\n\nIs your project a website, app, or software system?\n\n${contact}`,
+        `Starting prices are:\n\n🌐 Website Development — ₹5,999 onwards\n📱 Mobile App Development — ₹7,999 onwards\n⚙️ Custom Software — requirement-based pricing\n\nFinal pricing depends on what needs to be built.\n\nWhich project type should I guide you on?\n\n${contact}`
+      ]);
+    }
+
+    function getMasterSalesWebsiteResponse(message) {
+      traceFunction('getMasterSalesWebsiteResponseVariant');
+      const contact = getSalesContactBlock(false);
+      return pickPixieVariant('website_cost', [
+        `Website development starts from ₹5,999.\n\nThis is suitable for small businesses, shops, clinics, schools, startups, portfolios, and service businesses.\n\nThe final cost depends on pages, design, forms, content, and functionality.\n\nWhat type of website are you looking for — business, portfolio, school, clinic, or e-commerce?\n\n${contact}`,
+        `Our website packages begin at ₹5,999.\n\nWe build websites for shops, clinics, schools, startups, portfolios, and service businesses.\n\nCost depends on the number of pages, design style, content, forms, and features.\n\nWhat kind of website do you need?\n\n${contact}`,
+        `You can get a professional website starting from ₹5,999.\n\nIt can be a business website, portfolio, school website, clinic website, or e-commerce website.\n\nThe final price depends on pages and required functionality.\n\nWhich type are you planning?\n\n${contact}`,
+        `Affordable website solutions are available from ₹5,999.\n\nThey are suitable for small businesses, startups, clinics, schools, shops, and portfolios.\n\nFinal cost depends on design, pages, forms, and custom requirements.\n\nDo you need a simple website or a business website with more features?\n\n${contact}`,
+        `Website pricing starts at ₹5,999.\n\nWe can build small business websites, portfolios, school websites, clinic websites, and e-commerce websites.\n\nThe final cost depends on the scope and features.\n\nWhat type of website are you planning to build?\n\n${contact}`
+      ]);
+    }
+
+    function getMasterSalesAppResponse(message) {
+      traceFunction('getMasterSalesAppResponseVariant');
+      const contact = getSalesContactBlock(false);
+      return pickPixieVariant('app_cost', [
+        `Mobile app development starts from ₹7,999.\n\nWe build business apps, school apps, booking apps, customer apps, and service applications.\n\nThe final price depends on features, screens, backend, and whether you need Android, iPhone, or both.\n\nWhat kind of app would you like to build?\n\n${contact}`,
+        `Our mobile app development starts from ₹7,999.\n\nApps can be built for business use, schools, bookings, customers, and service workflows.\n\nCost depends on screens, features, platform, backend, and integrations.\n\nDo you need Android, iPhone, or both?\n\n${contact}`,
+        `You can start a mobile app project from ₹7,999.\n\nWe can help with Android apps, iPhone apps, booking apps, school apps, and business apps.\n\nThe final cost depends on the features required.\n\nWhat should the app do?\n\n${contact}`,
+        `Mobile app pricing starts at ₹7,999.\n\nThe app can be designed for customers, staff, bookings, school use, or service operations.\n\nFinal pricing depends on platform, features, backend, and admin panel needs.\n\nWhat type of app are you planning?\n\n${contact}`,
+        `Affordable mobile app development is available from ₹7,999.\n\nWe build apps for businesses, schools, services, booking systems, and customer engagement.\n\nThe final price depends on screens and functionality.\n\nWhich platform do you need — Android, iPhone, or both?\n\n${contact}`
+      ]);
+    }
+
+    function getMasterSalesSoftwareResponse(message) {
+      traceFunction('getMasterSalesSoftwareResponseVariant');
+      const contact = getSalesContactBlock(false);
+      return pickPixieVariant('software_cost', [
+        `Custom software pricing depends on project requirements.\n\nWe build school ERP, fee management software, travel agency software, inventory systems, billing systems, CRM systems, portals, and business automation tools.\n\nWhat business process are you trying to automate or manage?\n\n${contact}`,
+        `Custom software is priced based on the exact requirement.\n\nCommon examples include School ERP, CRM, billing systems, inventory software, travel agency software, portals, and automation systems.\n\nWhich workflow do you want to manage better?\n\n${contact}`,
+        `Software development cost depends on modules, users, reports, integrations, and automation needs.\n\nWe can build ERP, CRM, fee management, inventory, billing, and business management systems.\n\nWhat type of software are you looking for?\n\n${contact}`,
+        `For custom software, pricing is requirement-based.\n\nWe usually start by understanding the process: billing, inventory, school management, CRM, travel operations, or internal workflow automation.\n\nWhat process should the software handle?\n\n${contact}`,
+        `Custom software is best scoped after understanding your business process.\n\nWe build management systems, portals, CRMs, billing tools, inventory systems, and automation software.\n\nWhich business operation do you want to digitize?\n\n${contact}`
+      ]);
+    }
+
+    function getMasterSalesServicesResponse() {
+      traceFunction('getMasterSalesServicesResponseVariant');
+      const contact = getSalesContactBlock(false);
+      return pickPixieVariant('services', [
+        `We help businesses with:\n\n🌐 Website Development\n📱 Mobile App Development\n⚙️ Custom Software Development\n\nWe can also support automation, AI tools, digital marketing, branding, and business systems when relevant.\n\nWhat are you planning to build?\n\n${contact}`,
+        `Our main services are:\n\n🌐 Website Development\n📱 Mobile App Development\n⚙️ Custom Software Development\n\nWe also work on AI automation, marketing, branding, and business systems based on the requirement.\n\nWhich service do you need?\n\n${contact}`,
+        `Pixel Code Media provides digital solutions such as:\n\n🌐 Websites\n📱 Mobile Apps\n⚙️ Custom Software\n🤖 AI & Automation\n📈 Digital Marketing\n🎨 Branding\n\nWhat kind of project are you exploring?\n\n${contact}`,
+        `We build affordable digital solutions for businesses of all sizes.\n\nServices include websites, mobile apps, custom software, AI automation, marketing support, branding, and business systems.\n\nWhat would you like help with?\n\n${contact}`,
+        `We can help with website development, app development, custom software, automation, marketing, branding, and business workflow systems.\n\nTell me what you want to create, and I’ll guide you in the right direction.\n\n${contact}`
+      ]);
+    }
+
+    function getMasterSalesContactResponse() {
+      traceFunction('getMasterSalesContactResponseVariant');
+      const contact = getSalesContactBlock(true);
+      return pickPixieVariant('contact', [
+        `You can directly contact our team here:\n\n${contact}`,
+        `Sure. Here are the official contact details:\n\n${contact}`,
+        `You can reach Pixel Code Media through these options:\n\n${contact}`,
+        `For project discussions, you can contact the team here:\n\n${contact}`,
+        `Here are the contact details for Pixel Code Media:\n\n${contact}`
+      ]);
+    }
+
+    function getVariantAboutCompanyResponse() {
+      traceFunction('getVariantAboutCompanyResponse');
+      const contact = getSalesContactBlock(false);
+      return pickPixieVariant('about_company', [
+        `Pixel Code Media helps businesses build affordable digital solutions, including websites, mobile apps, and custom software.\n\nWe focus on practical systems that support growth, operations, and automation.\n\n${contact}`,
+        `Pixel Code Media is a software and digital solutions company.\n\nWe work on website development, mobile app development, custom software, automation, and business systems for small businesses, startups, and growing companies.\n\n${contact}`,
+        `We help businesses move online, automate work, and manage operations better through websites, apps, and custom software solutions.\n\nOur approach is budget-friendly and practical.\n\n${contact}`,
+        `Pixel Code Media builds digital solutions for businesses of different sizes — from simple websites to business apps and management software.\n\nThe focus is affordability, usability, and business value.\n\n${contact}`,
+        `Pixel Code Media supports businesses with website development, mobile apps, custom software, AI automation, and digital systems.\n\nWe aim to keep solutions practical, affordable, and suitable for real business needs.\n\n${contact}`
+      ]);
+    }
+
+    function getMasterSalesAutomationResponse(message) {
+      traceFunction('getMasterSalesAutomationResponseVariant');
+      const contact = getSalesContactBlock(false);
+      return pickPixieVariant('ai_automation', [
+        `We can help with AI and automation for lead handling, WhatsApp follow-ups, customer support, appointment scheduling, reporting, and repetitive tasks.\n\nPricing depends on the workflow and tools required.\n\nWhat task do you want to automate first?\n\n${contact}`,
+        `AI and automation can help reduce manual work in follow-ups, support, scheduling, reporting, and lead management.\n\nThe cost depends on the process and integrations needed.\n\nWhich workflow should be automated first?\n\n${contact}`,
+        `We build practical automation for WhatsApp follow-ups, CRM workflows, support replies, document handling, reminders, and reports.\n\nPricing is based on the exact automation requirement.\n\nWhat repetitive task is taking the most time?\n\n${contact}`,
+        `Automation is useful when it saves time or prevents missed work.\n\nWe can help with AI chatbots, WhatsApp automation, CRM automation, workflow automation, and reporting automation.\n\nWhere do you want to reduce manual effort?\n\n${contact}`,
+        `For AI and automation, we usually start by identifying one repeated task.\n\nCommon use cases include lead handling, customer support, appointment reminders, reporting, and document processing.\n\nWhat do you want to improve?\n\n${contact}`
+      ]);
+    }
+
+    function getMasterSalesMarketingResponse(message) {
+      traceFunction('getMasterSalesMarketingResponseVariant');
+      const contact = getSalesContactBlock(false);
+      return pickPixieVariant('marketing', [
+        `We can help with digital marketing, lead generation, SEO, campaign landing pages, branding, and conversion tracking.\n\nThe right plan depends on your business type and target customers.\n\nAre you looking for more leads, better online presence, or more sales?\n\n${contact}`,
+        `Digital marketing support can include SEO, lead generation, landing pages, campaign strategy, branding, and tracking.\n\nThe plan depends on your goals and customer segment.\n\nWhat are you trying to improve — visibility, leads, or sales?\n\n${contact}`,
+        `We can support business growth through lead generation, SEO, paid campaigns, landing pages, branding, and enquiry tracking.\n\nThe best approach depends on your industry.\n\nWhat kind of business are you promoting?\n\n${contact}`,
+        `Marketing works best when it connects to a clear enquiry and follow-up system.\n\nWe can help with digital campaigns, landing pages, SEO, branding, and conversion tracking.\n\nDo you want more enquiries or better conversion?\n\n${contact}`,
+        `For digital marketing, we focus on practical growth: visibility, enquiries, follow-up, and conversion.\n\nServices can include SEO, ads, landing pages, branding, and tracking.\n\nWhat result are you aiming for?\n\n${contact}`
+      ]);
+    }
+
+    function getMasterSalesProceedResponse() {
+      traceFunction('getMasterSalesProceedResponseVariant');
+      const contact = getSalesContactBlock(false);
+      return pickPixieVariant('proceed', [
+        `You can directly contact our team using the details below.\n\nBefore starting, it helps to clarify the project type, required features, timeline, and budget-friendly first phase.\n\n${contact}`,
+        `The next step is to discuss the project scope with our team.\n\nIt is useful to be clear about the project type, main features, and preferred timeline.\n\n${contact}`,
+        `To proceed, you can contact Pixel Code Media directly.\n\nShare what you want to build, the features you need, and whether it is a website, app, or software project.\n\n${contact}`,
+        `You can start by speaking with our team using the contact details below.\n\nA clear project type and feature list will help us guide you faster.\n\n${contact}`,
+        `If you are ready to move forward, contact the team directly.\n\nWe can help you scope the first affordable phase based on your requirements.\n\n${contact}`
+      ]);
+    }
+
+
+    /* PIXIE REQUIREMENT UNDERSTANDING SYSTEM — FINAL OVERRIDE
+       Extract service, industry, goal, features, and constraints before asking anything.
+       Never ask for service/industry already provided. Ask one intelligent next question. */
+
+    const PIXIE_PRE_REQUIREMENT_REPLY = createPixieReply;
+
+    function createPixieReply(rawMessage) {
+      traceFunction('createPixieReplyRequirementUnderstanding');
+      const text = String(rawMessage || '').trim();
+      const expanded = normalize(`${text} ${multilingualUnderstandingText(text)}`);
+      ensureConsultantProfile();
+      discovery.businessProfile.explicitResponseLanguage = 'en';
+      discovery.businessProfile.languagePreference = 'en';
+
+      if (isReset(expanded) || isMasterSalesGreeting(normalize(text))) {
+        return PIXIE_PRE_REQUIREMENT_REPLY(rawMessage);
+      }
+
+      const requirement = extractRequirementUnderstanding(text, expanded);
+      updateStateFromRequirement(requirement, text, expanded);
+
+      if (shouldUseRequirementUnderstanding(requirement, expanded)) {
+        saveDiscovery();
+        return generateRequirementUnderstandingResponse(requirement);
+      }
+
+      return PIXIE_PRE_REQUIREMENT_REPLY(rawMessage);
+    }
+
+    function extractRequirementUnderstanding(text, message) {
+      traceFunction('extractRequirementUnderstanding');
+      const service = detectRequirementService(message);
+      const industryKey = detectIndustry(message);
+      const industry = normalizeRequirementIndustry(industryKey, message);
+      const goals = detectBusinessGoals(message, detectGoal(message, discovery.stage || 'business_discovery'));
+      const features = detectRequirementFeatures(message);
+      const constraints = detectRequirementConstraints(message);
+      const projectType = service || detectProjectType(message);
+
+      return {
+        rawText: text,
+        service: projectType,
+        industryKey,
+        industry,
+        goal: normalizeRequirementGoal(goals, message, industryKey, features),
+        features,
+        constraints
+      };
+    }
+
+    function shouldUseRequirementUnderstanding(req, message) {
+      traceFunction('shouldUseRequirementUnderstanding');
+      if (!req || !req.service) return false;
+      if (isMasterSalesPricingIntent(message, true) || isMasterSalesContactIntent(message, true) || isMasterSalesServicesIntent(message, true)) return false;
+      const hasContext = Boolean(req.industry || req.goal || req.features.length || req.constraints.length);
+      const intentPhrase = matches(message, ['i need', 'need', 'want', 'looking for', 'build', 'develop', 'create', 'make', 'venam', 'chahiye', 'kavali', 'beku']);
+      return hasContext && (intentPhrase || String(req.rawText || '').length > 18);
+    }
+
+    function detectRequirementService(message) {
+      traceFunction('detectRequirementService');
+      if (matches(message, ['website', 'web site', 'webpage', 'landing page', 'ecommerce website', 'portfolio website'])) return 'Website';
+      if (matches(message, ['mobile app', 'android app', 'ios app', 'app', 'application'])) return 'Mobile App';
+      if (matches(message, ['software', 'crm', 'erp', 'management system', 'portal', 'dashboard', 'billing system', 'inventory system', 'fee management', 'school erp'])) return 'Custom Software';
+      if (matches(message, ['ai', 'automation', 'chatbot', 'voice agent', 'whatsapp automation'])) return 'AI & Automation';
+      if (matches(message, ['marketing', 'digital marketing', 'seo', 'ads', 'lead generation'])) return 'Digital Marketing';
+      return null;
+    }
+
+    function normalizeRequirementIndustry(industryKey, message) {
+      traceFunction('normalizeRequirementIndustry');
+      if (matches(message, ['clinic', 'doctor clinic', 'polyclinic'])) return 'clinic / healthcare';
+      if (matches(message, ['hospital', 'patient'])) return 'hospital / healthcare';
+      if (matches(message, ['school', 'schools'])) return 'school / education';
+      if (matches(message, ['tuition', 'coaching'])) return 'tuition or coaching / education';
+      if (matches(message, ['travel agency', 'travel', 'tour'])) return 'travel agency';
+      if (matches(message, ['inventory', 'stock'])) return 'inventory management';
+      if (matches(message, ['shop', 'store', 'retail'])) return 'retail business';
+      if (matches(message, ['restaurant', 'cafe', 'hotel'])) return 'hospitality business';
+      if (matches(message, ['real estate', 'property', 'builder'])) return 'real estate business';
+      if (industryKey) return displayIndustry(industryKey);
+      return null;
+    }
+
+    function normalizeRequirementGoal(goals, message, industryKey, features) {
+      traceFunction('normalizeRequirementGoal');
+      const goalList = Array.isArray(goals) ? goals.filter(Boolean) : [];
+      if (matches(message, ['book appointment', 'appointment booking', 'patients book', 'booking appointments'])) return 'patient appointment booking';
+      if (matches(message, ['manage inventory', 'stock tracking', 'track stock', 'inventory management'])) return 'stock and inventory tracking';
+      if (matches(message, ['fee management', 'fees', 'fee collection'])) return 'fee management';
+      if (matches(message, ['attendance'])) return 'attendance tracking';
+      if (matches(message, ['parent communication', 'announcements'])) return 'parent communication';
+      if (matches(message, ['more customers', 'more sales', 'increase sales', 'lead generation'])) return 'customer acquisition and sales growth';
+      if (matches(message, ['online orders', 'ecommerce', 'sell online'])) return 'online sales';
+      if (goalList.length) return goalList[0];
+      if (features.length) return `${features[0]} workflow`;
+      if (industryKey === 'education') return 'school or education management';
+      return null;
+    }
+
+    function detectRequirementFeatures(message) {
+      traceFunction('detectRequirementFeatures');
+      const features = detectFeatures(message, discovery.stage || 'business_discovery') || [];
+      const map = [
+        ['online appointment booking', ['appointment booking', 'book appointments', 'patients book', 'online booking']],
+        ['doctor profiles', ['doctor profile', 'doctor profiles', 'doctors']],
+        ['service listings', ['service listing', 'services list', 'treatments']],
+        ['patient enquiry forms', ['patient enquiry', 'enquiry form', 'contact form']],
+        ['student information', ['student information', 'student records']],
+        ['attendance tracking', ['attendance']],
+        ['fee notifications', ['fee notification', 'fee notifications', 'fee reminder', 'fees']],
+        ['announcements', ['announcement', 'announcements', 'notices']],
+        ['parent communication', ['parent communication', 'parents']],
+        ['stock level tracking', ['stock levels', 'stock tracking', 'inventory tracking']],
+        ['purchase and sales tracking', ['purchases', 'sales tracking', 'sales']],
+        ['low-stock alerts', ['low stock', 'stock alert', 'stock alerts']],
+        ['CRM / lead tracking', ['crm', 'lead tracking', 'leads']],
+        ['quotation system', ['quotation', 'quote system', 'quotes']],
+        ['online payments', ['online payment', 'online payments', 'payment gateway']]
+      ];
+      map.forEach(([label, keys]) => { if (matches(message, keys)) features.push(label); });
+      return unique(features).slice(0, 8);
+    }
+
+    function detectRequirementConstraints(message) {
+      traceFunction('detectRequirementConstraints');
+      const items = [];
+      const budget = detectBudget(message, discovery.stage || 'business_discovery') || detectBudgetExpectation(message);
+      const timeline = detectTimeline(message, discovery.stage || 'business_discovery');
+      if (budget) items.push(`budget: ${budget}`);
+      if (timeline) items.push(`timeline: ${timeline}`);
+      if (matches(message, ['android'])) items.push('platform: Android');
+      if (matches(message, ['iphone', 'ios'])) items.push('platform: iPhone/iOS');
+      if (matches(message, ['both android and ios', 'android and ios', 'android and iphone', 'both'])) items.push('platform: Android and iPhone');
+      if (matches(message, ['single location', 'one branch'])) items.push('single location');
+      if (matches(message, ['multiple branches', 'multi branch', 'many branches'])) items.push('multiple branches');
+      if (matches(message, ['online payment', 'payment gateway'])) items.push('online payment required');
+      return unique(items).slice(0, 6);
+    }
+
+    function updateStateFromRequirement(req, text, message) {
+      traceFunction('updateStateFromRequirement');
+      const state = loadUnifiedConversationState();
+      rebuildUnifiedStateFromHistory(state);
+      if (req.service) state.solutionInterest = req.service;
+      if (req.industry) state.industry = req.industry;
+      if (req.goal) state.primaryGoal = req.goal;
+      if (req.features.length) state.currentChallenges = unique([...state.currentChallenges, ...req.features.map((f) => `${f} requirement`)]).slice(0, 10);
+      if (req.constraints.length) state.knownFacts = unique([...(state.knownFacts || []), ...req.constraints]).slice(0, 20);
+      updateUnifiedStateFromMessage(state, text, message);
+      syncUnifiedStateToDiscovery(state);
+      const p = ensureConsultantProfile();
+      if (req.service) p.solutionInterest = req.service;
+      if (req.industry) p.industry = req.industry;
+      if (req.goal) p.businessGoals = unique([...(p.businessGoals || []), req.goal]).slice(0, 10);
+      if (req.features.length) p.currentChallenges = unique([...(p.currentChallenges || []), ...req.features.map((f) => `${f} requirement`)]).slice(0, 10);
+    }
+
+    function generateRequirementUnderstandingResponse(req) {
+      traceFunction('generateRequirementUnderstandingResponse');
+      const serviceName = req.service;
+      const industryText = req.industry ? ` for your ${req.industry}` : '';
+      const goalText = req.goal ? ` to support ${req.goal}` : '';
+      const priceLine = getRequirementPriceLine(req.service);
+      const solutionFeatures = getRequirementSuggestedFeatures(req);
+      const question = getRequirementSmartQuestion(req);
+
+      let intro = '';
+      if (req.service === 'Website') intro = `A ${req.industry || 'business'} website${goalText} can definitely be developed.`;
+      else if (req.service === 'Mobile App') intro = `A mobile app${industryText}${goalText} can be developed.`;
+      else if (req.service === 'Custom Software') intro = `A custom software system${industryText}${goalText} can be developed.`;
+      else if (req.service === 'AI & Automation') intro = `AI and automation can help${goalText || ' reduce manual work'} when the workflow is clear.`;
+      else intro = `${serviceName}${industryText}${goalText} can be planned.`;
+
+      return `${intro}\n\nTypical features may include:\n\n${solutionFeatures.map((f) => `- ${f}`).join('\n')}\n\n${priceLine}\n\n${question}`;
+    }
+
+    function getRequirementPriceLine(service) {
+      traceFunction('getRequirementPriceLine');
+      if (service === 'Website') return 'Website development starts from ₹5,999, with the final cost depending on pages, design, features, and functionality.';
+      if (service === 'Mobile App') return 'Mobile app development starts from ₹7,999, with the final price depending on features, screens, platform, and backend requirements.';
+      if (service === 'Custom Software') return 'Custom software pricing depends on the required modules, users, reports, integrations, and workflow complexity.';
+      if (service === 'AI & Automation') return 'Automation pricing depends on the workflow, channels, integrations, and level of AI required.';
+      if (service === 'Digital Marketing') return 'Digital marketing pricing depends on campaign scope, platforms, creatives, and monthly activity.';
+      return 'Pricing depends on the exact requirements and scope.';
+    }
+
+    function getRequirementSuggestedFeatures(req) {
+      traceFunction('getRequirementSuggestedFeatures');
+      const msg = normalize(`${req.industry || ''} ${req.goal || ''} ${req.rawText || ''}`);
+      const existing = req.features || [];
+      let suggestions = [];
+      if (req.service === 'Website' && matches(msg, ['clinic', 'healthcare', 'appointment', 'patient'])) {
+        suggestions = ['Appointment scheduling', 'Doctor profiles', 'Contact information', 'Service listings', 'Patient enquiry forms'];
+      } else if (req.service === 'Website' && matches(msg, ['school', 'education'])) {
+        suggestions = ['Admission enquiry form', 'About school and facilities', 'Gallery', 'Announcements', 'Contact and location details'];
+      } else if (req.service === 'Website' && matches(msg, ['ecommerce', 'online sales', 'sell online'])) {
+        suggestions = ['Product catalogue', 'Cart and checkout', 'Payment integration', 'Order enquiry', 'Customer support options'];
+      } else if (req.service === 'Mobile App' && matches(msg, ['school', 'education'])) {
+        suggestions = ['Student information', 'Attendance tracking', 'Fee notifications', 'Announcements', 'Parent communication'];
+      } else if (req.service === 'Mobile App') {
+        suggestions = ['User login', 'Core service screens', 'Notifications', 'Admin panel', 'Reports'];
+      } else if (req.service === 'Custom Software' && matches(msg, ['inventory', 'stock'])) {
+        suggestions = ['Stock level tracking', 'Purchase tracking', 'Sales tracking', 'Low-stock alerts', 'Reports'];
+      } else if (req.service === 'Custom Software' && matches(msg, ['school', 'fee'])) {
+        suggestions = ['Student records', 'Fee management', 'Attendance tracking', 'Parent notifications', 'Reports'];
+      } else if (req.service === 'Custom Software' && matches(msg, ['travel'])) {
+        suggestions = ['Lead management', 'Package management', 'Quotation system', 'Booking tracking', 'Payment follow-ups'];
+      } else if (req.service === 'AI & Automation') {
+        suggestions = ['Workflow mapping', 'Automated follow-ups', 'WhatsApp automation', 'CRM status tracking', 'Reporting'];
+      } else {
+        suggestions = ['User-friendly interface', 'Admin management', 'Enquiry or request handling', 'Notifications', 'Reports'];
+      }
+      return unique([...existing, ...suggestions]).slice(0, 6);
+    }
+
+    function getRequirementSmartQuestion(req) {
+      traceFunction('getRequirementSmartQuestion');
+      const msg = normalize(`${req.rawText || ''} ${req.industry || ''} ${req.goal || ''}`);
+      if (req.service === 'Website' && matches(msg, ['clinic', 'appointment', 'patient'])) {
+        if (!matches(msg, ['doctor', 'doctors', 'slot', 'slots'])) return 'Would patients be selecting specific doctors, or simply booking available appointment slots?';
+      }
+      if (req.service === 'Website') {
+        if (!matches(msg, ['business', 'portfolio', 'school', 'clinic', 'ecommerce', 'e-commerce'])) return 'What type of website do you need — business, portfolio, school, clinic, or e-commerce?';
+        return 'Do you need only an enquiry form, or should it include booking/payment features too?';
+      }
+      if (req.service === 'Mobile App' && matches(msg, ['school'])) return 'Which features are most important for your school app?';
+      if (req.service === 'Mobile App') return 'Do you need Android, iPhone, or both?';
+      if (req.service === 'Custom Software' && matches(msg, ['inventory', 'stock'])) return 'Do you need support for multiple branches or a single location?';
+      if (req.service === 'Custom Software') return 'Which business process should the software handle first?';
+      if (req.service === 'AI & Automation') return 'Which repetitive task should be automated first?';
+      return 'What is the most important feature you need first?';
+    }
+
+
+    /* PIXIE DYNAMIC SOLUTION ARCHITECT ENGINE — FINAL OVERRIDE
+       Builds responses from extracted requirements instead of static FAQ templates.
+       Extracts service, business type, features, goals, and cost intent, then asks only
+       the most useful missing detail. */
+
+    const PIXIE_PRE_DYNAMIC_ARCHITECT_REPLY = createPixieReply;
+
+    function createPixieReply(rawMessage) {
+      traceFunction('createPixieReplyDynamicSolutionArchitect');
+      const text = String(rawMessage || '').trim();
+      const message = normalize(`${text} ${multilingualUnderstandingText(text)}`);
+      ensureConsultantProfile();
+      discovery.businessProfile.explicitResponseLanguage = 'en';
+      discovery.businessProfile.languagePreference = 'en';
+
+      if (isReset(message) || isMasterSalesGreeting(normalize(text))) {
+        return PIXIE_PRE_DYNAMIC_ARCHITECT_REPLY(rawMessage);
+      }
+
+      // Preserve instant sales handling for very short enquiries.
+      const quick = getMasterSalesQuickResponse(text, message);
+      const oneWordish = normalize(text).split(/\s+/).filter(Boolean).length <= 2;
+      if (quick && oneWordish) return quick;
+
+      const req = extractDynamicRequirement(text, message);
+      updateStateFromDynamicRequirement(req, text, message);
+      saveDiscovery();
+
+      if (shouldUseDynamicArchitect(req, message)) {
+        return generateDynamicArchitectResponse(req);
+      }
+
+      return PIXIE_PRE_DYNAMIC_ARCHITECT_REPLY(rawMessage);
+    }
+
+    function extractDynamicRequirement(text, message) {
+      traceFunction('extractDynamicRequirement');
+      const serviceType = detectDynamicServiceType(message);
+      const business = detectDynamicBusinessType(message);
+      const features = detectDynamicFeatures(message, business);
+      const goals = detectDynamicGoals(message, business, features);
+      const costIntent = detectDynamicCostIntent(message);
+      const constraints = detectRequirementConstraints(message);
+      return { rawText: text, message, serviceType, business, features, goals, costIntent, constraints };
+    }
+
+    function detectDynamicServiceType(message) {
+      traceFunction('detectDynamicServiceType');
+      if (matches(message, ['website', 'web site', 'landing page', 'webpage', 'site'])) return 'Website';
+      if (matches(message, ['mobile app', 'android app', 'ios app', 'iphone app', 'app', 'application'])) return 'Mobile App';
+      if (matches(message, ['software', 'custom software', 'management system', 'crm', 'erp', 'portal', 'dashboard', 'billing system', 'inventory system', 'school erp'])) return 'Custom Software';
+      if (matches(message, ['ai solution', 'ai', 'automation', 'chatbot', 'voice agent', 'whatsapp automation'])) return 'AI Solution';
+      if (matches(message, ['marketing', 'digital marketing', 'seo', 'ads', 'lead generation'])) return 'Digital Marketing';
+      return null;
+    }
+
+    function detectDynamicBusinessType(message) {
+      traceFunction('detectDynamicBusinessType');
+      const ordered = [
+        ['Dental Clinic', ['dental clinic', 'dentist', 'dental']],
+        ['Clinic', ['clinic', 'polyclinic']],
+        ['Hospital', ['hospital', 'healthcare']],
+        ['Travel Agency', ['travel agency', 'tour operator', 'tour packages', 'destinations', 'travel']],
+        ['School', ['school', 'student', 'students', 'attendance', 'fees', 'timetable', 'notices', 'results']],
+        ['Tuition Centre', ['tuition centre', 'tuition center', 'tuition', 'coaching centre', 'coaching center', 'coaching institute']],
+        ['Restaurant', ['restaurant', 'cafe', 'cloud kitchen', 'menu', 'table reservation', 'online orders']],
+        ['Hotel', ['hotel', 'resort', 'room booking', 'availability calendar']],
+        ['Real Estate', ['real estate', 'property', 'builder', 'apartment', 'site visit']],
+        ['Ecommerce', ['ecommerce', 'e-commerce', 'online store', 'products', 'cart', 'checkout']],
+        ['Retail Shop', ['retail shop', 'retail', 'shop', 'store', 'boutique']],
+        ['Construction Company', ['construction company', 'construction', 'contractor', 'civil work']],
+        ['Logistics Company', ['logistics company', 'logistics', 'transport', 'courier', 'shipping', 'fleet']],
+        ['Gym', ['gym', 'fitness centre', 'fitness center', 'fitness studio']],
+        ['Beauty Salon', ['beauty salon', 'salon', 'spa', 'beauty parlour', 'beauty parlor']]
+      ];
+      for (const [label, keys] of ordered) if (matches(message, keys)) return label;
+      const key = detectIndustry(message);
+      return key ? displayIndustry(key) : null;
+    }
+
+    function detectDynamicFeatures(message, business) {
+      traceFunction('detectDynamicFeatures');
+      const features = [];
+      const map = [
+        ['Appointment Booking', ['appointment booking', 'book appointments', 'book appointment', 'appointments', 'appointment', 'patient scheduling']],
+        ['Online Payments', ['online payment', 'online payments', 'payment gateway', 'payments', 'pay online']],
+        ['User Login', ['user login', 'login', 'accounts', 'user account']],
+        ['Admin Panel', ['admin panel', 'admin dashboard', 'admin', 'dashboard']],
+        ['Product Catalog', ['product catalog', 'product catalogue', 'products', 'catalog']],
+        ['Tour Packages', ['tour packages', 'packages', 'tour options', 'destinations']],
+        ['Customer Reviews', ['customer reviews', 'reviews', 'testimonials']],
+        ['Booking System', ['booking system', 'booking requests', 'bookings', 'reservation', 'reservations']],
+        ['Enquiry Forms', ['enquiry form', 'enquiry forms', 'contact form', 'lead form', 'enquiries']],
+        ['Inventory Management', ['inventory management', 'inventory', 'stock tracking', 'stock']],
+        ['Attendance Tracking', ['attendance tracking', 'attendance']],
+        ['Reports', ['reports', 'reporting']],
+        ['Notifications', ['notifications', 'alerts', 'reminders']],
+        ['Analytics', ['analytics', 'tracking', 'conversion tracking']],
+        ['Doctor Profiles', ['doctor profiles', 'doctor profile', 'doctors']],
+        ['Medical Services', ['medical services', 'treatments', 'services']],
+        ['Contact Information', ['contact information', 'contact details', 'location']],
+        ['Fee Management', ['fee management', 'fees', 'fee collection']],
+        ['Timetables', ['timetable', 'timetables', 'class schedule']],
+        ['Notices', ['notices', 'announcements']],
+        ['Results', ['results', 'marks', 'exam results']],
+        ['Menu Display', ['menu display', 'menu']],
+        ['Table Reservations', ['table reservations', 'table reservation', 'table booking']],
+        ['Online Orders', ['online orders', 'food orders', 'ordering']],
+        ['Room Booking', ['room booking', 'room bookings', 'rooms']],
+        ['Availability Calendar', ['availability calendar', 'availability']],
+        ['Cart', ['cart']],
+        ['Checkout', ['checkout']],
+        ['Orders', ['orders', 'order management']]
+      ];
+      map.forEach(([label, keys]) => { if (matches(message, keys)) features.push(label); });
+
+      // Infer useful features from business context without pretending the user explicitly requested them.
+      if (business === 'Travel Agency') {
+        if (matches(message, ['showcase', 'display', 'tour', 'package', 'destination'])) features.push('Tour Packages');
+        if (matches(message, ['trust', 'review'])) features.push('Customer Reviews');
+      }
+      if ((business === 'Clinic' || business === 'Dental Clinic' || business === 'Hospital') && matches(message, ['patients', 'book'])) features.push('Appointment Booking');
+      if (business === 'School' && matches(message, ['manage fees', 'fees'])) features.push('Fee Management');
+      return unique(features).slice(0, 10);
+    }
+
+    function detectDynamicGoals(message, business, features) {
+      traceFunction('detectDynamicGoals');
+      const goals = [];
+      if (matches(message, ['more customers', 'get customers', 'customer acquisition', 'more clients', 'more patients'])) goals.push('get more customers');
+      if (matches(message, ['automate work', 'automation', 'reduce manual work', 'manual work', 'save time'])) goals.push('automate work and reduce manual effort');
+      if (matches(message, ['accept bookings', 'booking', 'book appointments', 'appointment'])) goals.push('accept bookings online');
+      if (matches(message, ['showcase services', 'show services', 'portfolio', 'showcase', 'tour options', 'packages'])) goals.push('showcase services clearly');
+      if (matches(message, ['increase sales', 'more sales', 'sales growth'])) goals.push('increase sales');
+      if (matches(message, ['improve communication', 'parent communication', 'notifications', 'announcements'])) goals.push('improve communication');
+      if (features.includes('Inventory Management')) goals.push('track and manage stock');
+      if (features.includes('Fee Management') || features.includes('Attendance Tracking')) goals.push('automate administration');
+      if (business === 'Travel Agency' && (features.includes('Tour Packages') || features.includes('Booking System'))) goals.push('generate booking enquiries and build trust');
+      if ((business === 'Clinic' || business === 'Dental Clinic' || business === 'Hospital') && features.includes('Appointment Booking')) goals.push('improve patient scheduling');
+      return unique(goals).slice(0, 5);
+    }
+
+    function detectDynamicCostIntent(message) {
+      traceFunction('detectDynamicCostIntent');
+      return matches(message, ['cost', 'price', 'pricing', 'budget', 'estimate', 'quote', 'quotation', 'charges', 'rate', 'how much', 'ethra']);
+    }
+
+    function shouldUseDynamicArchitect(req, message) {
+      traceFunction('shouldUseDynamicArchitect');
+      if (!req.serviceType && !req.business && !req.features.length) return false;
+      if (isMasterSalesContactIntent(message, true) || isMasterSalesServicesIntent(message, true)) return false;
+      if (isMasterSalesPricingIntent(message, true) && !req.business && !req.features.length && !req.serviceType) return false;
+      return true;
+    }
+
+    function updateStateFromDynamicRequirement(req, text, message) {
+      traceFunction('updateStateFromDynamicRequirement');
+      const state = loadUnifiedConversationState();
+      rebuildUnifiedStateFromHistory(state);
+      if (req.serviceType) state.solutionInterest = req.serviceType;
+      if (req.business) state.industry = req.business;
+      if (req.goals.length) state.primaryGoal = req.goals[0];
+      if (req.features.length) state.currentChallenges = unique([...state.currentChallenges, ...req.features.map((f) => `${f} requirement`)]).slice(0, 10);
+      if (req.constraints.length) state.knownFacts = unique([...(state.knownFacts || []), ...req.constraints]).slice(0, 20);
+      updateUnifiedStateFromMessage(state, text, message);
+      syncUnifiedStateToDiscovery(state);
+      const p = ensureConsultantProfile();
+      if (req.serviceType) p.solutionInterest = req.serviceType;
+      if (req.business) p.industry = req.business;
+      if (req.goals.length) p.businessGoals = unique([...(p.businessGoals || []), ...req.goals]).slice(0, 10);
+      if (req.features.length) p.currentChallenges = unique([...(p.currentChallenges || []), ...req.features.map((f) => `${f} requirement`)]).slice(0, 10);
+    }
+
+    function generateDynamicArchitectResponse(req) {
+      traceFunction('generateDynamicArchitectResponse');
+      const service = req.serviceType || 'digital solution';
+      const business = req.business || 'business';
+      const features = req.features.length ? req.features : getDynamicDefaultFeatures(req);
+      const goals = req.goals.length ? req.goals : getDynamicDefaultGoals(req);
+      const opening = buildDynamicOpening(service, business, features, goals);
+      const explanation = buildDynamicExplanation(service, business, features, goals);
+      const price = buildDynamicPriceLine(service, req.costIntent);
+      const question = getDynamicSmartFollowUp(req);
+      const contact = req.costIntent ? `\n\n${masterSalesContactLines()}` : '';
+
+      return `${opening}\n\n${explanation}\n\nTypical features can include:\n\n${features.slice(0, 6).map((f) => `- ${f}`).join('\n')}\n\n${price}\n\n${question}${contact}`;
+    }
+
+    function buildDynamicOpening(service, business, features, goals) {
+      traceFunction('buildDynamicOpening');
+      const featurePhrase = features.length ? ` with ${naturalList(features.slice(0, 3))}` : '';
+      const goalPhrase = goals.length ? ` to ${goals[0]}` : '';
+      if (service === 'Website') return `A ${business} website${featurePhrase}${goalPhrase} can definitely be developed.`;
+      if (service === 'Mobile App') return `A ${business} mobile app${featurePhrase}${goalPhrase} can be developed.`;
+      if (service === 'Custom Software') return `A custom ${business} software system${featurePhrase}${goalPhrase} can be built.`;
+      if (service === 'AI Solution') return `An AI solution for your ${business}${featurePhrase}${goalPhrase} can be planned.`;
+      return `This ${service.toLowerCase()} requirement for your ${business}${featurePhrase} can be planned.`;
+    }
+
+    function buildDynamicExplanation(service, business, features, goals) {
+      traceFunction('buildDynamicExplanation');
+      if (business === 'Travel Agency') {
+        return 'This would help potential customers explore destinations, compare packages, read reviews, and send booking enquiries without needing everything to happen manually on calls or WhatsApp.';
+      }
+      if (business === 'Dental Clinic' || business === 'Clinic' || business === 'Hospital') {
+        return 'Patients can view services, understand doctor availability, and request appointments online, which reduces front-desk coordination and improves the patient experience.';
+      }
+      if (business === 'School' || business === 'Tuition Centre') {
+        return 'This can reduce manual administration, improve communication, and give staff or parents faster access to important information.';
+      }
+      if (business === 'Restaurant') return 'This can make it easier for customers to view the menu, place orders, reserve tables, and check reviews before visiting.';
+      if (business === 'Hotel') return 'This can help guests check rooms, availability, reviews, and booking options in a more organized way.';
+      if (business === 'Ecommerce') return 'This can help customers browse products, add items to cart, pay online, and track orders smoothly.';
+      if (features.includes('Inventory Management')) return 'This can help track stock levels, purchases, sales, low-stock alerts, and reports so the business has better control over inventory.';
+      if (goals.length) return `The focus should be practical: ${naturalList(goals)} while keeping the system simple enough to launch affordably.`;
+      return 'The solution should be built around the actual workflow, so it supports business growth, saves time, and improves customer experience.';
+    }
+
+    function buildDynamicPriceLine(service, costIntent) {
+      traceFunction('buildDynamicPriceLine');
+      if (service === 'Website') return 'Website development starts from ₹5,999, with the final cost depending on pages, features, design, and functionality.';
+      if (service === 'Mobile App') return 'Mobile app development starts from ₹7,999, with the final price depending on features, screens, backend, and platform requirements.';
+      if (service === 'Custom Software') return 'Custom software pricing depends on the required modules, users, reports, integrations, and workflow complexity.';
+      if (service === 'AI Solution') return 'AI solution pricing depends on the workflow, automation level, integrations, and AI features required.';
+      if (service === 'Digital Marketing') return 'Digital marketing pricing depends on campaign scope, platforms, creatives, and monthly activity.';
+      return 'Pricing depends on the exact scope and requirements.';
+    }
+
+    function getDynamicDefaultFeatures(req) {
+      traceFunction('getDynamicDefaultFeatures');
+      const business = req.business;
+      if (business === 'Travel Agency') return ['Tour Packages', 'Destinations', 'Booking Requests', 'Customer Reviews', 'Gallery', 'Payments'];
+      if (business === 'Clinic' || business === 'Dental Clinic' || business === 'Hospital') return ['Appointment Booking', 'Doctor Profiles', 'Medical Services', 'Contact Information'];
+      if (business === 'School' || business === 'Tuition Centre') return ['Attendance Tracking', 'Fee Management', 'Timetables', 'Notices', 'Results'];
+      if (business === 'Restaurant') return ['Online Orders', 'Table Reservations', 'Menu Display', 'Customer Reviews'];
+      if (business === 'Hotel') return ['Room Booking', 'Availability Calendar', 'Customer Reviews', 'Online Payments'];
+      if (business === 'Ecommerce') return ['Products', 'Cart', 'Checkout', 'Orders', 'Online Payments'];
+      if (req.serviceType === 'Website') return ['Service Pages', 'Enquiry Forms', 'Contact Information', 'Customer Reviews'];
+      if (req.serviceType === 'Mobile App') return ['User Login', 'Core Screens', 'Notifications', 'Admin Panel'];
+      if (req.serviceType === 'Custom Software') return ['Admin Panel', 'Reports', 'User Login', 'Workflow Management'];
+      return ['Enquiry Handling', 'Admin Management', 'Reports'];
+    }
+
+    function getDynamicDefaultGoals(req) {
+      traceFunction('getDynamicDefaultGoals');
+      if (req.business === 'Travel Agency') return ['generate booking enquiries and build trust'];
+      if (req.business === 'Clinic' || req.business === 'Dental Clinic' || req.business === 'Hospital') return ['improve appointment handling'];
+      if (req.business === 'School' || req.business === 'Tuition Centre') return ['improve administration and communication'];
+      if (req.serviceType === 'Website') return ['showcase services and generate enquiries'];
+      if (req.serviceType === 'Mobile App') return ['improve customer or staff experience'];
+      if (req.serviceType === 'Custom Software') return ['automate work and reduce manual effort'];
+      return ['support business growth'];
+    }
+
+    function getDynamicSmartFollowUp(req) {
+      traceFunction('getDynamicSmartFollowUp');
+      const f = req.features;
+      const b = req.business;
+      const s = req.serviceType;
+      const m = req.message;
+
+      if ((b === 'Clinic' || b === 'Dental Clinic' || b === 'Hospital') && f.includes('Appointment Booking') && !matches(m, ['doctor', 'specific doctor', 'available slots'])) {
+        return 'Would you like patients to choose specific doctors when booking, or simply select available appointment slots?';
+      }
+      if (b === 'Travel Agency' && (f.includes('Booking System') || f.includes('Appointment Booking') || f.includes('Booking Requests')) && !f.includes('Online Payments')) {
+        return 'Would you also like customers to make online payments through the website?';
+      }
+      if ((b === 'School' || b === 'Tuition Centre') && s === 'Custom Software' && !matches(m, ['students', 'student count', 'how many students'])) {
+        return 'Approximately how many students will be using the system?';
+      }
+      if (f.includes('Inventory Management') && !matches(m, ['multiple branches', 'single location', 'one branch'])) {
+        return 'Do you need inventory support for multiple branches or a single location?';
+      }
+      if (s === 'Mobile App' && !matches(m, ['android', 'ios', 'iphone', 'both'])) return 'Do you need Android, iPhone, or both?';
+      if (s === 'Website' && !f.includes('Online Payments') && !matches(m, ['payment', 'payments'])) return 'Do you need online payments, or is enquiry/booking submission enough for now?';
+      if (s === 'Custom Software') return 'Which module should be included in the first version?';
+      return 'What is the most important feature you want in the first version?';
+    }
+
+    function naturalList(items) {
+      traceFunction('naturalList');
+      const list = (items || []).filter(Boolean);
+      if (!list.length) return '';
+      if (list.length === 1) return list[0];
+      if (list.length === 2) return `${list[0]} and ${list[1]}`;
+      return `${list.slice(0, -1).join(', ')}, and ${list[list.length - 1]}`;
+    }
+
     function random(items) {
       traceFunction('random');
       const list = Array.isArray(items) ? items.filter((item) => item !== undefined && item !== null) : [];
@@ -8538,5 +9242,5 @@ If you share the project type, I can help narrow it down.`;
 
   
   </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0bb4b459edf8ae4',t:'MTc4MTQ2MDY0OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0bbb732be179bc1',t:'MTc4MTQ2NTA3MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0c31cf5eeaf7eaa',t:'MTc4MTU0MjYzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0d89154ef653044',t:'MTc4MTc2NzYwNg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0bb4b459edf8ae4',t:'MTc4MTQ2MDY0OQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0bbb732be179bc1',t:'MTc4MTQ2NTA3MA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0c31cf5eeaf7eaa',t:'MTc4MTU0MjYzOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0d937ed9e195fb9',t:'MTc4MTc3NDQzMA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
