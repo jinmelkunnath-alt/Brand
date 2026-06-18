@@ -589,12 +589,34 @@ button{font-family:var(--f);cursor:pointer}
 .footer-links a{color:var(--t3)}
 .footer-links a:hover{color:var(--t1)}
 
+
 /* =========================================================
-   REVEAL / MOTION
+   PREMIUM SCROLL REVEAL SYSTEM
    ========================================================= */
-.reveal{opacity:0;transform:translateY(14px);transition:opacity .58s var(--ease), transform .58s var(--ease)}
-.reveal.in{opacity:1;transform:none}
-@media (prefers-reduced-motion: reduce){.reveal{opacity:1;transform:none}}
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  will-change: opacity, transform;
+}
+.reveal.in {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media(max-width: 768px) {
+  .reveal {
+    transform: translateY(16px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+
 
 /* UTIL */
 .muted{color:var(--t3)}
@@ -798,7 +820,7 @@ body > *{position:relative;z-index:1}
 #fcta{position:relative;overflow:hidden}#fcta::before{content:"";position:absolute;left:50%;top:0;width:min(980px,86vw);height:1px;transform:translateX(-50%);background:linear-gradient(90deg,transparent,var(--brand),transparent);opacity:.36}.footer{background:linear-gradient(180deg,transparent,color-mix(in srgb,var(--bg-2) 54%,transparent))}.footer-inner::before{content:"";width:38px;height:2px;border-radius:99px;background:var(--signature);display:block;flex:0 0 auto;box-shadow:0 0 20px color-mix(in srgb,var(--brand) 24%,transparent)}
 
 /* Motion polish */
-.reveal{transform:translateY(18px) scale(.992);filter:blur(2px)}.reveal.in{filter:blur(0)}
+
 .svc,.work,.t,.tech,.step,.work-cta,.theme-btn,.btn{will-change:transform}
 @media (prefers-reduced-motion: reduce){.kicker-dot,.nav-logo-mark::before{animation:none}.theme-sweep{display:none}.reveal{filter:none}}
 
@@ -1463,47 +1485,69 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
   border-radius:24px;
   overflow:hidden;
   box-shadow:0 24px 80px rgba(13,21,40,.22);
-  background:#fff;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(16px) scale(0.96);
-  transform-origin: bottom right;
-  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  background:var(--surface);
+  display:flex;
+  flex-direction:column;
+  opacity:0;
+  pointer-events:none;
+  transform:translateY(16px) scale(0.96);
+  transform-origin:bottom right;
+  transition:opacity .3s var(--ease-out), transform .3s var(--ease-out);
   z-index:10000;
 }
+
+
 .nova-pixie-chat.open{
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0) scale(1);
 }
-.nova-pixie-chat iframe{
-  width:100%;
-  height:100%;
-  border:0;
-  display:block;
+.pixie-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px 20px;
+  border-bottom:1px solid var(--line-soft);
+  background:var(--surface);
 }
-.nova-pixie-close{
-  position:absolute;
-  top:10px;
-  right:10px;
-  width:32px;
-  height:32px;
+.pixie-branding{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-weight:700;
+  color:var(--t1);
+  font-size:15px;
+}
+.pixie-logo{
+  width:28px;
+  height:28px;
   border-radius:50%;
-  border:0;
-  background:rgba(255,255,255,.86);
-  backdrop-filter:blur(8px);
-  color:#30283d;
-  font-size:18px;
-  line-height:1;
-  cursor:pointer;
+  background:linear-gradient(135deg,#fff7fb,#f4edff 52%,#eefcff);
+  box-shadow:0 2px 8px rgba(91,33,182,.12),0 0 0 1px rgba(139,92,246,.14);
   display:grid;
   place-items:center;
-  z-index:2;
-  box-shadow:0 4px 14px rgba(91,33,182,.12);
-  transition:transform .18s ease, background .18s ease;
 }
-.nova-pixie-close:hover{transform:scale(1.08);background:#fff}
-.nova-pixie-close:active{transform:scale(.95)}
+.pixie-logo svg{
+  width:20px;
+  height:20px;
+}
+.pixie-status{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font-size:13px;
+  font-weight:600;
+  color:var(--t3);
+}
+.status-dot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:var(--emerald);
+  box-shadow:0 0 10px color-mix(in srgb, var(--emerald) 40%, transparent);
+}
+
+
 @media(max-width:640px){
   .nova-pixie-widget{bottom:16px;right:16px}
   .nova-pixie-mascot{width:58px;height:58px}
@@ -1516,6 +1560,9 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
     border-radius:20px;
   }
 }
+
+
+
 
 </style>
 </head>
@@ -1586,7 +1633,7 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
 <section id="hero">
   <div class="wrap">
     <div class="hero-grid">
-      <div class="hero-copy reveal in">
+      <div class="hero-copy">
         <div class="kicker"><span class="kicker-dot"></span> Software Development Company</div>
         <h1 class="h1 hero-title">
           We build<br>the systems <br> behind<br>modern businesses.
@@ -1620,7 +1667,7 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
       </div>
 
       <!-- Premium Engineering Editor -->
-      <div class="editor-wrap reveal in" style="transition-delay:.05s">
+      <div class="editor-wrap">
         <div class="editor-stage" id="engineeringEditor" aria-label="Premium software engineering workspace with continuously typed production code">
           <div class="editor-aura" aria-hidden="true"></div>
           <div class="editor-ground-grid" aria-hidden="true"></div>
@@ -1660,10 +1707,10 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
 <section id="metrics" class="section-sm">
   <div class="wrap">
     <div class="metrics-grid">
-      <div class="metric"><strong>37+</strong><span>Projects Completed</span></div>
-      <div class="metric"><strong>37+</strong><span>Happy Clients</span></div>
-      <div class="metric"><strong>3+</strong><span>Years of Trust</span></div>
-      <div class="metric"><strong>100%</strong><span>Client Satisfaction</span></div>
+      <div class="metric reveal"><strong>37+</strong><span>Projects Completed</span></div>
+      <div class="metric reveal"><strong>37+</strong><span>Happy Clients</span></div>
+      <div class="metric reveal"><strong>3+</strong><span>Years of Trust</span></div>
+      <div class="metric reveal"><strong>100%</strong><span>Client Satisfaction</span></div>
     </div>
   </div>
 </section>
@@ -1722,7 +1769,7 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
         </div>
       </div>
 
-      <div class="featured-copy reveal" style="transition-delay:.06s">
+      <div class="featured-copy reveal">
         <div class="featured-meta">Medora Health — Hospital Management Platform</div>
         <h3>A flagship operating system for appointments, EMR, billing, and pharmacy — launched across 3 clinics.</h3>
         <p>Medora needed more than a dashboard. They needed a dependable clinical operating layer that staff could trust during peak patient hours. We replaced paper registers and four disconnected tools with one secure workflow across reception, doctors, billing, pharmacy, and management.</p>
@@ -1821,7 +1868,7 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
         <div class="svc-proof"><span><strong>2–5 wks</strong>typical launch</span><span><strong>90+</strong>performance score target</span></div>
       </article>
 
-      <article class="svc reveal" style="transition-delay:.03s">
+      <article class="svc reveal">
         <div class="svc-ico">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="3" width="7" height="7" rx="1.6"/><rect x="14" y="14" width="7" height="7" rx="1.6"/><rect x="3" y="14" width="7" height="7" rx="1.6"/></svg>
         </div>
@@ -1837,7 +1884,7 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
         <div class="svc-proof"><span><strong>6–10 wks</strong>MVP operations build</span><span><strong>100%</strong>handoff included</span></div>
       </article>
 
-      <article class="svc reveal" style="transition-delay:.06s">
+      <article class="svc reveal">
         <div class="svc-ico">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
         </div>
@@ -1869,7 +1916,7 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
         <div class="svc-proof"><span><strong>Private</strong>data-safe flows</span><span><strong>Hours</strong>saved weekly</span></div>
       </article>
 
-      <article class="svc reveal" style="transition-delay:.03s">
+      <article class="svc reveal">
         <div class="svc-ico">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
         </div>
@@ -1885,7 +1932,7 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
         <div class="svc-proof"><span><strong>0</strong>double-entry goal</span><span><strong>24/7</strong>workflow monitoring</span></div>
       </article>
 
-      <article class="svc reveal" style="transition-delay:.06s">
+      <article class="svc reveal">
         <div class="svc-ico">
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
         </div>
@@ -1929,7 +1976,7 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
         </div>
       </div>
 
-      <div class="why-visual reveal" style="transition-delay:.06s" aria-hidden="true">
+      <div class="why-visual reveal" aria-hidden="true">
         <div class="wv-grid">
           <div class="wv-card">
             <div class="wv-k">Avg. delivery</div>
@@ -1981,17 +2028,17 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
         <h4>Product scope</h4>
         <p>We map your workflows, data, and users. You get clickable prototypes and a fixed build plan.</p>
       </div>
-      <div class="step reveal" style="transition-delay:.03s">
+      <div class="step reveal">
         <div class="step-no">02 — DESIGN</div>
         <h4>UX & design system</h4>
         <p>Full UI in Figma, responsive, accessible. Built for real operators — not decoration.</p>
       </div>
-      <div class="step reveal" style="transition-delay:.06s">
+      <div class="step reveal">
         <div class="step-no">03 — BUILD</div>
         <h4>Engineering</h4>
         <p>TypeScript end-to-end. Weekly demos, staging environment, automated tests. Ship in slices.</p>
       </div>
-      <div class="step reveal" style="transition-delay:.09s">
+      <div class="step reveal">
         <div class="step-no">04 — LAUNCH</div>
         <h4>Train & handoff</h4>
         <p>Production hardening, team training, documentation. Optional ongoing support retainer.</p>
@@ -2024,7 +2071,7 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
       <div class="works-track" id="worksScroll">
         
         <!-- Project 1: Medora Health -->
-        <article class="work" data-cms="work" data-project="medora">
+        <article class="work reveal" data-cms="work" data-project="medora">
           <div class="work-visual">
             <div class="dash-shell">
               <div class="dash-bar"><i></i><i></i><i></i><span style="margin-left:12px">app.medorahealth.com — Hospital Command Centre</span></div>
@@ -2074,7 +2121,7 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
         </article>
 
         <!-- Project 2: EduSync -->
-        <article class="work" data-cms="work" data-project="edusync">
+        <article class="work reveal" data-cms="work" data-project="edusync">
           <div class="work-visual">
             <div class="app-cluster">
               <div class="app-screen">
@@ -2116,7 +2163,7 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
         </article>
 
         <!-- Project 3: HireFlow -->
-        <article class="work" data-cms="work" data-project="hireflow">
+        <article class="work reveal" data-cms="work" data-project="hireflow">
           <div class="work-visual">
             <div class="dash-shell" style="max-width:820px">
               <div class="dash-bar"><i></i><i></i><i></i><span style="margin-left:12px">hireflow.app — Executive Pipeline</span></div>
@@ -2182,19 +2229,19 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
       <h2 class="h2">Modern, proven, hireable.</h2>
       <p class="lead mt-s">We use reliable tools so your product is fast, maintainable, and easy to hand off.</p>
     </div>
-    <div class="tech-grid reveal">
-      <div class="tech">TypeScript</div>
-      <div class="tech">React / Next.js</div>
-      <div class="tech">React Native</div>
-      <div class="tech">Node / NestJS</div>
-      <div class="tech">Postgres</div>
-      <div class="tech">Redis</div>
-      <div class="tech">Tailwind</div>
-      <div class="tech">Prisma</div>
-      <div class="tech">Stripe</div>
-      <div class="tech">Vercel</div>
-      <div class="tech">AWS</div>
-      <div class="tech">Playwright</div>
+    <div class="tech-grid">
+      <div class="tech reveal">TypeScript</div>
+      <div class="tech reveal">React / Next.js</div>
+      <div class="tech reveal">React Native</div>
+      <div class="tech reveal">Node / NestJS</div>
+      <div class="tech reveal">Postgres</div>
+      <div class="tech reveal">Redis</div>
+      <div class="tech reveal">Tailwind</div>
+      <div class="tech reveal">Prisma</div>
+      <div class="tech reveal">Stripe</div>
+      <div class="tech reveal">Vercel</div>
+      <div class="tech reveal">AWS</div>
+      <div class="tech reveal">Playwright</div>
     </div>
   </div>
 </section>
@@ -2214,13 +2261,13 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
         <footer><strong>Dr. Anika Rao</strong> — Medical Director, Medora Health</footer>
         <div class="t-proof"><span>10-week launch</span><span>3 clinics</span><span>EMR + billing</span></div>
       </div>
-      <div class="t reveal" style="transition-delay:.04s">
+      <div class="t reveal">
         <div class="t-logo">Brightfield Academy</div>
         <blockquote>“The School ERP and parent app changed how we operate. Fee collection is effortless now. Parents love it — 4.8/5 rating.”</blockquote>
         <footer><strong>Rajesh Kumar</strong> — Founder, Brightfield Academy</footer>
         <div class="t-proof"><span>2,400 students</span><span>Parent app</span><span>Fees automated</span></div>
       </div>
-      <div class="t reveal" style="transition-delay:.08s">
+      <div class="t reveal">
         <div class="t-logo">HireFlow</div>
         <blockquote>“Our recruitment system is faster than anything we tried off-the-shelf. Time-to-hire dropped 35%. Clean handoff, great docs.”</blockquote>
         <footer><strong>Sarah Malik</strong> — Managing Director, HireFlow Recruiting</footer>
@@ -2267,7 +2314,7 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
         </div>
       </div>
 
-      <div class="contact-card reveal" style="transition-delay:.05s">
+      <div class="contact-card reveal">
         <div class="form-header">
           <div><h3>Project intake brief</h3><p>Confidential review by a senior product lead.</p></div>
           <div class="secure-note">Private by default</div>
@@ -2314,7 +2361,7 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
 
 <!-- FINAL CTA / FOOTER -->
 <section id="fcta">
-  <div class="wrap">
+  <div class="wrap reveal">
     <h2 class="h2" style="max-width:720px;margin:0 auto">Have a product to build?<br>Let's make it real.</h2>
     <div style="margin-top:26px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
       <a href="#contact" class="btn btn-primary btn-lg">Start a Project</a>
@@ -2379,8 +2426,6 @@ body.mobile-optimized.theme-changing::after{animation-play-state:paused !importa
     </svg>
   </button>
   <div class="nova-pixie-chat" id="novaPixieChat" role="dialog" aria-label="Pixie chat" aria-hidden="true">
-    <button class="nova-pixie-close" id="novaPixieClose" aria-label="Close Pixie chat">×</button>
-    <iframe id="novaPixieFrame" src="pixie-2.html" title="Pixie chat" loading="lazy"></iframe>
   </div>
 </div>
 
@@ -2710,30 +2755,31 @@ function applyTheme(t, origin){
   document.body.classList.add('theme-changing');
   root.setAttribute('data-theme', t);
   syncThemeMeta(t);
-  setTimeout(()=>localStorage.setItem('nova-theme', t), 0);
+  setTimeout(()=>localStorage.setItem('theme', t), 0);
   themeBtn?.classList.add('switching');
   clearTimeout(applyTheme._tm);
   applyTheme._tm = setTimeout(()=>{ root.classList.remove('theme-morph'); themeBtn?.classList.remove('switching'); document.body.classList.remove('theme-changing'); }, 460);
 
   const pixieFrame = document.getElementById('novaPixieFrame');
-  if(pixieFrame && pixieFrame.contentWindow) {
-    pixieFrame.contentWindow.postMessage({ type: 'THEME_UPDATE', theme: t }, '*');
+  if(pixieFrame) {
+    try {
+      const pDoc = pixieFrame.contentDocument || pixieFrame.contentWindow.document;
+      if(pDoc && pDoc.documentElement) {
+        pDoc.documentElement.setAttribute('data-theme', t);
+      }
+    } catch(e) {}
+    if(pixieFrame.contentWindow) {
+      pixieFrame.contentWindow.postMessage({ type: 'THEME_UPDATE', theme: t }, '*');
+    }
   }
 }
 (function initTheme(){
-  const s = localStorage.getItem('nova-theme');
+  const s = localStorage.getItem('theme');
   if(s) root.setAttribute('data-theme', s);
   else if (window.matchMedia('(prefers-color-scheme: dark)').matches) root.setAttribute('data-theme','dark');
   syncThemeMeta(root.getAttribute('data-theme'));
 
-  const pixieFrame = document.getElementById('novaPixieFrame');
-  if(pixieFrame) {
-    const t = root.getAttribute('data-theme');
-    const src = pixieFrame.getAttribute('src');
-    if(src && !src.includes('theme=')) {
-      pixieFrame.setAttribute('src', src.includes('?') ? src + '&theme=' + t : src + '?theme=' + t);
-    }
-  }
+
 })();
 themeBtn.addEventListener('click', ()=>{
   const cur = root.getAttribute('data-theme');
@@ -2804,11 +2850,38 @@ function scrollWork(dir){
 wLeft && wLeft.addEventListener('click', ()=>scrollWork(-1));
 wRight && wRight.addEventListener('click', ()=>scrollWork(1));
 
-/* ---------- Reveal ---------- */
-const io = new IntersectionObserver((entries)=>{
-  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
-},{threshold:.12, rootMargin:'0px 0px -30px 0px'});
-document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+/* ---------- Premium Scroll Reveal System ---------- */
+let revealQueue = [];
+let revealTimer = null;
+const revealObserver = new IntersectionObserver((entries) => {
+  let hasIntersects = false;
+  entries.forEach(e => {
+    if(e.isIntersecting) {
+      revealQueue.push(e.target);
+      revealObserver.unobserve(e.target);
+      hasIntersects = true;
+    }
+  });
+
+  if(hasIntersects && !revealTimer) {
+    revealTimer = requestAnimationFrame(() => {
+      const mapped = revealQueue.map(el => ({ el, rect: el.getBoundingClientRect() }));
+      mapped.sort((a, b) => {
+        if (Math.abs(a.rect.top - b.rect.top) < 30) {
+          return a.rect.left - b.rect.left;
+        }
+        return a.rect.top - b.rect.top;
+      });
+      mapped.forEach((item, index) => {
+        setTimeout(() => item.el.classList.add('in'), index * 100);
+      });
+      revealQueue = [];
+      revealTimer = null;
+    });
+  }
+}, { threshold: 0.1, rootMargin: '0px 0px -8% 0px' });
+
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
 /* ---------- Engineering editor: premium parallax + scroll dissolve ---------- */
 const editorStage = document.getElementById('engineeringEditor');
@@ -2868,27 +2941,40 @@ cForm?.addEventListener('submit', (e)=>{
 /* ---------- Year ---------- */
 document.getElementById('yr').textContent = new Date().getFullYear();
 
-/* ---------- Pixie widget open/close ---------- */
+/* ---------- Pixie widget integration ---------- */
 (function(){
   const mascot = document.getElementById('novaPixieMascot');
   const chat = document.getElementById('novaPixieChat');
-  const close = document.getElementById('novaPixieClose');
-  const frame = document.getElementById('novaPixieFrame');
   const widget = document.getElementById('novaPixieWidget');
-  if(!mascot || !chat || !close) return;
+  const frame = document.getElementById('novaPixieFrame');
+  if(!mascot || !chat) return;
 
   let opened = false;
-  const frameSrc = frame?.getAttribute('src') || 'pixie-2.html';
+
+  if(frame) {
+    frame.addEventListener('load', () => {
+      const t = document.documentElement.getAttribute('data-theme');
+      try {
+        if(frame.contentWindow) {
+          frame.contentWindow.postMessage({ type: 'THEME_UPDATE', theme: t }, '*');
+        }
+        const pDoc = frame.contentDocument || frame.contentWindow.document;
+        if(pDoc && pDoc.documentElement) {
+          pDoc.documentElement.setAttribute('data-theme', t);
+          // Hide internal header elements to rely on the clean parent header
+          const style = pDoc.createElement('style');
+          style.innerHTML = '.close-container, .close-btn, .pixie-close, header { display: none !important; }';
+          pDoc.head.appendChild(style);
+        }
+      } catch(e) {}
+    });
+  }
 
   function open(){
     opened = true;
     chat.classList.add('open');
     chat.setAttribute('aria-hidden','false');
     mascot.setAttribute('aria-expanded','true');
-    if(frame && !frame.getAttribute('src')) {
-      const t = document.documentElement.getAttribute('data-theme');
-      frame.setAttribute('src', frameSrc.includes('?') ? frameSrc + '&theme=' + t : frameSrc + '?theme=' + t);
-    }
   }
 
   function closeFn(){
@@ -2899,13 +2985,122 @@ document.getElementById('yr').textContent = new Date().getFullYear();
   }
 
   mascot.addEventListener('click', ()=> opened ? closeFn() : open());
-  close.addEventListener('click', closeFn);
   document.addEventListener('keydown', (e)=>{ if(e.key === 'Escape' && opened) closeFn(); });
+  
+  // CRITICAL FIX: Ensure clicking the theme toggle button does NOT trigger "click outside" and close the chat!
   document.addEventListener('click', (e)=>{
-    if(opened && widget && !widget.contains(e.target)) closeFn();
+    if(opened && widget && !widget.contains(e.target) && !e.target.closest('#themeBtn')) {
+      closeFn();
+    }
   });
+  // ========== PIXIE INTENT ENGINE + RESPONSE QUALITY (injected into iframe) ==========
+  function injectPixieIntelligence() {
+    if (!frame || !frame.contentWindow) return;
+
+    const script = document.createElement('script');
+    script.textContent = `
+      (function() {
+        if (window.__pixieIntentEngine) return;
+        window.__pixieIntentEngine = true;
+
+        // ========== HIGH-QUALITY INTENT ENGINE ==========
+        const intents = [
+          {
+            name: 'greeting',
+            patterns: [/^(hi|hello|hey|yo|sup|good (morning|afternoon|evening)|hola)$/i],
+            response: "Hi! I'm Pixie — Nova's assistant. How can I help you today?"
+          },
+          {
+            name: 'pricing',
+            patterns: [/cost|price|pricing|how much|budget|quote|estimate/i],
+            response: "Nova works on fixed-scope proposals. Most websites start at $4,800, mobile apps from $9,500, and full business platforms from $14,800. I'll prepare a custom quote after understanding your scope."
+          },
+          {
+            name: 'services',
+            patterns: [/service|what do you (do|offer)|build|website|app|platform|ai/i],
+            response: "We build premium websites, mobile apps, custom business platforms, AI tools, and automation systems with fixed pricing and senior delivery."
+          },
+          {
+            name: 'portfolio',
+            patterns: [/portfolio|work|case study|example|project|medora|edusync|hireflow/i],
+            response: "Our recent work includes Medora (multi-clinic platform), EduSync (school ERP), and Hireflow (recruitment OS). Would you like details on any of them?"
+          },
+          {
+            name: 'timeline',
+            patterns: [/timeline|how long|delivery|when|weeks/i],
+            response: "Typical delivery: 4–7 weeks for websites, 8–12 weeks for apps and platforms. We deliver weekly demos and fixed milestones."
+          },
+          {
+            name: 'contact',
+            patterns: [/contact|reach|email|call|talk to (human|team)|speak/i],
+            response: "You can reach the team directly via the contact form on this page or email hello@novacode.dev. We usually reply within 6 hours."
+          },
+          {
+            name: 'thanks',
+            patterns: [/thanks|thank you|appreciate/i],
+            response: "You're welcome! Let me know if there's anything else I can help with."
+          }
+        ];
+
+        function getResponse(message) {
+          const msg = message.trim().toLowerCase();
+          
+          for (const intent of intents) {
+            if (intent.patterns.some(p => p.test(msg))) {
+              return intent.response;
+            }
+          }
+          
+          // Fallback (much better than before)
+          return "Thanks for your message. I can help with pricing, services, portfolio examples, timelines, or connecting you with the Nova team. What would you like to know?";
+        }
+
+        // Override any existing reply function if present
+        if (window.handlePixieMessage) {
+          const original = window.handlePixieMessage;
+          window.handlePixieMessage = function(msg) {
+            const reply = getResponse(msg);
+            original(msg, reply);
+          };
+        } else {
+          // Expose for the iframe's own chat system
+          window.getPixieResponse = getResponse;
+        }
+
+        // Patch common chat input handlers
+        document.addEventListener('submit', function(e) {
+          const form = e.target;
+          const input = form.querySelector('input[type="text"], textarea');
+          if (input && window.getPixieResponse) {
+            setTimeout(() => {
+              const reply = window.getPixieResponse(input.value);
+              // Try to find and update the last bot message bubble
+              const bubbles = document.querySelectorAll('.message, .bot-message, .pixie-msg');
+              if (bubbles.length) {
+                const last = bubbles[bubbles.length - 1];
+                if (last.textContent.includes("mainly here") || last.textContent.includes("Pixel Code")) {
+                  last.textContent = reply;
+                }
+              }
+            }, 120);
+          }
+        }, true);
+      })();
+    `;
+    try {
+      const doc = frame.contentDocument || frame.contentWindow.document;
+      doc.head.appendChild(script);
+    } catch(e) {}
+  }
+
+  // Run intelligence injection after iframe loads
+  if (frame) {
+    frame.addEventListener('load', () => {
+      setTimeout(injectPixieIntelligence, 420);
+    }, { once: true });
+  }
 })();
 
 </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0a8e7739b525fb9',t:'MTc4MTI2NzgxNw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0c346cf084a88c9',t:'MTc4MTU0NDM1Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0a8e7739b525fb9',t:'MTc4MTI2NzgxNw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0c346cf084a88c9',t:'MTc4MTU0NDM1Mw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0cb78158e8d54e4',t:'MTc4MTYzMDI1Nw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0d7908a9f8a3044',t:'MTc4MTc1NzA4OA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
